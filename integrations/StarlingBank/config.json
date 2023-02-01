@@ -1,0 +1,7 @@
+{
+  "prodMode": false,
+  "sandboxUrl": "https://api-sandbox.starlingbank.com/api/v2",
+  "sandboxAuthToken": "",
+  "productionUrl": "https://api.starlingbank.com/api/v2",
+  "productionAuthToken": ""
+}
