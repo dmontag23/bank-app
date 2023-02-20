@@ -21,10 +21,10 @@ import {
   Colors,
   DebugInstructions,
   Header,
-  LearnMoreLinks,
-  ReloadInstructions
+  LearnMoreLinks
 } from "react-native/Libraries/NewAppScreen";
 import StarlingData from "./integrations/StarlingBank/components/StarlingData";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -56,6 +56,9 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
+// Create a client for TanStack Query
+const queryClient = new QueryClient();
+
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === "dark";
 
@@ -64,36 +67,38 @@ function App(): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> I made my edit
-            bro
-          </Section>
-          <Section title="See Your Changes">
-            <StarlingData />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar
+          barStyle={isDarkMode ? "light-content" : "dark-content"}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={backgroundStyle}>
+          <Header />
+          <View
+            style={{
+              backgroundColor: isDarkMode ? Colors.black : Colors.white
+            }}>
+            <Section title="Step One">
+              Edit <Text style={styles.highlight}>App.tsx</Text> I made my edit
+              bro
+            </Section>
+            <Section title="See Your Changes">
+              <StarlingData />
+            </Section>
+            <Section title="Debug">
+              <DebugInstructions />
+            </Section>
+            <Section title="Learn More">
+              Read the docs to discover what to do next:
+            </Section>
+            <LearnMoreLinks />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </QueryClientProvider>
   );
 }
 
