@@ -14,9 +14,7 @@ const useFetch = (url: string) => {
             Authorization: `Bearer ${AUTH_TOKEN}`
           }
         });
-        if (!response.ok) {
-          throw new Error(`Returned ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Returned ${response.status}`);
         const json = await response.json();
         setApiResponse(json);
       } catch (error) {

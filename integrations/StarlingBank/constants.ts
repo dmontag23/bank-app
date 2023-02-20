@@ -1,8 +1,9 @@
-import config from "./config.json";
+import config from "../../config.json";
 
-export const BASE_URL = config.prodMode
-  ? config.productionUrl
-  : config.sandboxUrl;
-export const AUTH_TOKEN = config.prodMode
-  ? config.productionAuthToken
-  : config.sandboxAuthToken;
+export const AUTH_TOKEN = config.integrations.useLiveUrls
+  ? config.integrations.starling.productionAuthToken
+  : config.integrations.starling.sandboxAuthToken;
+
+export const BASE_URL = config.integrations.useLiveUrls
+  ? config.integrations.starling.productionUrl
+  : config.integrations.starling.sandboxUrl;

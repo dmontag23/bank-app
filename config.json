@@ -1,0 +1,19 @@
+{
+  "integrations": {
+    "starling": {
+      "prodMode": false,
+      "productionUrl": "https://api.starlingbank.com/api/v2",
+      "productionAuthToken": "",
+      "sandboxUrl": "https://api-sandbox.starlingbank.com/api/v2",
+      "sandboxAuthToken": ""
+    },
+    "trueLayer": {
+        "clientId": "",
+        "clientSecret": "",
+        "sandboxAuthUrl": "https://auth.truelayer-sandbox.com",
+        "sandboxDataUrl": "https://api.truelayer-sandbox.com",
+        "statusApiUrl": "https://status-api.truelayer.com"
+    },
+    "useLiveUrls": false
+  }
+}
