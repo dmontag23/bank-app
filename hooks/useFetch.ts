@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+
 import {AUTH_TOKEN} from "../integrations/StarlingBank/constants";
 
 const useFetch = (url: string) => {

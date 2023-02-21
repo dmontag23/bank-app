@@ -1,6 +1,53 @@
 {
   "extends": ["@react-native-community", "prettier"],
+  "plugins": ["import"],
   "rules": {
-    "prettier/prettier": 0
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "caseInsensitive": true,
+          "order": "asc"
+        },
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "sibling",
+          "parent",
+          "index"
+        ],
+        "newlines-between": "always",
+        "pathGroups": [
+          // have react and react native imports come before all others
+          {
+            "pattern": "react+(|-native)/*",
+            "group": "builtin",
+            "position": "before"
+          },
+          // sort all "@" imports below external imports
+          {
+            "pattern": "@*/**",
+            "group": "external",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        // do not add a space between external and "@" imports
+        "distinctGroup": false
+      }
+    ],
+    "prettier/prettier": 0,
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true,
+        "ignoreMemberSort": false
+      }
+    ]
   }
 }

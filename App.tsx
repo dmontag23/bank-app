@@ -1,12 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from "react";
-import type {PropsWithChildren} from "react";
+import React, {PropsWithChildren} from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -16,15 +8,15 @@ import {
   useColorScheme,
   View
 } from "react-native";
-
 import {
   Colors,
   DebugInstructions,
   Header,
   LearnMoreLinks
 } from "react-native/Libraries/NewAppScreen";
-import StarlingData from "./integrations/StarlingBank/components/StarlingData";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+
+import StarlingData from "./integrations/StarlingBank/components/StarlingData";
 
 type SectionProps = PropsWithChildren<{
   title: string;
