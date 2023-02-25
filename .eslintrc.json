@@ -12,20 +12,19 @@
           "caseInsensitive": true,
           "order": "asc"
         },
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "sibling",
-          "parent",
-          "index"
-        ],
+        "groups": ["external", "internal", "sibling", "parent", "index"],
         "newlines-between": "always",
         "pathGroups": [
           // have react and react native imports come before all others
           {
-            "pattern": "react+(|-native)/*",
-            "group": "builtin",
+            "pattern": "react+(|-native)**",
+            "group": "external",
+            "position": "before"
+          },
+          // have all subdirectories of react and react native imports come before all others
+          {
+            "pattern": "react+(|-native)/**",
+            "group": "external",
             "position": "before"
           },
           // sort all "@" imports below external imports
