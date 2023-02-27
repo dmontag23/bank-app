@@ -1,3 +1,5 @@
+import {Permutations} from "../../utils";
+
 enum Scope {
   ACCOUNTS = "accounts",
   BALANCE = "balance",
@@ -14,5 +16,7 @@ export type ConnectTokenPostResponse = {
   expires_in: number;
   refresh_token: string;
   token_type: string;
-  scope: Scope;
+  // this string is made from permutations of values from Scope
+  // that are space-delineated, e.g. "info accounts balance" etc
+  scope: Permutations<`${Scope}`>;
 };
