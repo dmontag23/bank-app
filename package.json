@@ -20,6 +20,7 @@
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.2.0",
+    "@testing-library/react-native": "^12.0.0-rc.0",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
     "@types/react": "^18.0.24",
@@ -30,11 +31,20 @@
     "eslint-plugin-import": "^2.27.5",
     "jest": "^29.2.1",
     "metro-react-native-babel-preset": "0.74.1",
+    "msw": "^1.1.0",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
     "typescript": "4.9.5"
   },
   "jest": {
-    "preset": "react-native"
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/types/**"
+    ],
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.ts"
+    ]
   }
 }
