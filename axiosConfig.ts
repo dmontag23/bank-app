@@ -1,17 +1,17 @@
 import axios, {AxiosHeaders} from "axios";
 
+import {handleUnauthenticatedError} from "./auth/utils";
 import config from "./config.json";
-import {ConnectTokenPostResponse} from "./types/trueLayer/authAPI/auth";
 import {DataAPIErrorResponse} from "./types/trueLayer/dataAPI/serverResponse";
 
 // create instances for various apis
-const trueLayerAuthApi = axios.create({
+export const trueLayerAuthApi = axios.create({
   baseURL: `${config.integrations.trueLayer.sandboxAuthUrl}/`,
   headers: {
     "Content-Type": "application/json"
   }
 });
-const trueLayerDataApi = axios.create({
+export const trueLayerDataApi = axios.create({
   baseURL: `${config.integrations.trueLayer.sandboxDataUrl}/`,
   headers: {
     "Content-Type": "application/json",
@@ -22,22 +22,32 @@ const trueLayerDataApi = axios.create({
 
 // create response interceptors
 trueLayerAuthApi.interceptors.response.use(response => response.data);
+// TODO: figure out how to properly type response.data here
+// response.data is DataAPISuccessResponse but axios doesn't like that
+// because "use" needs to return an AxiosResponse object by default
+// so it might be necessary to override this type in axios.d.ts
 trueLayerDataApi.interceptors.response.use(
   response => response.data.results,
   async error => {
-    const originalRequest = error.config;
-    if (axios.isAxiosError(error) && error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    if (error.response) {
       const errorResponse = error.response.data as DataAPIErrorResponse;
       error.response.status === 401
-        ? await handleUnauthenticatedError(errorResponse, originalRequest)
+        ? await handleUnauthenticatedError(
+            trueLayerAuthApi,
+            errorResponse,
+            error.config.headers
+          )
         : console.error(
-            "The following axios error occured: ",
-            error.response.data
+            "The following error response was returned from the TrueLayer Data API: ",
+            errorResponse
           );
+      return Promise.reject(errorResponse);
     } else {
-      console.log("IN ELSE CASE", error);
+      console.error("The following unexpected error occurred: ", error.message);
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
   }
 );
 
@@ -51,53 +61,17 @@ trueLayerDataApi.interceptors.response.use(
 // paradigm and also introduces a closure, which can be hard to reason about.
 // A better approach may be to introduce a wrapper on the api that handles
 // both errors and tokens, etc.
-const createDataAPIRequestInterceptor = (
+export const createDataAPIRequestInterceptor = (
   token: string,
-  originalRequest: any = {}
+  originalRequestHeaders: AxiosHeaders
 ) => {
   trueLayerDataApi.interceptors.request.clear();
+  // TODO: May want to reconsider typing here as well (see comment above)
   trueLayerDataApi.interceptors.request.use(request => ({
     ...request,
     headers: new AxiosHeaders({
-      ...originalRequest.headers,
+      ...originalRequestHeaders,
       Authorization: `Bearer ${token}`
     })
   }));
 };
-
-// TODO: COME BACK AND USE SECURE STORAGE FOR THIS!!!
-// TODO: COME BACK AND PUT THIS IN ITS OWN HOOK!!!!!
-const getNewToken = async () => {
-  try {
-    const newAccessData = await trueLayerAuthApi.post<
-      ConnectTokenPostResponse,
-      ConnectTokenPostResponse
-    >("connect/token", {
-      grant_type: "refresh_token",
-      client_id: `${config.integrations.trueLayer.clientId}`,
-      client_secret: `${config.integrations.trueLayer.clientSecret}`,
-      refresh_token:
-        "9DEDC159A0450A0CB18CF71D53E6CAFCB0ECDD087E70E9FBA6E384965262CD41"
-    });
-    return newAccessData.access_token;
-  } catch (error) {
-    console.error("An error occured fetching the token ", error);
-  }
-};
-
-const handleUnauthenticatedError = async (
-  error: DataAPIErrorResponse,
-  originalRequest: any = {}
-) => {
-  const errorMessage = `The following authentication error occured: ${
-    error.error
-  } ${
-    error.error_description &&
-    `for the following reason: ${error.error_description}`
-  }\nAttempting to fetch a new token...`;
-  console.log(errorMessage);
-  const newToken = (await getNewToken()) ?? "";
-  createDataAPIRequestInterceptor(newToken, originalRequest);
-};
-
-export default trueLayerDataApi;

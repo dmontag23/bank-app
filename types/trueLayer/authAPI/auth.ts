@@ -47,21 +47,20 @@ export type ConnectTokenPostRequest =
   | ConnectTokenPostRequestOption2
   | ConnectTokenPostRequestOption3;
 
-enum ResponseScope {
-  ACCOUNTS = "accounts",
-  BALANCE = "balance",
-  CARDS = "cards",
-  DIRECT_DEBITS = "direct_debits",
-  INFO = "info",
-  OFFLINE_ACCESS = "offline_access",
-  STANDING_ORDERS = "standing_orders",
-  TRANSACTIONS = "transactions"
-}
+type ResponseScope =
+  | "accounts"
+  | "balance"
+  | "cards"
+  | "direct_debits"
+  | "info"
+  | "offline_access"
+  | "standing_orders"
+  | "transactions";
 
 export type ConnectTokenPostResponse = {
   access_token: string;
   expires_in: number;
-  refresh_token: string;
+  refresh_token?: string;
   token_type: string;
   // this string is made from permutations of values from ResponseScope
   // that are space-delineated, e.g. "info accounts balance" etc
