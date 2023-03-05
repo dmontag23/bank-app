@@ -1,4 +1,4 @@
-import {TransactionCategory} from "./transaction";
+import {Transaction, TransactionCategory} from "./transaction";
 
 type BudgetWindow = {
   start: Date;
@@ -10,6 +10,7 @@ export type BudgetItem = {
   cap: number;
   categories: TransactionCategory[];
   spent: number;
+  transactions: Transaction[];
 };
 
 export type Budget = {

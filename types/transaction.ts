@@ -7,6 +7,8 @@ export enum TransactionCategory {
 }
 
 export type Transaction = {
+    name: string;
+    description: string;
     amount: number;
     category: TransactionCategory
 }
