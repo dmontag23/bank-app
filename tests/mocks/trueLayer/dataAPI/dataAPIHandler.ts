@@ -22,7 +22,7 @@ const dummyHandlers = [
     {code: string},
     | DataAPISuccessResponse<{
         requestHeaders: Record<string, string>;
-        url: URL;
+        url?: URL;
       }>
     | DataAPIErrorResponse
   >(`${BASE_URL}/dummy/:code`, async (req, res, ctx) => {
@@ -52,6 +52,23 @@ const dummyHandlers = [
             error_details: {}
           })
         );
+      case "resource":
+        const token = req.headers.get("authorization")?.split(" ")?.[1];
+        console.error("TOKEN", token)
+        return token === "good-access-token"
+          ? res(
+              ctx.status(200),
+              ctx.json({
+                results: [{requestHeaders: req.headers.all()}],
+                status: "Succeeded"
+              })
+            )
+          : res(
+              ctx.status(401),
+              ctx.json({
+                error: "invalid_token"
+              })
+            );
       case "network-error":
         return res.networkError("Failed to connect");
     }

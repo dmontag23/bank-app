@@ -22,15 +22,15 @@ describe("TrueLayer Auth Api", () => {
       url: string;
     };
     test("returns the correct url", async () => {
-      const {url} = await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy");
+      const {url} = await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy/200");
       expect(url).toEqual(
-        `${config.integrations.trueLayer.sandboxAuthUrl}/dummy`
+        `${config.integrations.trueLayer.sandboxAuthUrl}/dummy/200`
       );
     });
 
     test("returns the correct headers", async () => {
       const {requestHeaders} =
-        await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy");
+        await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy/200");
       expect(requestHeaders).toHaveProperty("content-type", "application/json");
     });
   });
