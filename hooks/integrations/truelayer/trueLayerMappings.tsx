@@ -5,7 +5,7 @@ export const mapTrueLayerTransactionClassificationToInternalCategory = (
   category: string[]
 ) =>
   ({
-    "Bills & Utilities": TransactionCategory.BILLS,
+    "Bills and Utilities": TransactionCategory.BILLS,
     Shopping: TransactionCategory.ENTERTAINMENT
   }[category[0]] || TransactionCategory.UNKNOWN);
 

@@ -9,7 +9,7 @@ import {TransactionCategory} from "../../../types/transaction";
 describe("mapTrueLayerTransactionClassificationToInternalCategory", () => {
   const categoryData = [
     {
-      categoryList: ["Bills & Utilities"],
+      categoryList: ["Bills and Utilities"],
       expectedTransCategory: TransactionCategory.BILLS
     },
     {
