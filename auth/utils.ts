@@ -44,5 +44,6 @@ export const handleUnauthenticatedError = async (
   }\nAttempting to fetch a new token...`;
   console.warn(errorMessage);
   const newToken = await getNewToken(authApiInstance);
+  console.warn("Successfully got a new token.");
   createDataAPIRequestInterceptor(newToken, originalRequestHeaders);
 };
