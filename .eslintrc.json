@@ -12,7 +12,14 @@
           "caseInsensitive": true,
           "order": "asc"
         },
-        "groups": ["external", "internal", "sibling", "parent", "index"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "sibling",
+          "parent",
+          "index"
+        ],
         "newlines-between": "always",
         "pathGroups": [
           // have react and react native imports come before all others
