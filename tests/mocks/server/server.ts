@@ -15,7 +15,7 @@ app.use("/truelayer/data", truelayerDataRouter);
 export const listen = async () =>
   await new Promise<void>(
     resolve =>
-      (server = app.listen(80, () => {
+      (server = app.listen(9091, () => {
         const serverAddress = server.address() as AddressInfo;
         console.log(`Running mock server on port '${serverAddress.port}'...`);
         server.timeout = 5000;
