@@ -6,7 +6,7 @@ import {DataAPIErrorResponse} from "../../../types/trueLayer/dataAPI/serverRespo
 
 const getTransactions = async (acctId: string) =>
   await trueLayerDataApi.get<CardTransaction[]>(
-    `data/v1/cards/${acctId}/transactions`
+    `v1/cards/${acctId}/transactions`
   );
 
 const useTrueLayerTransactionsFromAcct = (acctId: string) =>

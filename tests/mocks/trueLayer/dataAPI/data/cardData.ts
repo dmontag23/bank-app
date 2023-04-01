@@ -10,7 +10,7 @@ export const CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
   currency: "GBP",
   transaction_type: "CREDIT",
   transaction_category: "BILL_PAYMENT",
-  transaction_classification: ["Bills & Utilities", "Payment"],
+  transaction_classification: ["Bills and Utilities", "Payment"],
   merchant_name: "American Express",
   running_balance: {
     amount: 0.0,

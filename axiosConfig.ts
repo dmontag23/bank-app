@@ -4,13 +4,13 @@ import {handleUnauthenticatedError} from "./auth/utils";
 import config from "./config.json";
 import {DataAPIErrorResponse} from "./types/trueLayer/dataAPI/serverResponse";
 
-// create instances for various apis
 export const trueLayerAuthApi = axios.create({
   baseURL: `${config.integrations.trueLayer.sandboxAuthUrl}/`,
   headers: {
     "Content-Type": "application/json"
   }
 });
+
 export const trueLayerDataApi = axios.create({
   baseURL: `${config.integrations.trueLayer.sandboxDataUrl}/`,
   headers: {

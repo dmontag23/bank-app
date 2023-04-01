@@ -1,76 +1,64 @@
 import {AxiosHeaders} from "axios";
-import {rest} from "msw";
 
 import {getNewToken, handleUnauthenticatedError} from "./utils";
 
-import {
-  createDataAPIRequestInterceptor,
-  trueLayerAuthApi
-} from "../axiosConfig";
-import config from "../config.json";
-import {server} from "../tests/mocks/server";
-import {
-  ConnectTokenPostRequest,
-  ConnectTokenPostResponse
-} from "../types/trueLayer/authAPI/auth";
-import {
-  AuthAPIErrorResponse,
-  ErrorCategory
-} from "../types/trueLayer/authAPI/serverResponse";
+import * as axiosConfig from "../axiosConfig";
+import {AuthAPIErrorResponse} from "../types/trueLayer/authAPI/serverResponse";
+import {DataAPIErrorResponse} from "../types/trueLayer/dataAPI/serverResponse";
 
-jest.mock("../axiosConfig", () => ({
-  ...jest.requireActual("../axiosConfig"),
-  createDataAPIRequestInterceptor: jest.fn(() => {})
-}));
+// TODO: Note that, because `setup.ts` has dependencies on utils.ts,
+// nothing in axiosConfig.ts or utils.ts can be mocked. I re-evaluate
+// auth as a whole, and that would be the time to reconsider how these
+// tests are done.
+// jest.mock("../axiosConfig", () => ({
+//   ...jest.requireActual("../axiosConfig"),
+//   createDataAPIRequestInterceptor: jest.fn(() => {})
+// }));
 
 describe("getNewToken", () => {
+  // TODO: Add test for error thrown by JS (e.g. network error). Maybe mock axios for all
+  // unit + integration tests to do this, would help with the setup.ts problem above
   test("returns a new token on a successful call to the connect/token endpoint", async () => {
-    const newToken = await getNewToken(trueLayerAuthApi);
+    const newToken = await getNewToken(
+      axiosConfig.trueLayerAuthApi,
+      new AxiosHeaders()
+    );
     expect(newToken).toEqual("good-access-token");
   });
+
   test("logs an error to the console on an unsuccessful call to the connect/token endpoint", async () => {
-    const expectedErrorResponse = {
+    const consoleError = jest.spyOn(console, "error");
+
+    const expectedErrorResponse: AuthAPIErrorResponse = {
       error_description:
         "Sorry, we are experiencing technical difficulties. Please try again later.",
-      error: "internal_server_error" as ErrorCategory,
+      error: "internal_server_error",
       error_details: {}
     };
-
-    // setup mocks & spies
-    const logSpy = jest.spyOn(console, "error");
-    server.use(
-      rest.post<
-        ConnectTokenPostRequest,
-        never,
-        ConnectTokenPostResponse | AuthAPIErrorResponse
-      >(
-        `${config.integrations.trueLayer.sandboxAuthUrl}/connect/token`,
-        async (_, res, ctx) =>
-          res(ctx.status(500), ctx.json(expectedErrorResponse))
+    await expect(
+      getNewToken(
+        axiosConfig.trueLayerAuthApi,
+        new AxiosHeaders({"mock-return-connect-token": "500"})
       )
+    ).rejects.toEqual(expectedErrorResponse);
+    expect(consoleError).toHaveBeenCalledTimes(1);
+    expect(consoleError).toHaveBeenCalledWith(
+      "An error occurred fetching the token: ",
+      expectedErrorResponse
     );
-
-    try {
-      await getNewToken(trueLayerAuthApi);
-    } catch (error: any) {
-      expect(error.response.data).toEqual(expectedErrorResponse);
-      expect(logSpy).toHaveBeenCalledTimes(1);
-      expect(logSpy).toHaveBeenCalledWith(
-        "An error occurred fetching the token: ",
-        error.message
-      );
-    }
-
-    server.resetHandlers();
   });
 });
 
 describe("handleUnauthenticatedError", () => {
   test("calls function to create new interceptor", async () => {
-    const headers = new AxiosHeaders({test: "headers"});
+    const createDataAPIRequestInterceptor = jest.spyOn(
+      axiosConfig,
+      "createDataAPIRequestInterceptor"
+    );
 
+    const headers = new AxiosHeaders({test: "headers"});
     await handleUnauthenticatedError(
-      trueLayerAuthApi,
+      axiosConfig.trueLayerAuthApi,
       {
         error: "invalid_token"
       },
@@ -82,96 +70,85 @@ describe("handleUnauthenticatedError", () => {
       headers
     );
   });
+
   test("only prints the error to the console when no description is present", async () => {
-    const expectedErrorResponse = {
+    const expectedErrorResponse: DataAPIErrorResponse = {
       error: "invalid_token"
     };
-    const logSpy = jest.spyOn(console, "warn");
-    const headers = new AxiosHeaders({test: "headers"});
+    const consoleWarn = jest.spyOn(console, "warn");
 
+    const headers = new AxiosHeaders({test: "headers"});
     await handleUnauthenticatedError(
-      trueLayerAuthApi,
+      axiosConfig.trueLayerAuthApi,
       expectedErrorResponse,
       headers
     );
 
-    expect(logSpy).toHaveBeenCalledTimes(2);
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(consoleWarn).toHaveBeenCalledTimes(2);
+    expect(consoleWarn).toHaveBeenCalledWith(
       `The following authentication error occurred: ${expectedErrorResponse.error}\nAttempting to fetch a new token...`
     );
   });
+
   test("prints description to the console when the description is present", async () => {
-    const expectedErrorResponse = {
+    const expectedErrorResponse: DataAPIErrorResponse = {
       error_description: "The token expired at '2020-12-07 12:34:56Z'",
       error: "invalid_token"
     };
-    const logSpy = jest.spyOn(console, "warn");
-    const headers = new AxiosHeaders({test: "headers"});
+    const consoleWarn = jest.spyOn(console, "warn");
 
+    const headers = new AxiosHeaders({test: "headers"});
     await handleUnauthenticatedError(
-      trueLayerAuthApi,
+      axiosConfig.trueLayerAuthApi,
       expectedErrorResponse,
       headers
     );
 
-    expect(logSpy).toHaveBeenCalledTimes(2);
-    expect(logSpy).toHaveBeenCalledWith(
+    expect(consoleWarn).toHaveBeenCalledTimes(2);
+    expect(consoleWarn).toHaveBeenCalledWith(
       `The following authentication error occurred: ${expectedErrorResponse.error} for the following reason: ${expectedErrorResponse.error_description}\nAttempting to fetch a new token...`
     );
   });
 
   test("does not print success message when getting new token fails", async () => {
-    const expectedErrorResponse = {
+    const consoleWarn = jest.spyOn(console, "warn");
+
+    const expectedErrorResponse: DataAPIErrorResponse = {
       error_description: "The token expired at '2020-12-07 12:34:56Z'",
       error: "invalid_token"
     };
-    const logSpy = jest.spyOn(console, "warn");
-    const headers = new AxiosHeaders({test: "headers"});
-
-    // TODO: Come back and re-look at this
-    // Should probably mock getNewToken somehow instead of using it, but this seems hard
-    // See https://stackoverflow.com/questions/45111198/how-to-mock-functions-in-the-same-module-using-jest
-    // Maybe use spy and have a call to reset all jest mocks after each test?
-    server.use(
-      rest.post<
-        ConnectTokenPostRequest,
-        never,
-        ConnectTokenPostResponse | AuthAPIErrorResponse
-      >(
-        `${config.integrations.trueLayer.sandboxAuthUrl}/connect/token`,
-        async (_, res, ctx) =>
-          res(ctx.status(400), ctx.json({error: "invalid_grant"}))
-      )
-    );
-
+    const headers = new AxiosHeaders({
+      test: "headers",
+      "mock-return-connect-token": "400"
+    });
     await expect(
       handleUnauthenticatedError(
-        trueLayerAuthApi,
+        axiosConfig.trueLayerAuthApi,
         expectedErrorResponse,
         headers
       )
     ).rejects.toBeTruthy();
 
-    expect(logSpy).toHaveBeenCalledTimes(1);
-
-    server.resetHandlers();
+    expect(consoleWarn).toHaveBeenCalledTimes(1);
   });
 
   test("prints success message after getting new token to console", async () => {
-    const expectedErrorResponse = {
+    const expectedErrorResponse: DataAPIErrorResponse = {
       error_description: "The token expired at '2020-12-07 12:34:56Z'",
       error: "invalid_token"
     };
-    const logSpy = jest.spyOn(console, "warn");
-    const headers = new AxiosHeaders({test: "headers"});
+    const consoleWarn = jest.spyOn(console, "warn");
 
+    const headers = new AxiosHeaders({test: "headers"});
     await handleUnauthenticatedError(
-      trueLayerAuthApi,
+      axiosConfig.trueLayerAuthApi,
       expectedErrorResponse,
       headers
     );
 
-    expect(logSpy).toHaveBeenCalledTimes(2);
-    expect(logSpy).toHaveBeenLastCalledWith("Successfully got a new token.");
+    expect(consoleWarn).toHaveBeenCalledTimes(2);
+    expect(consoleWarn).toHaveBeenLastCalledWith(
+      "Successfully got a new token."
+    );
   });
 });

@@ -1,54 +1,60 @@
 import {AxiosHeaders} from "axios";
 
-import {handleUnauthenticatedError} from "./auth/utils";
+import * as utils from "./auth/utils";
 import {
   createDataAPIRequestInterceptor,
   trueLayerAuthApi,
   trueLayerDataApi
 } from "./axiosConfig";
 import config from "./config.json";
-
-// setup mocks and custom types
-jest.mock("./auth/utils");
-type DataAPIDummyGetSuccessReturn = {
-  requestHeaders: Record<string, string>;
-  url: string;
-}[];
+import {DataAPIErrorResponse} from "./types/trueLayer/dataAPI/serverResponse";
 
 describe("TrueLayer Auth Api", () => {
   describe("config", () => {
-    type DummyGetSuccessReturn = {
+    type AuthAPIDummyGetSuccessReturn = {
       requestHeaders: Record<string, string>;
       url: string;
     };
+
     test("returns the correct url", async () => {
-      const {url} = await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy/200");
+      const {url} = await trueLayerAuthApi.get<AuthAPIDummyGetSuccessReturn>(
+        "/dummy"
+      );
+
       expect(url).toEqual(
-        `${config.integrations.trueLayer.sandboxAuthUrl}/dummy/200`
+        `${config.integrations.trueLayer.sandboxAuthUrl}/dummy`
       );
     });
 
     test("returns the correct headers", async () => {
       const {requestHeaders} =
-        await trueLayerAuthApi.get<DummyGetSuccessReturn>("/dummy/200");
+        await trueLayerAuthApi.get<AuthAPIDummyGetSuccessReturn>("/dummy");
+
       expect(requestHeaders).toHaveProperty("content-type", "application/json");
     });
   });
 });
 
+type DataAPIDummyGetSuccessReturn = {
+  requestHeaders: Record<string, string>;
+  url: string;
+}[];
+
 describe("TrueLayer Data Api", () => {
   describe("config", () => {
     test("returns the correct url", async () => {
       const [results] =
-        await trueLayerDataApi.get<DataAPIDummyGetSuccessReturn>("/dummy/200");
+        await trueLayerDataApi.get<DataAPIDummyGetSuccessReturn>("/dummy");
+
       expect(results.url).toEqual(
-        `${config.integrations.trueLayer.sandboxDataUrl}/dummy/200`
+        `${config.integrations.trueLayer.sandboxDataUrl}/dummy`
       );
     });
 
     test("returns the correct headers", async () => {
       const [results] =
-        await trueLayerDataApi.get<DataAPIDummyGetSuccessReturn>("/dummy/200");
+        await trueLayerDataApi.get<DataAPIDummyGetSuccessReturn>("/dummy");
+
       expect(results.requestHeaders).toHaveProperty(
         "content-type",
         "application/json"
@@ -61,45 +67,47 @@ describe("TrueLayer Data Api", () => {
   });
   describe("on an error response", () => {
     test("401 tries to refresh the token", async () => {
-      const expectedErrorResponse = {
+      const handleUnauthenticatedError = jest.spyOn(
+        utils,
+        "handleUnauthenticatedError"
+      );
+
+      const expectedErrorResponse: DataAPIErrorResponse = {
         error_description: "The token expired at '2020-12-07 12:34:56Z'",
         error: "invalid_token"
       };
-      await expect(trueLayerDataApi.get("/dummy/401")).rejects.toEqual(
-        expectedErrorResponse
-      );
+
+      await expect(
+        trueLayerDataApi.get("/dummy", {
+          headers: {
+            "mock-return-data-dummy": 401
+          }
+        })
+      ).rejects.toEqual(expectedErrorResponse);
       expect(handleUnauthenticatedError).toHaveBeenCalled();
     });
 
     test("non-401 prints an error to the console and returns a rejected promise", async () => {
-      const logSpy = jest.spyOn(console, "error");
-      const expectedErrorResponse = {
+      const consoleError = jest.spyOn(console, "error");
+
+      const expectedErrorResponse: DataAPIErrorResponse = {
         error_description: "Access to a specific resource has been denied.",
         error: "access_denied",
         error_details: {}
       };
-      await expect(trueLayerDataApi.get("/dummy/403")).rejects.toEqual(
-        expectedErrorResponse
-      );
-      expect(logSpy).toHaveBeenCalledTimes(1);
-      expect(logSpy).toHaveBeenCalledWith(
+
+      await expect(
+        trueLayerDataApi.get("/dummy", {
+          headers: {
+            "mock-return-data-dummy": 403
+          }
+        })
+      ).rejects.toEqual(expectedErrorResponse);
+      expect(consoleError).toHaveBeenCalledTimes(1);
+      expect(consoleError).toHaveBeenCalledWith(
         "The following error response was returned from the TrueLayer Data API: ",
         expectedErrorResponse
       );
-    });
-
-    test("network error prints an error to the console and returns a rejected promise", async () => {
-      const logSpy = jest.spyOn(console, "error");
-      try {
-        await trueLayerDataApi.get("/dummy/network-error");
-      } catch (error: any) {
-        expect(error).toHaveProperty("message", "Failed to connect");
-        expect(logSpy).toHaveBeenCalledTimes(1);
-        expect(logSpy).toHaveBeenCalledWith(
-          "The following unexpected error occurred: ",
-          error.message
-        );
-      }
     });
   });
 });
@@ -111,8 +119,9 @@ describe("createDataAPIRequestInterceptor", () => {
       new AxiosHeaders({test: "header"})
     );
     const [results] = await trueLayerDataApi.get<DataAPIDummyGetSuccessReturn>(
-      "/dummy/200"
+      "/dummy"
     );
+
     expect(results.requestHeaders).toHaveProperty("test", "header");
     expect(results.requestHeaders).toHaveProperty(
       "authorization",

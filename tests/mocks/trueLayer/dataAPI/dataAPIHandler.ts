@@ -54,7 +54,6 @@ const dummyHandlers = [
         );
       case "resource":
         const token = req.headers.get("authorization")?.split(" ")?.[1];
-        console.error("TOKEN", token)
         return token === "good-access-token"
           ? res(
               ctx.status(200),

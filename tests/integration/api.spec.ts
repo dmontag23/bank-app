@@ -15,19 +15,17 @@ describe("TrueLayer", () => {
       | AuthAPIErrorResponse;
     test("returns a resource successfully", async () => {
       await expect(
-        trueLayerAuthApi.get<Response>("/dummy/200")
+        trueLayerAuthApi.get<Response>("/dummy")
       ).resolves.toBeTruthy();
     });
 
     test("handles an error from the server correctly", async () => {
       await expect(
-        trueLayerAuthApi.get<Response>("/dummy/401")
-      ).rejects.toBeTruthy();
-    });
-
-    test("handles a network error correctly", async () => {
-      await expect(
-        trueLayerAuthApi.get<Response>("/dummy/network-error")
+        trueLayerAuthApi.get<Response>("/dummy", {
+          headers: {
+            "mock-return-auth-dummy": 400
+          }
+        })
       ).rejects.toBeTruthy();
     });
   });
@@ -42,19 +40,17 @@ describe("TrueLayer", () => {
     >;
     test("returns a resource successfully", async () => {
       await expect(
-        trueLayerDataApi.get<Response>("/dummy/200")
+        trueLayerDataApi.get<Response>("/dummy")
       ).resolves.toBeTruthy();
     });
 
     test("handles an error from the server correctly", async () => {
       await expect(
-        trueLayerDataApi.get<Response>("/dummy/401")
-      ).rejects.toBeTruthy();
-    });
-
-    test("handles a network error correctly", async () => {
-      await expect(
-        trueLayerDataApi.get<Response>("/dummy/network-error")
+        trueLayerDataApi.get<Response>("/dummy", {
+          headers: {
+            "mock-return-data-dummy": 401
+          }
+        })
       ).rejects.toBeTruthy();
     });
   });

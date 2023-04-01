@@ -9,6 +9,14 @@ truelayerAuthRouter.post("/connect/token", (req, res) => {
         error: "invalid_grant"
       });
       break;
+    case "500":
+      res.status(500).json({
+        error_description:
+          "Sorry, we are experiencing technical difficulties. Please try again later.",
+        error: "internal_server_error",
+        error_details: {}
+      });
+      break;
     default:
       res.status(200).json({
         access_token: "good-access-token",
