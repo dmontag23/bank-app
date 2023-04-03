@@ -1,4 +1,3 @@
-import {AxiosHeaders} from "axios";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactions";
@@ -11,8 +10,18 @@ import {
 import {ERROR_429_RESPONSE} from "../../../tests/mocks/trueLayer/dataAPI/data/serverResponseData";
 import {tanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 
+jest.mock("../../../axiosConfig");
+
 describe("useTrueLayerTransactions", () => {
   test("returns a correct list of card transactions on a 200 status code", async () => {
+    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
+      typeof trueLayerDataApi
+    >;
+    mockTrueLayerDataApi.get.mockImplementation(async () => [
+      CARD_TRANSACTION_ALL_FIELDS,
+      CARD_TRANSACTION_REQUIRED_FIELDS
+    ]);
+
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
       {
@@ -29,11 +38,12 @@ describe("useTrueLayerTransactions", () => {
   });
 
   test("returns an error message on a 429 status code", async () => {
-    // TODO: Come back and do this with a mock axios instance
-    trueLayerDataApi.interceptors.request.use(request => ({
-      ...request,
-      headers: new AxiosHeaders({"mock-return-card-transactions": "429"})
-    }));
+    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
+      typeof trueLayerDataApi
+    >;
+    mockTrueLayerDataApi.get.mockImplementation(async () =>
+      Promise.reject(ERROR_429_RESPONSE)
+    );
 
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),

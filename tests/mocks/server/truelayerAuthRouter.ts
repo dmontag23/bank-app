@@ -28,19 +28,4 @@ truelayerAuthRouter.post("/connect/token", (req, res) => {
   }
 });
 
-truelayerAuthRouter.get("/dummy", (req, res) => {
-  switch (req.headers["mock-return-auth-dummy"]) {
-    case "400":
-      res.status(400).json({
-        error: "invalid_grant"
-      });
-      break;
-    default:
-      res.status(200).json({
-        requestHeaders: req.headers,
-        url: `${req.protocol}://${req.hostname}${req.originalUrl}`
-      });
-  }
-});
-
 export default truelayerAuthRouter;

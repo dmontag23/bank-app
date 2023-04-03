@@ -10,7 +10,9 @@
     "mock-server": "npm run clean-mock-server && npm run mock-ts-compile && node tests/mocks/server/dist/tests/mocks/server/runMockServer.js",
     "mock-ts-compile": "npx tsc -p ./tests/mocks/server",
     "start": "react-native start",
-    "test": "jest --silent"
+    "test:unit": "jest --silent",
+    "test:e2e": "detox test -c $E2E_CONFIG",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.24.9",
