@@ -1,6 +1,6 @@
 import {renderHook, waitFor} from "@testing-library/react-native";
 
-import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactions";
+import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct";
 
 import {trueLayerDataApi} from "../../../axiosConfig";
 import {
