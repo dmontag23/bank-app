@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   CARD_TRANSACTION_ALL_FIELDS,
-  CARD_TRANSACTION_REQUIRED_FIELDS
+  TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
 } from "../trueLayer/dataAPI/data/cardData";
 import {ERROR_429_RESPONSE} from "../trueLayer/dataAPI/data/serverResponseData";
 
@@ -17,7 +17,7 @@ truelayerDataRouter.get("/v1/cards/:accountId/transactions", (req, res) => {
       res.status(200).json({
         results: [
           CARD_TRANSACTION_ALL_FIELDS,
-          CARD_TRANSACTION_REQUIRED_FIELDS
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
         ],
         status: "Succeeded"
       });

@@ -34,13 +34,14 @@ export const CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
   }
 };
 
-export const CARD_TRANSACTION_REQUIRED_FIELDS: CardTransaction = {
-  transaction_id: "1234094-shocking-chipotle",
-  timestamp: "2013-02-24T:14:00-07:00",
-  description: "CHIPOTLE AIRPORT BLVD",
-  amount: 36.71,
-  currency: "USD",
-  transaction_type: "DEBIT",
-  transaction_category: "PURCHASE",
-  transaction_classification: ["Food & Dining", "Restaurants"]
-};
+export const TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
+  {
+    transaction_id: "1234094-shocking-chipotle",
+    timestamp: "2013-02-24T:14:00-07:00",
+    description: "CHIPOTLE AIRPORT BLVD",
+    amount: 36.71,
+    currency: "USD",
+    transaction_type: "DEBIT",
+    transaction_category: "PURCHASE",
+    transaction_classification: ["Food & Dining", "Restaurants"]
+  };

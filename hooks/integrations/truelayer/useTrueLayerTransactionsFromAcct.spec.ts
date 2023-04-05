@@ -5,7 +5,7 @@ import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct
 import {trueLayerDataApi} from "../../../axiosConfig";
 import {
   CARD_TRANSACTION_ALL_FIELDS,
-  CARD_TRANSACTION_REQUIRED_FIELDS
+  TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
 import {ERROR_429_RESPONSE} from "../../../tests/mocks/trueLayer/dataAPI/data/serverResponseData";
 import {tanstackQueryTestWrapper} from "../../../tests/mocks/utils";
@@ -19,7 +19,7 @@ describe("useTrueLayerTransactions", () => {
     >;
     mockTrueLayerDataApi.get.mockImplementation(async () => [
       CARD_TRANSACTION_ALL_FIELDS,
-      CARD_TRANSACTION_REQUIRED_FIELDS
+      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
 
     const {result} = renderHook(
@@ -32,7 +32,7 @@ describe("useTrueLayerTransactions", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([
       CARD_TRANSACTION_ALL_FIELDS,
-      CARD_TRANSACTION_REQUIRED_FIELDS
+      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
     expect(result.current.error).toBeNull();
   });
