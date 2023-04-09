@@ -34,8 +34,8 @@ describe("getNewToken", () => {
 
     // assertions
     expect(newToken).toEqual("good-access-token");
-    expect(trueLayerAuthApi.post).toHaveBeenCalledTimes(1);
-    expect(trueLayerAuthApi.post).toHaveBeenCalledWith("connect/token", {
+    expect(trueLayerAuthApi.post).toBeCalledTimes(1);
+    expect(trueLayerAuthApi.post).toBeCalledWith("connect/token", {
       grant_type: GrantType.REFRESH,
       client_id: `${config.integrations.trueLayer.clientId}`,
       client_secret: `${config.integrations.trueLayer.clientSecret}`,
@@ -64,15 +64,15 @@ describe("getNewToken", () => {
 
     // assertions
     await expect(getNewToken()).rejects.toEqual(expectedErrorResponse);
-    expect(mockTrueLayerAuthApi.post).toHaveBeenCalledTimes(1);
-    expect(mockTrueLayerAuthApi.post).toHaveBeenCalledWith("connect/token", {
+    expect(mockTrueLayerAuthApi.post).toBeCalledTimes(1);
+    expect(mockTrueLayerAuthApi.post).toBeCalledWith("connect/token", {
       grant_type: GrantType.REFRESH,
       client_id: `${config.integrations.trueLayer.clientId}`,
       client_secret: `${config.integrations.trueLayer.clientSecret}`,
       refresh_token: ""
     });
-    expect(consoleError).toHaveBeenCalledTimes(1);
-    expect(consoleError).toHaveBeenCalledWith(
+    expect(consoleError).toBeCalledTimes(1);
+    expect(consoleError).toBeCalledWith(
       "An error occurred fetching the token: ",
       expectedErrorResponse
     );
@@ -91,15 +91,15 @@ describe("getNewToken", () => {
       .mockImplementation(() => {});
 
     await expect(getNewToken()).rejects.toEqual(mockErrorMessage);
-    expect(mockTrueLayerAuthApi.post).toHaveBeenCalledTimes(1);
-    expect(mockTrueLayerAuthApi.post).toHaveBeenCalledWith("connect/token", {
+    expect(mockTrueLayerAuthApi.post).toBeCalledTimes(1);
+    expect(mockTrueLayerAuthApi.post).toBeCalledWith("connect/token", {
       grant_type: GrantType.REFRESH,
       client_id: `${config.integrations.trueLayer.clientId}`,
       client_secret: `${config.integrations.trueLayer.clientSecret}`,
       refresh_token: ""
     });
-    expect(consoleError).toHaveBeenCalledTimes(1);
-    expect(consoleError).toHaveBeenCalledWith(
+    expect(consoleError).toBeCalledTimes(1);
+    expect(consoleError).toBeCalledWith(
       "An error occurred fetching the token: ",
       mockErrorMessage
     );
@@ -118,13 +118,13 @@ describe("handleUnauthenticatedError", () => {
 
     await handleUnauthenticatedError(mockError, mockHeaders);
 
-    expect(consoleWarn).toHaveBeenCalledTimes(2);
-    expect(consoleWarn).toHaveBeenCalledWith(
+    expect(consoleWarn).toBeCalledTimes(2);
+    expect(consoleWarn).toBeCalledWith(
       `The following authentication error occurred: ${mockError.error}\nAttempting to fetch a new token...`
     );
-    expect(consoleWarn).toHaveBeenCalledWith("Successfully got a new token.");
-    expect(createDataAPIRequestInterceptor).toHaveBeenCalledTimes(1);
-    expect(createDataAPIRequestInterceptor).toHaveBeenCalledWith(
+    expect(consoleWarn).toBeCalledWith("Successfully got a new token.");
+    expect(createDataAPIRequestInterceptor).toBeCalledTimes(1);
+    expect(createDataAPIRequestInterceptor).toBeCalledWith(
       new AxiosHeaders({
         ...mockHeaders,
         Authorization: `Bearer good-access-token`
@@ -144,13 +144,13 @@ describe("handleUnauthenticatedError", () => {
 
     await handleUnauthenticatedError(mockError, mockHeaders);
 
-    expect(consoleWarn).toHaveBeenCalledTimes(2);
-    expect(consoleWarn).toHaveBeenCalledWith(
+    expect(consoleWarn).toBeCalledTimes(2);
+    expect(consoleWarn).toBeCalledWith(
       `The following authentication error occurred: ${mockError.error} for the following reason: ${mockError.error_description}\nAttempting to fetch a new token...`
     );
-    expect(consoleWarn).toHaveBeenCalledWith("Successfully got a new token.");
-    expect(createDataAPIRequestInterceptor).toHaveBeenCalledTimes(1);
-    expect(createDataAPIRequestInterceptor).toHaveBeenCalledWith(
+    expect(consoleWarn).toBeCalledWith("Successfully got a new token.");
+    expect(createDataAPIRequestInterceptor).toBeCalledTimes(1);
+    expect(createDataAPIRequestInterceptor).toBeCalledWith(
       new AxiosHeaders({
         ...mockHeaders,
         Authorization: `Bearer good-access-token`
@@ -185,15 +185,15 @@ describe("handleUnauthenticatedError", () => {
     await expect(
       handleUnauthenticatedError(mockError, mockHeaders)
     ).rejects.toEqual(authApiErrorResponse);
-    expect(consoleWarn).toHaveBeenCalledTimes(1);
-    expect(consoleWarn).toHaveBeenCalledWith(
+    expect(consoleWarn).toBeCalledTimes(1);
+    expect(consoleWarn).toBeCalledWith(
       `The following authentication error occurred: ${mockError.error}\nAttempting to fetch a new token...`
     );
-    expect(consoleError).toHaveBeenCalledTimes(1);
-    expect(consoleError).toHaveBeenCalledWith(
+    expect(consoleError).toBeCalledTimes(1);
+    expect(consoleError).toBeCalledWith(
       "An error occurred fetching the token: ",
       authApiErrorResponse
     );
-    expect(createDataAPIRequestInterceptor).not.toHaveBeenCalled();
+    expect(createDataAPIRequestInterceptor).not.toBeCalled();
   });
 });
