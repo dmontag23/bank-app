@@ -3,7 +3,7 @@ import {
   mapTrueLayerTransactionToInternalTransaction
 } from "./trueLayerMappings";
 
-import {CARD_TRANSACTION_ALL_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
 import {TransactionCategory} from "../../../types/transaction";
 
 describe("mapTrueLayerCategoryToInternalCategory", () => {
@@ -11,6 +11,10 @@ describe("mapTrueLayerCategoryToInternalCategory", () => {
     {
       categoryList: ["Bills and Utilities"],
       expectedTransCategory: TransactionCategory.BILLS
+    },
+    {
+      categoryList: ["Food & Dining"],
+      expectedTransCategory: TransactionCategory.EATING_OUT
     },
     {
       categoryList: ["Shopping", "Test"],
@@ -34,7 +38,7 @@ describe("mapTrueLayerCategoryToInternalCategory", () => {
 describe("mapTrueLayerTransactionToInternalTransaction", () => {
   test("correctly maps a TrueLayer transaction to an internal transaction", async () => {
     const result = mapTrueLayerTransactionToInternalTransaction(
-      CARD_TRANSACTION_ALL_FIELDS,
+      TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TransactionCategory.BILLS
     );
     expect(result).toEqual({
