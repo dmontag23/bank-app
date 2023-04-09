@@ -4,16 +4,15 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 export const testQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // do not enable the cache so that jest
-      // exits as soon as it has finished executing
-      cacheTime: 0,
+      // ensures jest exits as soon as it has finished executing
+      cacheTime: Infinity,
       // turns retries off so that tests
       // do not timeout if you want to test
       // a query that errors
       retry: false
     },
     mutations: {
-      cacheTime: 0,
+      cacheTime: Infinity,
       retry: false
     }
   }
