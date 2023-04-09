@@ -6,9 +6,7 @@ import {
   TransactionIDToCategoryMapping
 } from "../types/transaction";
 
-const getTransactionCategoryMappingFromStorage = async (
-  transactionIds: string[]
-) =>
+const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
   (
     await AsyncStorage.multiGet(transactionIds)
   ).reduce<TransactionIDToCategoryMapping>(
@@ -24,14 +22,14 @@ interface UseGetTransactionCategoryMappingProps {
   transactionIds: string[];
   enabled?: boolean;
 }
-const useGetTransactionCategoryMapping = ({
+const useGetTransactionCategoryMap = ({
   transactionIds,
   enabled = true
 }: UseGetTransactionCategoryMappingProps) =>
   useQuery<TransactionIDToCategoryMapping>({
     queryKey: ["transactionCategoryMapping", ...transactionIds],
-    queryFn: () => getTransactionCategoryMappingFromStorage(transactionIds),
+    queryFn: () => getTransactionCategoryMapFromStorage(transactionIds),
     enabled
   });
 
-export default useGetTransactionCategoryMapping;
+export default useGetTransactionCategoryMap;

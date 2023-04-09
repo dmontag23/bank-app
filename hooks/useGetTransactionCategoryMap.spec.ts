@@ -1,15 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
-import useGetTransactionCategoryMapping from "./useGetTransactionCategoryMapping";
+import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
 import {tanstackQueryTestWrapper} from "../tests/mocks/utils";
 import {TransactionCategory} from "../types/transaction";
 
-describe("useGetTransactionCategoryMapping", () => {
+describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
     const {result} = renderHook(
-      () => useGetTransactionCategoryMapping({transactionIds: []}),
+      () => useGetTransactionCategoryMap({transactionIds: []}),
       {
         wrapper: tanstackQueryTestWrapper
       }
@@ -26,8 +26,7 @@ describe("useGetTransactionCategoryMapping", () => {
     await AsyncStorage.setItem("id-2", TransactionCategory.BILLS);
 
     const {result} = renderHook(
-      () =>
-        useGetTransactionCategoryMapping({transactionIds: ["id-1", "id-2"]}),
+      () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
       {
         wrapper: tanstackQueryTestWrapper
       }
@@ -44,8 +43,7 @@ describe("useGetTransactionCategoryMapping", () => {
 
   test("does not fetch from storage when disabled", async () => {
     const {result} = renderHook(
-      () =>
-        useGetTransactionCategoryMapping({transactionIds: [], enabled: false}),
+      () => useGetTransactionCategoryMap({transactionIds: [], enabled: false}),
       {
         wrapper: tanstackQueryTestWrapper
       }
