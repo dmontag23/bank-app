@@ -13,7 +13,7 @@ const storeTransactionCategoryMapping = async (
   return transactionIdToCategoryMapping;
 };
 
-const useStoreTransactionCategoryMapping = () => {
+const useStoreTransactionCategoryMap = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -65,4 +65,4 @@ const useStoreTransactionCategoryMapping = () => {
   });
 };
 
-export default useStoreTransactionCategoryMapping;
+export default useStoreTransactionCategoryMap;
