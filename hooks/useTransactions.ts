@@ -1,12 +1,110 @@
-import {mapTrueLayerTransactionToInternalTransaction} from "./integrations/truelayer/trueLayerMappings";
+import {useEffect, useMemo} from "react";
+
+import {
+  mapTrueLayerCategoryToInternalCategory,
+  mapTrueLayerTransactionToInternalTransaction
+} from "./integrations/truelayer/trueLayerMappings";
 import useTrueLayerTransactionsFromAcct from "./integrations/truelayer/useTrueLayerTransactionsFromAcct";
+import useGetTransactionToCategoryMap from "./useGetTransactionCategoryMap";
+import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
+
+import {
+  Transaction,
+  TransactionIDToCategoryMapping
+} from "../types/transaction";
+import {CardTransaction} from "../types/trueLayer/dataAPI/cards";
+
+// TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
+const assignCategoriesToTransactions = (
+  trueLayerCardTransactions: CardTransaction[],
+  trueLayerTransactionIdToCategoryMap: TransactionIDToCategoryMapping
+) =>
+  trueLayerCardTransactions.reduce<{
+    unsavedTransactionsToCategoryMap: TransactionIDToCategoryMapping;
+    transactions: Transaction[];
+  }>(
+    ({unsavedTransactionsToCategoryMap, transactions}, currentTransaction) => {
+      const transactionId = `truelayer-${currentTransaction.transaction_id}`;
+
+      const savedCategory =
+        trueLayerTransactionIdToCategoryMap?.[transactionId];
+      const category =
+        savedCategory ??
+        mapTrueLayerCategoryToInternalCategory(
+          currentTransaction.transaction_classification
+        );
+
+      return {
+        unsavedTransactionsToCategoryMap: savedCategory
+          ? unsavedTransactionsToCategoryMap
+          : {
+              ...unsavedTransactionsToCategoryMap,
+              [transactionId]: category
+            },
+        transactions: [
+          ...transactions,
+          mapTrueLayerTransactionToInternalTransaction(
+            currentTransaction,
+            category
+          )
+        ]
+      };
+    },
+    {
+      unsavedTransactionsToCategoryMap: {},
+      transactions: []
+    }
+  );
 
 const useTransactions = (acctId: string) => {
-  const {isLoading, data} = useTrueLayerTransactionsFromAcct(acctId);
-  const internalTransactions = (data ?? []).map(transaction =>
-    mapTrueLayerTransactionToInternalTransaction(transaction)
+  const {
+    isLoading: isTrueLayerTransactionsLoading,
+    isSuccess: isTrueLayerTransactionsSuccess,
+    data: trueLayerTransactions
+  } = useTrueLayerTransactionsFromAcct(acctId);
+
+  const trueLayerTransactionIds = (trueLayerTransactions ?? []).map(
+    transaction => `truelayer-${transaction.transaction_id}`
   );
-  return {isLoading, transactions: internalTransactions};
+
+  const {
+    isLoading: isTransactionToCategoryMapLoading,
+    isSuccess: isTransactionToCategoryMapSuccess,
+    data: trueLayerTransactionToCategoryMap
+  } = useGetTransactionToCategoryMap({
+    transactionIds: trueLayerTransactionIds,
+    enabled: !isTrueLayerTransactionsLoading
+  });
+
+  const {mutate: storeTransactionCategoryMap} =
+    useStoreTransactionCategoryMap();
+
+  const {unsavedTransactionsToCategoryMap, transactions} = useMemo(
+    () =>
+      !isTrueLayerTransactionsSuccess || !isTransactionToCategoryMapSuccess
+        ? {unsavedTransactionsToCategoryMap: {}, transactions: []}
+        : assignCategoriesToTransactions(
+            trueLayerTransactions,
+            trueLayerTransactionToCategoryMap
+          ),
+    [
+      trueLayerTransactions,
+      trueLayerTransactionToCategoryMap,
+      isTrueLayerTransactionsSuccess,
+      isTransactionToCategoryMapSuccess
+    ]
+  );
+
+  useEffect(() => {
+    if (Object.keys(unsavedTransactionsToCategoryMap).length)
+      storeTransactionCategoryMap(unsavedTransactionsToCategoryMap);
+  }, [storeTransactionCategoryMap, unsavedTransactionsToCategoryMap]);
+
+  return {
+    isLoading:
+      isTrueLayerTransactionsLoading || isTransactionToCategoryMapLoading,
+    transactions
+  };
 };
 
 export default useTransactions;
