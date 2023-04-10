@@ -42,6 +42,7 @@ describe("mapTrueLayerTransactionToInternalTransaction", () => {
       TransactionCategory.BILLS
     );
     expect(result).toEqual({
+      id: "truelayer-a15d8156569ba848d84c07c34d291bca",
       name: "PAY OFF CREDIT CARD BILL",
       description: "Bills and Utilities",
       amount: 192.52,

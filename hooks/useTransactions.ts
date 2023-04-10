@@ -63,6 +63,8 @@ const useTransactions = (acctId: string) => {
     data: trueLayerTransactions
   } = useTrueLayerTransactionsFromAcct(acctId);
 
+  // TODO: This id is being generated in multiple places (3).
+  // It would be good if it was centralized in a single place.
   const trueLayerTransactionIds = (trueLayerTransactions ?? []).map(
     transaction => `truelayer-${transaction.transaction_id}`
   );

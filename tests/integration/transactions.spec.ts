@@ -44,12 +44,14 @@ describe("transaction flow", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {
+        id: "truelayer-a15d8156569ba848d84c07c34d291bca",
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
         category: TransactionCategory.BILLS
       },
       {
+        id: "truelayer-1234094-shocking-chipotle",
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
@@ -89,12 +91,14 @@ describe("transaction flow", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {
+        id: "truelayer-a15d8156569ba848d84c07c34d291bca",
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
         category: TransactionCategory.SAVINGS
       },
       {
+        id: "truelayer-1234094-shocking-chipotle",
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
