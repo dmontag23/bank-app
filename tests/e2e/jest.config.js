@@ -8,6 +8,7 @@ module.exports = {
   globalSetup: "<rootDir>/tests/e2e/globalSetup.ts",
   globalTeardown: "<rootDir>/tests/e2e/globalTeardown.ts",
   reporters: ["detox/runners/jest/reporter"],
+  setupFilesAfterEnv: ["<rootDir>/tests/e2e/setup.ts"],
   testEnvironment: "detox/runners/jest/testEnvironment",
   testPathIgnorePatterns: ["<rootDir>/node_modules/"],
   verbose: true
