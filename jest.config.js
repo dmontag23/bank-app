@@ -15,5 +15,8 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   preset: "react-native",
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
-  testPathIgnorePatterns: ["<rootDir>/tests/e2e"]
+  testPathIgnorePatterns: ["<rootDir>/tests/e2e"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(@react-native|react-native|react-native-vector-icons)/)"
+  ]
 };
