@@ -3,7 +3,7 @@ import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
-import {tanstackQueryTestWrapper, testQueryClient} from "../tests/mocks/utils";
+import {TanstackQueryTestWrapper, testQueryClient} from "../tests/mocks/utils";
 import {
   TransactionCategory,
   TransactionIDToCategoryMapping
@@ -12,7 +12,7 @@ import {
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate({});
 
@@ -23,7 +23,7 @@ describe("useStoreTransactionCategoryMap", () => {
 
   test("does not update the cache on success when called with an empty map", async () => {
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate({});
 
@@ -40,7 +40,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate(testData);
 
@@ -75,7 +75,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate(testData);
 
@@ -92,7 +92,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate(testData);
 
@@ -127,7 +127,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate(testData);
 
@@ -155,7 +155,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     result.current.mutate(testData);
 
@@ -165,7 +165,7 @@ describe("useStoreTransactionCategoryMap", () => {
 
   test("correctly cancels existing queries", async () => {
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
 
     expect(testQueryClient.isFetching()).toEqual(0);

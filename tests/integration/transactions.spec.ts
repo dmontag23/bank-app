@@ -8,7 +8,7 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../mocks/trueLayer/dataAPI/data/cardData";
-import {tanstackQueryTestWrapper} from "../mocks/utils";
+import {TanstackQueryTestWrapper} from "../mocks/utils";
 
 jest.mock("../../axiosConfig");
 
@@ -21,7 +21,7 @@ describe("transaction flow", () => {
     mockTrueLayerDataApi.get.mockImplementationOnce(async () => []);
 
     const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
@@ -39,7 +39,7 @@ describe("transaction flow", () => {
     ]);
 
     const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
@@ -86,7 +86,7 @@ describe("transaction flow", () => {
     );
 
     const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: tanstackQueryTestWrapper
+      wrapper: TanstackQueryTestWrapper
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([

@@ -1,4 +1,5 @@
 import React, {ReactNode} from "react";
+import {Provider} from "react-native-paper";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 export const testQueryClient = new QueryClient({
@@ -18,11 +19,22 @@ export const testQueryClient = new QueryClient({
   }
 });
 
-interface TanstackQueryTestWrapperProps {
+type TanstackQueryTestWrapperProps = {
   children: ReactNode;
-}
-export const tanstackQueryTestWrapper = ({
+};
+
+export const TanstackQueryTestWrapper = ({
   children
 }: TanstackQueryTestWrapperProps) => (
   <QueryClientProvider client={testQueryClient}>{children}</QueryClientProvider>
+);
+
+type ComponentTestWrapperProps = {
+  children: ReactNode;
+};
+
+export const ComponentTestWrapper = ({children}: ComponentTestWrapperProps) => (
+  <QueryClientProvider client={testQueryClient}>
+    <Provider>{children}</Provider>
+  </QueryClientProvider>
 );

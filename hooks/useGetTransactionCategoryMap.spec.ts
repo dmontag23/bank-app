@@ -3,7 +3,7 @@ import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
-import {tanstackQueryTestWrapper} from "../tests/mocks/utils";
+import {TanstackQueryTestWrapper} from "../tests/mocks/utils";
 import {TransactionCategory} from "../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
@@ -11,7 +11,7 @@ describe("useGetTransactionCategoryMap", () => {
     const {result} = renderHook(
       () => useGetTransactionCategoryMap({transactionIds: []}),
       {
-        wrapper: tanstackQueryTestWrapper
+        wrapper: TanstackQueryTestWrapper
       }
     );
 
@@ -28,7 +28,7 @@ describe("useGetTransactionCategoryMap", () => {
     const {result} = renderHook(
       () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
       {
-        wrapper: tanstackQueryTestWrapper
+        wrapper: TanstackQueryTestWrapper
       }
     );
 
@@ -45,7 +45,7 @@ describe("useGetTransactionCategoryMap", () => {
     const {result} = renderHook(
       () => useGetTransactionCategoryMap({transactionIds: [], enabled: false}),
       {
-        wrapper: tanstackQueryTestWrapper
+        wrapper: TanstackQueryTestWrapper
       }
     );
 

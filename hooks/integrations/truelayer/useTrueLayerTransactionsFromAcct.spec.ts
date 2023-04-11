@@ -8,7 +8,7 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
 import {ERROR_429_RESPONSE} from "../../../tests/mocks/trueLayer/dataAPI/data/serverResponseData";
-import {tanstackQueryTestWrapper} from "../../../tests/mocks/utils";
+import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 
 jest.mock("../../../axiosConfig");
 
@@ -25,7 +25,7 @@ describe("useTrueLayerTransactions", () => {
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
       {
-        wrapper: tanstackQueryTestWrapper
+        wrapper: TanstackQueryTestWrapper
       }
     );
 
@@ -48,7 +48,7 @@ describe("useTrueLayerTransactions", () => {
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
       {
-        wrapper: tanstackQueryTestWrapper
+        wrapper: TanstackQueryTestWrapper
       }
     );
 
