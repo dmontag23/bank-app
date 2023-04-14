@@ -7,9 +7,17 @@ import {Transaction, TransactionCategory} from "../../../types/transaction";
 // The transformed version of TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
 // from the TrueLayer mocked card data
 export const EATING_OUT_CARD_TRANSACTION: Transaction = {
-  id: "truelayer-1",
+  id: "truelayer-1234094-shocking-chipotle",
   name: "CHIPOTLE AIRPORT BLVD",
   description: "Food & Dining",
   amount: 36.71,
   category: TransactionCategory.EATING_OUT
 };
+
+export const PAY_BILL_CARD_TRANSACTION: Transaction = {
+  id: "a15d8156569ba848d84c07c34d291bca",
+  name: "PAY OFF CREDIT CARD BILL",
+  description: "Bills and Utilities",
+  amount: 192.52,
+  category: TransactionCategory.BILLS
+}
