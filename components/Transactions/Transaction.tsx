@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {View} from "react-native";
 import {Dialog, List, Portal, Text} from "react-native-paper";
 import {StyleProp, ViewStyle} from "react-native/types";
@@ -28,7 +28,7 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
     useStoreTransactionCategoryMap();
 
   const [isEditTransactionDialogVisible, setIsEditTransactionDialogVisible] =
-    React.useState(false);
+    useState(false);
   const showDialog = () => setIsEditTransactionDialogVisible(true);
   const hideDialog = () => setIsEditTransactionDialogVisible(false);
 
