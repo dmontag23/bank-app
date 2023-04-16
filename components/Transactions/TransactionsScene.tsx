@@ -11,6 +11,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center"
+  },
+  text: {
+    textAlign: "center"
   }
 });
 
@@ -25,7 +28,9 @@ const TransactionsScene = () => {
         <LoadingSpinner />
       ) : (
         <>
-          <Text variant="displaySmall">Transactions</Text>
+          <Text variant="displaySmall" style={styles.text}>
+            Transactions
+          </Text>
           <TransactionList transactions={transactions} />
         </>
       )}
