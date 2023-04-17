@@ -7,16 +7,6 @@ import TransactionList from "./TransactionList";
 import useTransactions from "../../hooks/useTransactions";
 import LoadingSpinner from "../LoadingSpinner";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center"
-  },
-  text: {
-    textAlign: "center"
-  }
-});
-
 const TransactionsScene = () => {
   // TODO: Come back and use actual account number
   const {isLoading, transactions} = useTransactions(
@@ -37,5 +27,15 @@ const TransactionsScene = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  text: {
+    textAlign: "center"
+  }
+});
 
 export default TransactionsScene;
