@@ -34,6 +34,8 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
 
   return (
     <>
+      {/* TODO: Might want to consider refactoring the dialog into its
+      own component. */}
       <Portal>
         <Dialog visible={isEditTransactionDialogVisible} onDismiss={hideDialog}>
           <Dialog.Title>
