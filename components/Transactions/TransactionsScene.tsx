@@ -29,13 +29,8 @@ const TransactionsScene = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center"
-  },
-  text: {
-    textAlign: "center"
-  }
+  container: {flex: 1, justifyContent: "center"},
+  text: {marginVertical: 20, textAlign: "center"}
 });
 
 export default TransactionsScene;
