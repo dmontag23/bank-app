@@ -5,7 +5,7 @@ import {Text} from "react-native-paper";
 import TransactionList from "./TransactionList";
 
 import useTransactions from "../../hooks/useTransactions";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScene = () => {
   // TODO: Come back and use actual account number

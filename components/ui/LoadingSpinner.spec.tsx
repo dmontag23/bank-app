@@ -3,7 +3,7 @@ import {render, screen} from "@testing-library/react-native";
 
 import LoadingSpinner from "./LoadingSpinner";
 
-import {ComponentTestWrapper} from "../tests/mocks/utils";
+import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 describe("LoadingSpinner component", () => {
   test("renders a loading spinner correctly", () => {
