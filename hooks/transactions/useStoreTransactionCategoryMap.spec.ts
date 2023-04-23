@@ -92,6 +92,9 @@ describe("useStoreTransactionCategoryMap", () => {
     result.current.mutate(testData);
 
     await waitFor(() => expect(result.current.isError).toBe(true));
+    await waitFor(() =>
+      expect(result.current.error).toBe("Cannot connect to async storage")
+    );
     expect(testQueryClient.getQueryData(queryKey)).toEqual(
       previouslyCachedTransactions
     );

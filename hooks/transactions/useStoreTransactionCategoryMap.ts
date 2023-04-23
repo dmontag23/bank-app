@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 
-import {TransactionIDToCategoryMapping} from "../types/transaction";
+import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
 const storeTransactionCategoryMapping = async (
   transactionIdToCategoryMapping: TransactionIDToCategoryMapping

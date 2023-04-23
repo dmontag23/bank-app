@@ -53,4 +53,25 @@ describe("useGetTransactionCategoryMap", () => {
     expect(result.current.isFetching).toBe(false);
     expect(AsyncStorage.multiGet).not.toBeCalled();
   });
+
+  test("returns error on failed call to storage", async () => {
+    // setup mock for async storage
+    const mockAsyncStorageMultiGet =
+      AsyncStorage.multiGet as jest.MockedFunction<
+        typeof AsyncStorage.multiGet
+      >;
+    mockAsyncStorageMultiGet.mockImplementationOnce(() =>
+      Promise.reject("Cannot connect to async storage")
+    );
+
+    const {result} = renderHook(
+      () => useGetTransactionCategoryMap({transactionIds: []}),
+      {
+        wrapper: TanstackQueryTestWrapper
+      }
+    );
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error).toBe("Cannot connect to async storage");
+  });
 });
