@@ -35,8 +35,14 @@ describe("useGetAllBudgets", () => {
   test("returns list of stored budgets", async () => {
     // setup AsyncStorage with mock data
     await AsyncStorage.multiSet([
-      [BUDGET_WITH_NO_ITEMS.id, JSON.stringify(BUDGET_WITH_NO_ITEMS)],
-      [BUDGET_NO_NAME_OR_ITEMS.id, JSON.stringify(BUDGET_NO_NAME_OR_ITEMS)]
+      [
+        `budget-${BUDGET_WITH_NO_ITEMS.id}`,
+        JSON.stringify(BUDGET_WITH_NO_ITEMS)
+      ],
+      [
+        `budget-${BUDGET_NO_NAME_OR_ITEMS.id}`,
+        JSON.stringify(BUDGET_NO_NAME_OR_ITEMS)
+      ]
     ]);
 
     const {result} = renderHook(() => useGetAllBudgets(), {
