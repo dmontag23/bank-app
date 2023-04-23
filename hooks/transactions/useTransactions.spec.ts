@@ -1,20 +1,20 @@
 import {renderHook, waitFor} from "@testing-library/react-native";
 
-import {
-  mapTrueLayerCategoryToInternalCategory,
-  mapTrueLayerTransactionToInternalTransaction
-} from "./integrations/truelayer/trueLayerMappings";
-import useTrueLayerTransactionsFromAcct from "./integrations/truelayer/useTrueLayerTransactionsFromAcct";
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 import useTransactions from "./useTransactions";
 
-import {EATING_OUT_CARD_TRANSACTION} from "../tests/mocks/data/transactions";
-import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../tests/mocks/trueLayer/dataAPI/data/cardData";
-import {TransactionCategory} from "../types/transaction";
+import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
+import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../tests/mocks/trueLayer/dataAPI/data/cardData";
+import {TransactionCategory} from "../../types/transaction";
+import {
+  mapTrueLayerCategoryToInternalCategory,
+  mapTrueLayerTransactionToInternalTransaction
+} from "../integrations/truelayer/trueLayerMappings";
+import useTrueLayerTransactionsFromAcct from "../integrations/truelayer/useTrueLayerTransactionsFromAcct";
 
-jest.mock("./integrations/truelayer/trueLayerMappings");
-jest.mock("./integrations/truelayer/useTrueLayerTransactionsFromAcct");
+jest.mock("../integrations/truelayer/trueLayerMappings");
+jest.mock("../integrations/truelayer/useTrueLayerTransactionsFromAcct");
 jest.mock("./useGetTransactionCategoryMap");
 jest.mock("./useStoreTransactionCategoryMap");
 

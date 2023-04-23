@@ -3,8 +3,8 @@ import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
-import {TanstackQueryTestWrapper} from "../tests/mocks/utils";
-import {TransactionCategory} from "../types/transaction";
+import {TanstackQueryTestWrapper} from "../../tests/mocks/utils";
+import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {

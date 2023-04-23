@@ -1,18 +1,18 @@
 import {useEffect, useMemo} from "react";
 
-import {
-  mapTrueLayerCategoryToInternalCategory,
-  mapTrueLayerTransactionToInternalTransaction
-} from "./integrations/truelayer/trueLayerMappings";
-import useTrueLayerTransactionsFromAcct from "./integrations/truelayer/useTrueLayerTransactionsFromAcct";
-import useGetTransactionToCategoryMap from "./useGetTransactionCategoryMap";
+import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
 import {
   Transaction,
   TransactionIDToCategoryMapping
-} from "../types/transaction";
-import {CardTransaction} from "../types/trueLayer/dataAPI/cards";
+} from "../../types/transaction";
+import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
+import {
+  mapTrueLayerCategoryToInternalCategory,
+  mapTrueLayerTransactionToInternalTransaction
+} from "../integrations/truelayer/trueLayerMappings";
+import useTrueLayerTransactionsFromAcct from "../integrations/truelayer/useTrueLayerTransactionsFromAcct";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
 const assignCategoriesToTransactions = (
@@ -73,7 +73,7 @@ const useTransactions = (acctId: string) => {
     isLoading: isTransactionToCategoryMapLoading,
     isSuccess: isTransactionToCategoryMapSuccess,
     data: trueLayerTransactionToCategoryMap
-  } = useGetTransactionToCategoryMap({
+  } = useGetTransactionCategoryMap({
     transactionIds: trueLayerTransactionIds,
     enabled: !isTrueLayerTransactionsLoading
   });

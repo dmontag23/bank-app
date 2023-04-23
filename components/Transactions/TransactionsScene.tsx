@@ -4,7 +4,7 @@ import {Text} from "react-native-paper";
 
 import TransactionList from "./TransactionList";
 
-import useTransactions from "../../hooks/useTransactions";
+import useTransactions from "../../hooks/transactions/useTransactions";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScene = () => {

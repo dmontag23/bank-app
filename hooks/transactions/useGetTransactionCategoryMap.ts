@@ -4,7 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 import {
   TransactionCategory,
   TransactionIDToCategoryMapping
-} from "../types/transaction";
+} from "../../types/transaction";
 
 const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
   (

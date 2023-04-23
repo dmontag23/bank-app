@@ -3,12 +3,12 @@ import {render, screen} from "@testing-library/react-native";
 
 import TransactionsScene from "./TransactionsScene";
 
-import useTransactions from "../../hooks/useTransactions";
+import useTransactions from "../../hooks/transactions/useTransactions";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Transaction, TransactionCategory} from "../../types/transaction";
 
-jest.mock("../../hooks/useTransactions");
+jest.mock("../../hooks/transactions/useTransactions");
 
 describe("TransactionsScene component", () => {
   test("renders a loading spinner when loading transactions", () => {

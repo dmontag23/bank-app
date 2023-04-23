@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../axiosConfig";
-import useTransactions from "../../hooks/useTransactions";
+import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,

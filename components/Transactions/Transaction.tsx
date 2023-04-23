@@ -5,7 +5,7 @@ import {StyleProp, ViewStyle} from "react-native/types";
 
 import CategoryList from "./CategoryList";
 
-import useStoreTransactionCategoryMap from "../../hooks/useStoreTransactionCategoryMap";
+import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
 import {
   TransactionCategory,
   Transaction as TransactionType
