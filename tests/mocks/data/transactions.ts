@@ -20,4 +20,4 @@ export const PAY_BILL_CARD_TRANSACTION: Transaction = {
   description: "Bills and Utilities",
   amount: 192.52,
   category: TransactionCategory.BILLS
-}
+};
