@@ -51,9 +51,7 @@ const BudgetItemFormFields = ({
         return (
           <Checkbox.Item
             key={i}
-            disabled={
-              !checked && disabledCategories.includes(transactionCategoryValue)
-            }
+            disabled={disabledCategories.includes(transactionCategoryValue)}
             label={category}
             labelVariant="bodyMedium"
             onPress={() =>

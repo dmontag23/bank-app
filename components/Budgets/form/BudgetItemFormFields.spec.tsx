@@ -9,16 +9,16 @@ import {BudgetItemInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 
 describe("BudgetItemFormFields component", () => {
+  // needed for animated components
+  // see https://github.com/jestjs/jest/issues/6434
+  beforeEach(() => jest.useFakeTimers());
+
   const EMPTY_BUDGET_ITEM: BudgetItemInput = {
     id: "1",
     name: "",
     cap: "",
     categories: []
   };
-
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  beforeEach(() => jest.useFakeTimers());
 
   test("renders the correct form fields", async () => {
     render(
@@ -68,21 +68,6 @@ describe("BudgetItemFormFields component", () => {
         ? expect(categoryCheckbox).toBeDisabled()
         : expect(categoryCheckbox).toBeEnabled();
     });
-  });
-
-  test("does not disable already selected category", () => {
-    render(
-      <BudgetItemFormFields
-        budgetItem={{...BUDGET_ITEM_BILLS, cap: "500"}}
-        disabledCategories={[TransactionCategory.BILLS]}
-        setBudgetItem={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
-    );
-
-    expect(screen.getByLabelText("BILLS")).toBeEnabled();
   });
 
   test("can set item name", async () => {
