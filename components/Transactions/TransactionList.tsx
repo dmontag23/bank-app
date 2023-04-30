@@ -9,13 +9,11 @@ type TransactionListProps = {
   transactions: TransactionType[];
 };
 
-const TransactionList = ({transactions}: TransactionListProps) => {
-  return (
-    <FlatList
-      data={transactions}
-      renderItem={({item}) => <Transaction transaction={item} />}
-    />
-  );
-};
+const TransactionList = ({transactions}: TransactionListProps) => (
+  <FlatList
+    data={transactions}
+    renderItem={({item}) => <Transaction transaction={item} />}
+  />
+);
 
 export default TransactionList;

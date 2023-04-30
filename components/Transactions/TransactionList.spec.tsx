@@ -1,15 +1,21 @@
 import React from "react";
-import {render, screen} from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 
+import Transaction from "./Transaction";
 import TransactionList from "./TransactionList";
 
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
-import {Transaction, TransactionCategory} from "../../types/transaction";
+import {
+  TransactionCategory,
+  Transaction as TransactionType
+} from "../../types/transaction";
+
+jest.mock("./Transaction");
 
 describe("TransactionList component", () => {
   test("renders a transaction list correctly", () => {
-    const testTransactions: Transaction[] = [
+    const testTransactions: TransactionType[] = [
       EATING_OUT_CARD_TRANSACTION,
       {
         id: "id-2",
@@ -24,10 +30,14 @@ describe("TransactionList component", () => {
       wrapper: ComponentTestWrapper
     });
 
-    testTransactions.map(transaction => {
-      expect(screen.getByText(transaction.name)).toBeVisible();
-      expect(screen.getByText(transaction.category)).toBeVisible();
-      expect(screen.getByText(transaction.amount.toString())).toBeVisible();
-    });
+    expect(Transaction).toBeCalledTimes(2);
+    testTransactions.map(transaction =>
+      expect(Transaction).toBeCalledWith(
+        {
+          transaction: transaction
+        },
+        {}
+      )
+    );
   });
 });
