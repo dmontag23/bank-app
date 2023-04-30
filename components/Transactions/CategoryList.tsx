@@ -14,27 +14,23 @@ type CategoryListProps = {
   onItemPress?: (category: TransactionCategory) => void;
 };
 
-const CategoryList = ({onItemPress}: CategoryListProps) => {
-  return (
-    <ScrollView>
-      {Object.keys(TransactionCategory).map((category, i) => (
-        <List.Item
-          key={i}
-          // TODO: Properly map these categories to names
-          title={category}
-          left={props => ListIcon(props)}
-          onPress={() => {
-            onItemPress &&
-              onItemPress(
-                TransactionCategory[
-                  category as keyof typeof TransactionCategory
-                ]
-              );
-          }}
-        />
-      ))}
-    </ScrollView>
-  );
-};
+const CategoryList = ({onItemPress}: CategoryListProps) => (
+  <ScrollView>
+    {Object.keys(TransactionCategory).map((category, i) => (
+      <List.Item
+        key={i}
+        // TODO: Properly map these categories to names
+        title={category}
+        left={props => ListIcon(props)}
+        onPress={() => {
+          onItemPress &&
+            onItemPress(
+              TransactionCategory[category as keyof typeof TransactionCategory]
+            );
+        }}
+      />
+    ))}
+  </ScrollView>
+);
 
 export default CategoryList;
