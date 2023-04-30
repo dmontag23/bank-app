@@ -1,13 +1,17 @@
 import React from "react";
 import {render, screen} from "@testing-library/react-native";
 
+import TransactionList from "./TransactionList";
 import TransactionsScene from "./TransactionsScene";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Transaction, TransactionCategory} from "../../types/transaction";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
+jest.mock("./TransactionList");
+jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useTransactions");
 
 describe("TransactionsScene component", () => {
@@ -27,7 +31,7 @@ describe("TransactionsScene component", () => {
       wrapper: ComponentTestWrapper
     });
 
-    expect(screen.getByTestId("loadingSpinner")).toBeVisible();
+    expect(LoadingSpinner).toBeCalledTimes(1);
   });
 
   test("renders transactions after loading", () => {
@@ -59,8 +63,10 @@ describe("TransactionsScene component", () => {
     });
 
     expect(screen.getByText("Transactions")).toBeVisible();
-    testTransactions.map(transaction => {
-      expect(screen.getByText(transaction.name)).toBeVisible();
-    });
+    expect(TransactionList).toBeCalledTimes(1);
+    expect(TransactionList).toBeCalledWith(
+      {transactions: testTransactions},
+      {}
+    );
   });
 });

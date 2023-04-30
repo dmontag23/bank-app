@@ -30,7 +30,7 @@ describe("TransactionList component", () => {
       wrapper: ComponentTestWrapper
     });
 
-    expect(Transaction).toBeCalledTimes(2);
+    expect(Transaction).toBeCalledTimes(testTransactions.length);
     testTransactions.map(transaction =>
       expect(Transaction).toBeCalledWith(
         {

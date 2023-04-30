@@ -12,7 +12,7 @@ import {TanstackQueryTestWrapper} from "../mocks/utils";
 
 jest.mock("../../axiosConfig");
 
-describe("transaction flow", () => {
+describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer transactions exist", async () => {
     // setup mocks
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
