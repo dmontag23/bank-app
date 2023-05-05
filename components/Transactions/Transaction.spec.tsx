@@ -1,19 +1,25 @@
 import React from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Text} from "react-native";
 import {
+  act,
   fireEvent,
   render,
   screen,
   waitFor
 } from "@testing-library/react-native";
 
+import CategoryList from "./CategoryList";
 import Transaction from "./Transaction";
 
+import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {
   TransactionCategory,
   Transaction as TransactionType
 } from "../../types/transaction";
+
+jest.mock("./CategoryList");
+jest.mock("../../hooks/transactions/useStoreTransactionCategoryMap");
 
 describe("Transaction component", () => {
   const testTransaction: TransactionType = {
@@ -25,6 +31,16 @@ describe("Transaction component", () => {
   };
 
   test("renders a transaction correctly", () => {
+    // setup mocks
+    const mockUseStoreTransactionCategoryMap =
+      // TODO: any should probably not be used as a type here, but since a
+      // query from tanstack query returns a whole bunch of non-optional things,
+      // it's quicker than returning all those things for now
+      useStoreTransactionCategoryMap as jest.MockedFunction<any>;
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
+      mutate: jest.fn()
+    }));
+
     render(<Transaction transaction={testTransaction} />, {
       wrapper: ComponentTestWrapper
     });
@@ -35,14 +51,31 @@ describe("Transaction component", () => {
   });
 
   test("sets a new category correctly", async () => {
+    // setup mocks
+    const updateStore = jest.fn();
+    const mockUseStoreTransactionCategoryMap =
+      // TODO: any should probably not be used as a type here, but since a
+      // query from tanstack query returns a whole bunch of non-optional things,
+      // it's quicker than returning all those things for now
+      useStoreTransactionCategoryMap as jest.MockedFunction<any>;
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
+      mutate: updateStore
+    }));
+
+    const mockCategoryList = CategoryList as jest.MockedFunction<
+      typeof CategoryList
+    >;
+    // TODO: Not a big fan of this approach. Come back
+    // and see if functional methods can be used here
+    let onItemPress: ((category: TransactionCategory) => void) | undefined;
+    mockCategoryList.mockImplementationOnce(props => {
+      onItemPress = props.onItemPress;
+      return <Text>Category 1</Text>;
+    });
+
     render(<Transaction transaction={testTransaction} />, {
       wrapper: ComponentTestWrapper
     });
-
-    // check that the original transaction category is displayed
-    // and nothing is in Async Storage
-    expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
-    expect(await AsyncStorage.getAllKeys()).toEqual([]);
 
     // press the transaction to bring up the dialog
     fireEvent.press(screen.getByText(testTransaction.name));
@@ -50,19 +83,22 @@ describe("Transaction component", () => {
       expect(screen.getByText("Select a category")).toBeVisible()
     );
     expect(screen.getAllByText(testTransaction.name)).toHaveLength(2);
-    Object.keys(TransactionCategory).map(transaction => {
-      expect(screen.getByText(transaction)).toBeVisible();
-    });
+    expect(screen.getByText("Category 1")).toBeVisible();
+
     const selectCategoryText = screen.getByText("Select a category");
 
-    // Change the category to "Savings"
-    fireEvent.press(screen.getByText("SAVINGS"));
+    // Change the category
+    act(() => {
+      if (onItemPress) onItemPress(TransactionCategory.SAVINGS);
+    });
 
     // Check that the dialog is closed and
     // the transaction has been updated to have the "Savings" category
     await waitFor(() => expect(selectCategoryText).not.toBeOnTheScreen());
-    expect(await AsyncStorage.getItem(testTransaction.id)).toEqual(
-      TransactionCategory.SAVINGS
-    );
+    expect(screen.getAllByText(testTransaction.name)).toHaveLength(1);
+    expect(updateStore).toBeCalledTimes(1);
+    expect(updateStore).toBeCalledWith({
+      [testTransaction.id]: TransactionCategory.SAVINGS
+    });
   });
 });
