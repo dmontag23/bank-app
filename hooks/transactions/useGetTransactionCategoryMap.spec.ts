@@ -60,7 +60,7 @@ describe("useGetTransactionCategoryMap", () => {
       AsyncStorage.multiGet as jest.MockedFunction<
         typeof AsyncStorage.multiGet
       >;
-    mockAsyncStorageMultiGet.mockImplementationOnce(() =>
+    mockAsyncStorageMultiGet.mockImplementation(() =>
       Promise.reject("Cannot connect to async storage")
     );
 

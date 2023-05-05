@@ -60,7 +60,7 @@ describe("BudgetForm component", () => {
 
   test("can set the name", async () => {
     const setBudget = jest.fn();
-    setBudget.mockImplementationOnce(setBudgetFn => {
+    setBudget.mockImplementation(setBudgetFn => {
       const newBudget = setBudgetFn(EMPTY_BUDGET);
       expect(newBudget).toEqual({...EMPTY_BUDGET, name: "New name"});
     });
@@ -84,7 +84,7 @@ describe("BudgetForm component", () => {
     const newDate = new Date("2023-03-01");
 
     const setBudget = jest.fn();
-    setBudget.mockImplementationOnce(setBudgetFn => {
+    setBudget.mockImplementation(setBudgetFn => {
       const newBudget = setBudgetFn(EMPTY_BUDGET);
       expect(newBudget).toEqual({
         ...EMPTY_BUDGET,
@@ -114,7 +114,7 @@ describe("BudgetForm component", () => {
     const newDate = new Date("2023-03-01");
 
     const setBudget = jest.fn();
-    setBudget.mockImplementationOnce(setBudgetFn => {
+    setBudget.mockImplementation(setBudgetFn => {
       const newBudget = setBudgetFn(EMPTY_BUDGET);
       expect(newBudget).toEqual({
         ...EMPTY_BUDGET,

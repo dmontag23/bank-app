@@ -18,7 +18,7 @@ describe("useTransactions transaction flow", () => {
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
       typeof trueLayerDataApi
     >;
-    mockTrueLayerDataApi.get.mockImplementationOnce(async () => []);
+    mockTrueLayerDataApi.get.mockImplementation(async () => []);
 
     const {result} = renderHook(() => useTransactions("dummy"), {
       wrapper: TanstackQueryTestWrapper
@@ -33,7 +33,7 @@ describe("useTransactions transaction flow", () => {
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
       typeof trueLayerDataApi
     >;
-    mockTrueLayerDataApi.get.mockImplementationOnce(async () => [
+    mockTrueLayerDataApi.get.mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
@@ -74,7 +74,7 @@ describe("useTransactions transaction flow", () => {
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
       typeof trueLayerDataApi
     >;
-    mockTrueLayerDataApi.get.mockImplementationOnce(async () => [
+    mockTrueLayerDataApi.get.mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);

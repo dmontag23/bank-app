@@ -17,7 +17,7 @@ describe("useTrueLayerTransactions", () => {
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
       typeof trueLayerDataApi
     >;
-    mockTrueLayerDataApi.get.mockImplementationOnce(async () => [
+    mockTrueLayerDataApi.get.mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
@@ -41,7 +41,7 @@ describe("useTrueLayerTransactions", () => {
     const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
       typeof trueLayerDataApi
     >;
-    mockTrueLayerDataApi.get.mockImplementationOnce(async () =>
+    mockTrueLayerDataApi.get.mockImplementation(async () =>
       Promise.reject(ERROR_429_RESPONSE)
     );
 

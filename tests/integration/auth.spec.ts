@@ -25,7 +25,7 @@ describe("authentication flow", () => {
     const mockTrueLayerAuthApi = trueLayerAuthApi as jest.MockedObject<
       typeof trueLayerAuthApi
     >;
-    mockTrueLayerAuthApi.post.mockImplementationOnce(
+    mockTrueLayerAuthApi.post.mockImplementation(
       async () => mockConnectTokenResponse
     );
     const mockHeaders = {test: "headers"};
@@ -61,7 +61,7 @@ describe("authentication flow", () => {
     const mockTrueLayerAuthApi = trueLayerAuthApi as jest.MockedObject<
       typeof trueLayerAuthApi
     >;
-    mockTrueLayerAuthApi.post.mockImplementationOnce(async () =>
+    mockTrueLayerAuthApi.post.mockImplementation(async () =>
       Promise.reject({response: {data: authApiError, status: 500}})
     );
     const mockHeaders = {test: "headers"};

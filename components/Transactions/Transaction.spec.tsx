@@ -68,7 +68,7 @@ describe("Transaction component", () => {
     // TODO: Not a big fan of this approach. Come back
     // and see if functional methods can be used here
     let onItemPress: ((category: TransactionCategory) => void) | undefined;
-    mockCategoryList.mockImplementationOnce(props => {
+    mockCategoryList.mockImplementation(props => {
       onItemPress = props.onItemPress;
       return <Text>Category 1</Text>;
     });

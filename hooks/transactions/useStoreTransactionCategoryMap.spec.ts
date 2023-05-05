@@ -66,7 +66,7 @@ describe("useStoreTransactionCategoryMap", () => {
       AsyncStorage.multiSet as jest.MockedFunction<
         typeof AsyncStorage.multiSet
       >;
-    mockAsyncStorageMultiSet.mockImplementationOnce(() =>
+    mockAsyncStorageMultiSet.mockImplementation(() =>
       Promise.reject("Cannot connect to async storage")
     );
 

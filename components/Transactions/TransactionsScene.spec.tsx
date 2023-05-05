@@ -22,7 +22,7 @@ describe("TransactionsScene component", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTransactions as jest.MockedFunction<any>;
-    mockUseTransactions.mockImplementationOnce(() => ({
+    mockUseTransactions.mockImplementation(() => ({
       isLoading: true,
       transactions: []
     }));
@@ -53,7 +53,7 @@ describe("TransactionsScene component", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTransactions as jest.MockedFunction<any>;
-    mockUseTransactions.mockImplementationOnce(() => ({
+    mockUseTransactions.mockImplementation(() => ({
       isLoading: false,
       transactions: testTransactions
     }));

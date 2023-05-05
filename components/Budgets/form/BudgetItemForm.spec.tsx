@@ -108,7 +108,7 @@ describe("BudgetItemForm component", () => {
 
   test("correctly adds an item to the form", async () => {
     const setBudget = jest.fn();
-    setBudget.mockImplementationOnce(setBudgetFn => {
+    setBudget.mockImplementation(setBudgetFn => {
       const newBudget = setBudgetFn(EMPTY_BUDGET);
       expect(newBudget).toEqual({
         ...EMPTY_BUDGET,
@@ -152,7 +152,7 @@ describe("BudgetItemForm component", () => {
     };
 
     const setBudget = jest.fn();
-    setBudget.mockImplementationOnce(setBudgetFn => {
+    setBudget.mockImplementation(setBudgetFn => {
       const newBudget = setBudgetFn(budgetWithTwoItems);
       expect(newBudget).toEqual({
         ...budgetWithTwoItems,

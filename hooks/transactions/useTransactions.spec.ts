@@ -26,7 +26,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
-    mockUseTrueLayerTransactionsFromAcct.mockImplementationOnce(() => ({
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
       data: undefined
@@ -36,7 +36,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useGetTransactionCategoryMap as jest.MockedFunction<any>;
-    mockUseGetTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
       data: undefined
@@ -47,7 +47,7 @@ describe("useTransactions", () => {
       // it's quicker than returning all those things for now
       useStoreTransactionCategoryMap as jest.MockedFunction<any>;
     const updateStore = jest.fn();
-    mockUseStoreTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
       mutate: updateStore
     }));
 
@@ -78,7 +78,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
-    mockUseTrueLayerTransactionsFromAcct.mockImplementationOnce(() => ({
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
@@ -88,7 +88,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useGetTransactionCategoryMap as jest.MockedFunction<any>;
-    mockUseGetTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
       data: undefined
@@ -99,7 +99,7 @@ describe("useTransactions", () => {
       // it's quicker than returning all those things for now
       useStoreTransactionCategoryMap as jest.MockedFunction<any>;
     const updateStore = jest.fn();
-    mockUseStoreTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
       mutate: updateStore
     }));
 
@@ -130,7 +130,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
-    mockUseTrueLayerTransactionsFromAcct.mockImplementationOnce(() => ({
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: []
@@ -140,7 +140,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useGetTransactionCategoryMap as jest.MockedFunction<any>;
-    mockUseGetTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: {}
@@ -151,7 +151,7 @@ describe("useTransactions", () => {
       // it's quicker than returning all those things for now
       useStoreTransactionCategoryMap as jest.MockedFunction<any>;
     const updateStore = jest.fn();
-    mockUseStoreTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
       mutate: updateStore
     }));
 
@@ -182,7 +182,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
-    mockUseTrueLayerTransactionsFromAcct.mockImplementationOnce(() => ({
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
@@ -192,7 +192,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useGetTransactionCategoryMap as jest.MockedFunction<any>;
-    mockUseGetTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: {}
@@ -203,21 +203,21 @@ describe("useTransactions", () => {
       // it's quicker than returning all those things for now
       useStoreTransactionCategoryMap as jest.MockedFunction<any>;
     const updateStore = jest.fn();
-    mockUseStoreTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
       mutate: updateStore
     }));
     const mockMapTrueLayerCategoryToInternalCategory =
       mapTrueLayerCategoryToInternalCategory as jest.MockedFunction<
         typeof mapTrueLayerCategoryToInternalCategory
       >;
-    mockMapTrueLayerCategoryToInternalCategory.mockImplementationOnce(
+    mockMapTrueLayerCategoryToInternalCategory.mockImplementation(
       () => TransactionCategory.EATING_OUT
     );
     const mockMapTrueLayerTransactionToInternalTransaction =
       mapTrueLayerTransactionToInternalTransaction as jest.MockedFunction<
         typeof mapTrueLayerTransactionToInternalTransaction
       >;
-    mockMapTrueLayerTransactionToInternalTransaction.mockImplementationOnce(
+    mockMapTrueLayerTransactionToInternalTransaction.mockImplementation(
       () => EATING_OUT_CARD_TRANSACTION
     );
 
@@ -258,7 +258,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
-    mockUseTrueLayerTransactionsFromAcct.mockImplementationOnce(() => ({
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
@@ -268,7 +268,7 @@ describe("useTransactions", () => {
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
       useGetTransactionCategoryMap as jest.MockedFunction<any>;
-    mockUseGetTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
       data: {
@@ -281,14 +281,14 @@ describe("useTransactions", () => {
       // it's quicker than returning all those things for now
       useStoreTransactionCategoryMap as jest.MockedFunction<any>;
     const updateStore = jest.fn();
-    mockUseStoreTransactionCategoryMap.mockImplementationOnce(() => ({
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
       mutate: updateStore
     }));
     const mockMapTrueLayerTransactionToInternalTransaction =
       mapTrueLayerTransactionToInternalTransaction as jest.MockedFunction<
         typeof mapTrueLayerTransactionToInternalTransaction
       >;
-    mockMapTrueLayerTransactionToInternalTransaction.mockImplementationOnce(
+    mockMapTrueLayerTransactionToInternalTransaction.mockImplementation(
       () => EATING_OUT_CARD_TRANSACTION
     );
 

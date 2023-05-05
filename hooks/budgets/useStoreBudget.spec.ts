@@ -45,7 +45,7 @@ describe("useStoreBudget", () => {
     // setup mock for async storage
     const mockAsyncStorageStoreBudget =
       AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
-    mockAsyncStorageStoreBudget.mockImplementationOnce(() =>
+    mockAsyncStorageStoreBudget.mockImplementation(() =>
       Promise.reject("Cannot connect to async storage")
     );
 

@@ -55,7 +55,7 @@ describe("getNewToken", () => {
       error: "internal_server_error",
       error_details: {}
     };
-    mockTrueLayerAuthApi.post.mockImplementationOnce(async () =>
+    mockTrueLayerAuthApi.post.mockImplementation(async () =>
       Promise.reject({response: {data: expectedErrorResponse, status: 500}})
     );
     const consoleError = jest
@@ -83,7 +83,7 @@ describe("getNewToken", () => {
       typeof trueLayerAuthApi
     >;
     const mockErrorMessage = "Network Error";
-    mockTrueLayerAuthApi.post.mockImplementationOnce(async () =>
+    mockTrueLayerAuthApi.post.mockImplementation(async () =>
       Promise.reject(Error(mockErrorMessage))
     );
     const consoleError = jest

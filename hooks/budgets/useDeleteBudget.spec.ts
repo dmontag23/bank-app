@@ -61,7 +61,7 @@ describe("useDeleteBudget", () => {
       AsyncStorage.removeItem as jest.MockedFunction<
         typeof AsyncStorage.removeItem
       >;
-    mockAsyncStorageStoreBudget.mockImplementationOnce(() =>
+    mockAsyncStorageStoreBudget.mockImplementation(() =>
       Promise.reject("Cannot connect to async storage")
     );
 
