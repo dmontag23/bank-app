@@ -1,21 +1,24 @@
 import React from "react";
+import {View} from "react-native";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetItemForm from "./BudgetItemForm";
+import BudgetItemFormFields from "./BudgetItemFormFields";
 
 import {ComponentTestWrapper} from "../../../tests/mocks/utils";
-import {BudgetInput} from "../../../types/budget";
+import {BudgetInput, BudgetItemInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
+import ExpandableAccordion from "../../ui/ExpandableAccordion";
 
 jest.mock("uuid", () => ({
   v4: () => "unique-id"
 }));
+jest.mock("./BudgetItemFormFields");
+jest.mock("../../ui/ExpandableAccordion");
 
 describe("BudgetItemForm component", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  beforeEach(() => jest.useFakeTimers());
-
+  const MOCK_ACCORDION = jest.fn();
+  const MOCK_BUDGET_ITEM_FORM_FIELDS = jest.fn();
   const EMPTY_BUDGET: BudgetInput = {
     id: "1",
     name: "",
@@ -23,65 +26,68 @@ describe("BudgetItemForm component", () => {
       start: new Date("2023-01-01"),
       end: new Date("2023-01-31")
     },
-    items: []
+    items: [
+      {
+        id: "",
+        name: "",
+        categories: [],
+        cap: ""
+      }
+    ]
   };
 
-  test("renders the correct form fields with all enabled categories", async () => {
-    render(
-      <BudgetItemForm
-        budget={{
-          ...EMPTY_BUDGET,
-          items: [
-            {
-              id: "item-1",
-              name: "",
-              cap: "",
-              categories: []
-            }
-          ]
-        }}
-        setBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
-    );
+  const ITEM_1: BudgetItemInput = {
+    id: "item-1",
+    name: "Item 1",
+    categories: [TransactionCategory.EATING_OUT],
+    cap: ""
+  };
 
-    expect(screen.getByText("Budget Item")).toBeVisible();
-    Object.keys(TransactionCategory).map(category => {
-      const categoryCheckbox = screen.getByLabelText(category);
-      expect(categoryCheckbox).toBeVisible();
-      expect(categoryCheckbox).toBeEnabled();
+  beforeEach(() => {
+    // needed for animated components
+    // see https://github.com/jestjs/jest/issues/6434
+    jest.useFakeTimers();
+    (
+      ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
+    ).mockImplementation(props => {
+      MOCK_ACCORDION(props);
+      return <View testID={`accordion-${props.title}`} />;
     });
+    (
+      BudgetItemFormFields as jest.MockedFunction<typeof BudgetItemFormFields>
+    ).mockImplementation(props => {
+      MOCK_BUDGET_ITEM_FORM_FIELDS(props);
+      return <View testID={`budgetItemFormFields-${props.budgetItem.id}`} />;
+    });
+  });
+
+  test("renders all components", async () => {
+    render(<BudgetItemForm budget={EMPTY_BUDGET} setBudget={() => {}} />, {
+      wrapper: ComponentTestWrapper
+    });
+
+    expect(screen.getByTestId("accordion-Budget Item")).toBeVisible();
     expect(screen.getByText("Add item")).toBeVisible();
   });
 
-  test("renders disabled categories", async () => {
+  test("has the correct accordion text when no item name is provided", async () => {
+    render(<BudgetItemForm budget={EMPTY_BUDGET} setBudget={() => {}} />, {
+      wrapper: ComponentTestWrapper
+    });
+
+    expect(screen.getByTestId("accordion-Budget Item")).toBeVisible();
+    expect(MOCK_ACCORDION).toBeCalledTimes(1);
+    expect(MOCK_ACCORDION).toBeCalledWith(
+      expect.objectContaining({
+        title: "Budget Item"
+      })
+    );
+  });
+
+  test("has the correct accordion text when an item name is provided", async () => {
     render(
       <BudgetItemForm
-        budget={{
-          ...EMPTY_BUDGET,
-          items: [
-            {
-              id: "item-1",
-              name: "Eating out",
-              cap: "150",
-              categories: [TransactionCategory.EATING_OUT]
-            },
-            {
-              id: "item-2",
-              name: "Entertainment",
-              cap: "200",
-              categories: []
-            },
-            {
-              id: "item-3",
-              name: "Savings",
-              cap: "2000",
-              categories: [TransactionCategory.SAVINGS]
-            }
-          ]
-        }}
+        budget={{...EMPTY_BUDGET, items: [ITEM_1]}}
         setBudget={() => {}}
       />,
       {
@@ -89,40 +95,82 @@ describe("BudgetItemForm component", () => {
       }
     );
 
-    expect(screen.getByText("Eating out")).toBeVisible();
-    expect(screen.getByText("Entertainment")).toBeVisible();
-    expect(screen.getByText("Savings")).toBeVisible();
+    expect(screen.getByTestId("accordion-Item 1")).toBeVisible();
+    expect(MOCK_ACCORDION).toBeCalledTimes(1);
+    expect(MOCK_ACCORDION).toBeCalledWith(
+      expect.objectContaining({
+        title: "Item 1"
+      })
+    );
+  });
 
-    const eatingOutCheckboxes = screen.getAllByLabelText("EATING_OUT");
-    expect(eatingOutCheckboxes).toHaveLength(3);
-    expect(eatingOutCheckboxes[0]).toBeEnabled();
-    expect(eatingOutCheckboxes[1]).toBeDisabled();
-    expect(eatingOutCheckboxes[2]).toBeDisabled();
+  test("BudgetItemFormFields is called correctly", async () => {
+    const item2: BudgetItemInput = {
+      id: "item-2",
+      name: "Item 2",
+      cap: "",
+      categories: [TransactionCategory.SAVINGS]
+    };
+    const item3: BudgetItemInput = {
+      id: "item-3",
+      name: "Item 3",
+      cap: "",
+      categories: [TransactionCategory.BILLS]
+    };
 
-    const savingsCheckboxes = screen.getAllByLabelText("SAVINGS");
-    expect(savingsCheckboxes).toHaveLength(3);
-    expect(savingsCheckboxes[0]).toBeDisabled();
-    expect(savingsCheckboxes[1]).toBeDisabled();
-    expect(savingsCheckboxes[2]).toBeEnabled();
+    const budget: BudgetInput = {
+      ...EMPTY_BUDGET,
+      items: [ITEM_1, item2, item3]
+    };
+    const setBudget = jest.fn();
+
+    render(<BudgetItemForm budget={budget} setBudget={setBudget} />, {
+      wrapper: ComponentTestWrapper
+    });
+
+    expect(screen.getByTestId("accordion-Item 1")).toBeVisible();
+    expect(screen.getByTestId("accordion-Item 2")).toBeVisible();
+    expect(screen.getByTestId("accordion-Item 3")).toBeVisible();
+    expect(MOCK_ACCORDION).toBeCalledTimes(3);
+
+    // test BudgetItemFormFields
+    const BudgetItemFormFieldsComponent =
+      MOCK_ACCORDION.mock.calls[1][0].children;
+    render(BudgetItemFormFieldsComponent, {
+      wrapper: ComponentTestWrapper
+    });
+
+    expect(screen.getByTestId("budgetItemFormFields-item-2")).toBeVisible();
+    expect(MOCK_BUDGET_ITEM_FORM_FIELDS).toBeCalledTimes(1);
+    expect(MOCK_BUDGET_ITEM_FORM_FIELDS).toBeCalledWith({
+      budgetItem: item2,
+      disabledCategories: [
+        TransactionCategory.EATING_OUT,
+        TransactionCategory.BILLS
+      ],
+      setBudgetItem: expect.any(Function)
+    });
+
+    // test setBudgetItem updates the right item
+    // in this case the second item
+    const setBudgetItem = BudgetItemFormFieldsComponent.props.setBudgetItem;
+    const newBudgetItem: BudgetItemInput = {
+      ...item2,
+      categories: [TransactionCategory.ENTERTAINMENT]
+    };
+    setBudgetItem(newBudgetItem);
+    expect(setBudget).toBeCalledTimes(1);
+
+    // test state change to set new budget from previous form values
+    const newBudget = setBudget.mock.calls[0][0](budget);
+    expect(newBudget).toEqual({
+      ...EMPTY_BUDGET,
+      items: [ITEM_1, newBudgetItem, item3]
+    });
   });
 
   test("correctly adds an item to the form", async () => {
     const setBudget = jest.fn();
-    setBudget.mockImplementation(setBudgetFn => {
-      const newBudget = setBudgetFn(EMPTY_BUDGET);
-      expect(newBudget).toEqual({
-        ...EMPTY_BUDGET,
-        items: [
-          ...EMPTY_BUDGET.items,
-          {
-            id: "unique-id",
-            name: "",
-            cap: "",
-            categories: []
-          }
-        ]
-      });
-    });
 
     render(<BudgetItemForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
       wrapper: ComponentTestWrapper
@@ -130,52 +178,18 @@ describe("BudgetItemForm component", () => {
 
     fireEvent.press(screen.getByText("Add item"));
     expect(setBudget).toBeCalledTimes(1);
-  });
-
-  test("sets the correct property on the correct item", async () => {
-    const budgetWithTwoItems = {
+    const newBudget = setBudget.mock.calls[0][0](EMPTY_BUDGET);
+    expect(newBudget).toEqual({
       ...EMPTY_BUDGET,
       items: [
+        ...EMPTY_BUDGET.items,
         {
-          id: "item-1",
+          id: "unique-id",
           name: "",
           cap: "",
-          categories: [TransactionCategory.BILLS]
-        },
-        {
-          id: "item-2",
-          name: "Entertainment",
-          cap: "200",
           categories: []
         }
       ]
-    };
-
-    const setBudget = jest.fn();
-    setBudget.mockImplementation(setBudgetFn => {
-      const newBudget = setBudgetFn(budgetWithTwoItems);
-      expect(newBudget).toEqual({
-        ...budgetWithTwoItems,
-        items: [
-          budgetWithTwoItems.items[0],
-          {
-            ...budgetWithTwoItems.items[1],
-            categories: [TransactionCategory.ENTERTAINMENT]
-          }
-        ]
-      });
     });
-
-    render(
-      <BudgetItemForm budget={budgetWithTwoItems} setBudget={setBudget} />,
-      {
-        wrapper: ComponentTestWrapper
-      }
-    );
-
-    const eatingOutCheckboxes = screen.getAllByLabelText("ENTERTAINMENT");
-    expect(eatingOutCheckboxes).toHaveLength(2);
-    fireEvent.press(eatingOutCheckboxes[1]);
-    expect(setBudget).toBeCalledTimes(1);
   });
 });

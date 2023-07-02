@@ -45,18 +45,16 @@ const BudgetItemForm = ({budget, setBudget}: BudgetItemFormProps) => {
   return (
     <>
       {budget.items.map((item, i) => (
-        <ExpandableAccordion key={i} title={item.name || "Budget Item"}>
+        <ExpandableAccordion key={item.id} title={item.name || "Budget Item"}>
           <BudgetItemFormFields
             budgetItem={item}
-            disabledCategories={budget.items
-              .reduce<TransactionCategory[]>(
-                (accCategories, curBudgetItem) =>
-                  item.id === curBudgetItem.id
-                    ? accCategories
-                    : [...accCategories, ...curBudgetItem.categories],
-                []
-              )
-              .flat()}
+            disabledCategories={budget.items.reduce<TransactionCategory[]>(
+              (accCategories, curBudgetItem) =>
+                item.id === curBudgetItem.id
+                  ? accCategories
+                  : [...accCategories, ...curBudgetItem.categories],
+              []
+            )}
             setBudgetItem={createSetBudgetItem(i)}
           />
         </ExpandableAccordion>
