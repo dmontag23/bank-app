@@ -20,10 +20,6 @@ import {ComponentTestWrapper} from "../../mocks/utils";
 jest.mock("../../../axiosConfig");
 
 describe("Transactions", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  // beforeEach(() => jest.useFakeTimers());
-
   test("renders a loading spinner when loading", () => {
     // TODO: Can probably refactor this across all tests to have a
     // helper where you just pass in the implementation for the data
