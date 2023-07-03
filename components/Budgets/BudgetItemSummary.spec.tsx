@@ -8,16 +8,16 @@ import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {BudgetItemWithTransactions} from "../../types/budget";
 
 describe("BudgetItemSummary component", () => {
-  test("renders item with no cap correctly", () => {
-    const testItem: BudgetItemWithTransactions = {
-      id: "id",
-      name: "Item 1",
-      cap: 0,
-      categories: [],
-      spent: 0,
-      transactions: []
-    };
+  const testItem: BudgetItemWithTransactions = {
+    id: "id",
+    name: "Item 1",
+    cap: 0,
+    categories: [],
+    spent: 0,
+    transactions: []
+  };
 
+  test("renders item with no cap correctly", () => {
     render(<BudgetItemSummary item={testItem} />, {
       wrapper: ComponentTestWrapper
     });
@@ -33,16 +33,7 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with negative percentage correctly", () => {
-    const testItem: BudgetItemWithTransactions = {
-      id: "id",
-      name: "Item 1",
-      cap: 1.5,
-      categories: [],
-      spent: 2.2,
-      transactions: []
-    };
-
-    render(<BudgetItemSummary item={testItem} />, {
+    render(<BudgetItemSummary item={{...testItem, cap: 1.5, spent: 2.2}} />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -60,16 +51,7 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with positive percentage correctly", () => {
-    const testItem: BudgetItemWithTransactions = {
-      id: "id",
-      name: "Item 1",
-      cap: 3.2,
-      categories: [],
-      spent: 2.2,
-      transactions: []
-    };
-
-    render(<BudgetItemSummary item={testItem} />, {
+    render(<BudgetItemSummary item={{...testItem, cap: 3.2, spent: 2.2}} />, {
       wrapper: ComponentTestWrapper
     });
 
