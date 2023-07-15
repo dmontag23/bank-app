@@ -21,3 +21,11 @@ export const PAY_BILL_CARD_TRANSACTION: Transaction = {
   amount: 192.52,
   category: TransactionCategory.BILLS
 };
+
+export const PAY_RENT_TRANSACTION: Transaction = {
+  id: "b15d8156569ba848d84c07c34d291bcb",
+  name: "RENT",
+  description: "Bills and Utilities",
+  amount: 10,
+  category: TransactionCategory.BILLS
+};

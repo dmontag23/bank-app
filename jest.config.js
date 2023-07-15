@@ -1,12 +1,7 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: [
-    "**/*.{ts,tsx}",
-    "!**/tests/**",
-    "!**/types/**",
-    "!axiosConfig.ts"
-  ],
+  collectCoverageFrom: ["**/*.{ts,tsx}", "!**/tests/**", "!**/types/**"],
   // Tests can only be run one at a time because the test query client is
   // created globally.
   // TODO: Look at perhaps created the test query client for each test in order
@@ -17,6 +12,6 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/tests/e2e"],
   transformIgnorePatterns: [
-    "node_modules/(?!(@react-native|react-native|react-native-vector-icons)/)"
+    "node_modules/(?!(@react-native|react-native|react-native-vector-icons|@react-native-community/datetimepicker)/)"
   ]
 };

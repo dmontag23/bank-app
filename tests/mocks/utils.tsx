@@ -1,5 +1,6 @@
 import React, {ReactNode} from "react";
 import {Provider} from "react-native-paper";
+import {NavigationContainer} from "@react-navigation/native";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 export const testQueryClient = new QueryClient({
@@ -34,7 +35,26 @@ type ComponentTestWrapperProps = {
 };
 
 export const ComponentTestWrapper = ({children}: ComponentTestWrapperProps) => (
-  <QueryClientProvider client={testQueryClient}>
-    <Provider>{children}</Provider>
-  </QueryClientProvider>
+  <NavigationContainer>
+    <QueryClientProvider client={testQueryClient}>
+      <Provider>{children}</Provider>
+    </QueryClientProvider>
+  </NavigationContainer>
 );
+
+export const navigationObject = {
+  addListener: expect.any(Function),
+  canGoBack: expect.any(Function),
+  dispatch: expect.any(Function),
+  getId: expect.any(Function),
+  getParent: expect.any(Function),
+  getState: expect.any(Function),
+  goBack: expect.any(Function),
+  isFocused: expect.any(Function),
+  jumpTo: expect.any(Function),
+  navigate: expect.any(Function),
+  removeListener: expect.any(Function),
+  reset: expect.any(Function),
+  setOptions: expect.any(Function),
+  setParams: expect.any(Function)
+};
