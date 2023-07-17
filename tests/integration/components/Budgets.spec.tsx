@@ -9,20 +9,12 @@ import {
 
 import {trueLayerDataApi} from "../../../axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
-import {
-  BudgetItem,
-  BudgetItemWithTransactions,
-  Budget as BudgetType
-} from "../../../types/budget";
+import {Budget as BudgetType} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
 } from "../../mocks/data/budgets";
-import {
-  EATING_OUT_CARD_TRANSACTION,
-  PAY_BILL_CARD_TRANSACTION
-} from "../../mocks/data/transactions";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
