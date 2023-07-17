@@ -24,11 +24,6 @@ import {ComponentTestWrapper} from "../../mocks/utils";
 jest.mock("../../../axiosConfig");
 
 describe("Budgets", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  // TODO: Should probably refactor this into setup file
-  // beforeEach(() => jest.useFakeTimers());
-
   const EMPTY_BUDGET: BudgetType = {
     id: "1",
     name: "",
