@@ -8,12 +8,6 @@ import BudgetsScene from "./BudgetsScene";
 import {BUDGET_WITH_ONE_ITEM} from "../../tests/mocks/data/budgets";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
-// TODO: Should not have to mock this
-// need to check other budget tests as well to fix this
-jest.mock("uuid", () => ({
-  v4: () => "unique-id"
-}));
-
 jest.mock("./Budget");
 jest.mock("./BudgetHeader");
 

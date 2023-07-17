@@ -1,5 +1,10 @@
 import React from "react";
-import {fireEvent, render, screen} from "@testing-library/react-native";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor
+} from "@testing-library/react-native";
 
 import Budget from "./Budget";
 import BudgetItem from "./BudgetItem";
@@ -104,7 +109,7 @@ describe("Budget component", () => {
     );
   });
 
-  test("processes a budget with transactions", () => {
+  test("processes a budget with transactions", async () => {
     const testBudgetItems: BudgetItemType[] = [
       {
         id: "id-1",
@@ -136,7 +141,7 @@ describe("Budget component", () => {
       wrapper: ComponentTestWrapper
     });
 
-    expect(BudgetItem).toBeCalledTimes(1);
+    await waitFor(() => expect(BudgetItem).toBeCalledTimes(1));
     expect(BudgetItem).toBeCalledWith(
       {
         item: {

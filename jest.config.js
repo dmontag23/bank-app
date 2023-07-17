@@ -8,6 +8,11 @@ module.exports = {
   // to remove this restriction
   maxWorkers: 1,
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  moduleNameMapper: {
+    // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports.
+    // See https://github.com/uuidjs/uuid/issues/451
+    uuid: require.resolve("uuid")
+  },
   preset: "react-native",
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/tests/e2e"],

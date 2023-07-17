@@ -7,10 +7,6 @@ import BudgetItemForm from "./BudgetItemForm";
 import {ComponentTestWrapper} from "../../../tests/mocks/utils";
 import {BudgetInput} from "../../../types/budget";
 
-jest.mock("uuid", () => ({
-  v4: () => "unique-id"
-}));
-
 jest.mock("./BudgetItemForm");
 
 describe("BudgetForm component", () => {
