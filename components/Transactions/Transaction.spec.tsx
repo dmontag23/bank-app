@@ -47,7 +47,7 @@ describe("Transaction component", () => {
 
     expect(screen.getByText(testTransaction.name)).toBeVisible();
     expect(screen.getByText(testTransaction.category)).toBeVisible();
-    expect(screen.getByText(testTransaction.amount.toString())).toBeVisible();
+    expect(screen.getByText("£12.70")).toBeVisible();
   });
 
   test("sets a new category correctly", async () => {

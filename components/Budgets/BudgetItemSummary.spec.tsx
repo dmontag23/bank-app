@@ -23,6 +23,7 @@ describe("BudgetItemSummary component", () => {
     });
 
     expect(screen.getByText(testItem.name)).toBeVisible();
+    expect(screen.getByText("£0.00")).toBeVisible();
     expect(screen.getByText("left of £0.00")).toBeVisible();
 
     const progressBar = screen.getByTestId("budgetItemSummaryProgressBar");

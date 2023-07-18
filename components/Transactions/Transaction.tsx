@@ -17,7 +17,10 @@ const ListIcon = (props: {color: string; style: StyleProp<ViewStyle>}) => (
 );
 
 const RightText = (amount: number) => (
-  <Text variant="titleMedium">{amount}</Text>
+  // TODO: Make this based on currency of transaction
+  // TODO: Might want to consider toLocaleString instead of
+  // toFixed to avoid rounding issues with toFixed
+  <Text variant="titleMedium">{`£${amount.toFixed(2)}`}</Text>
 );
 
 type TransactionComponentProps = {
@@ -65,7 +68,11 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
         // TODO: Show the mapped transaction name here
         description={transaction.category}
         left={props => ListIcon(props)}
-        right={() => RightText(transaction.amount)}
+        right={() =>
+          RightText(
+            Math.round((transaction.amount + Number.EPSILON) * 100) / 100
+          )
+        }
         onPress={showDialog}
       />
     </>
