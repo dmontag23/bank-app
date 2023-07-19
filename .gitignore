@@ -72,7 +72,7 @@ yarn-error.log
 *.vsix
 
 # Jest Coverage
-coverage/
+/coverage
 
 # Mock server compiled files
 tests/mocks/server/dist/

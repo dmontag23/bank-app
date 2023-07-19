@@ -1,5 +1,5 @@
 {
-  "extends": ["@react-native-community", "prettier"],
+  "extends": ["@react-native", "prettier"],
   "plugins": ["import"],
   "rules": {
     "import/first": "error",
