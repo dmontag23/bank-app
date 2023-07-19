@@ -10,10 +10,6 @@ import {BudgetInput} from "../../../types/budget";
 jest.mock("./BudgetItemForm");
 
 describe("BudgetForm component", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  beforeEach(() => jest.useFakeTimers());
-
   const EMPTY_BUDGET: BudgetInput = {
     id: "1",
     name: "",

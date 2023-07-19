@@ -44,9 +44,6 @@ describe("BudgetItemForm component", () => {
   };
 
   beforeEach(() => {
-    // needed for animated components
-    // see https://github.com/jestjs/jest/issues/6434
-    jest.useFakeTimers();
     (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
     ).mockImplementation(props => {

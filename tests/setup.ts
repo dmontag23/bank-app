@@ -5,6 +5,10 @@ import {testQueryClient} from "./mocks/utils";
 
 jest.mock("@react-native-async-storage/async-storage", () => MockAsyncStorage);
 
+// needed for animated components
+// see https://github.com/jestjs/jest/issues/6434
+beforeEach(() => jest.useFakeTimers());
+
 afterEach(() => {
   jest.clearAllMocks();
   testQueryClient.clear();

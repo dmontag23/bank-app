@@ -25,10 +25,6 @@ import {ComponentTestWrapper} from "../../mocks/utils";
 jest.mock("../../../axiosConfig");
 
 describe("Budget scene", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  beforeEach(() => jest.useFakeTimers());
-
   test("renders the default home page with no selected budget", () => {
     render(<BudgetsScene />, {
       wrapper: ComponentTestWrapper

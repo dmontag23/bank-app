@@ -9,10 +9,6 @@ import {BudgetItemInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 
 describe("BudgetItemFormFields component", () => {
-  // needed for animated components
-  // see https://github.com/jestjs/jest/issues/6434
-  beforeEach(() => jest.useFakeTimers());
-
   const EMPTY_BUDGET_ITEM: BudgetItemInput = {
     id: "1",
     name: "",
