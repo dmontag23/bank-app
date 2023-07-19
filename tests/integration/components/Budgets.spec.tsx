@@ -47,16 +47,13 @@ describe("Budgets", () => {
     });
 
     expect(screen.getByTestId("loadingSpinner")).toBeVisible();
-
-    // TODO: This should be done at the end of every file, or
-    // I should find a way of clearing the mocks after all tests
-    // in the setup file
-    (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockReset();
   });
 
   test("renders a budget with no items", async () => {
+    (
+      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
+    ).get.mockImplementation(async () => []);
+
     render(<Budget budget={EMPTY_BUDGET} />, {
       wrapper: ComponentTestWrapper
     });
@@ -69,6 +66,10 @@ describe("Budgets", () => {
   });
 
   test("renders a budget item with no transactions", async () => {
+    (
+      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
+    ).get.mockImplementation(async () => []);
+
     render(<Budget budget={BUDGET_WITH_ONE_ITEM} />, {
       wrapper: ComponentTestWrapper
     });
@@ -128,7 +129,7 @@ describe("Budgets", () => {
 
     // Transactions
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
-    expect(screen.getByText("192.52")).toBeVisible();
+    expect(screen.getByText("£192.52")).toBeVisible();
     expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
   });
 

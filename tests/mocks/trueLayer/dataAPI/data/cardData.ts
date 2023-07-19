@@ -45,3 +45,27 @@ export const TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransacti
     transaction_category: "PURCHASE",
     transaction_classification: ["Food & Dining", "Restaurants"]
   };
+
+export const TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
+  {
+    transaction_id: "1234000-chai-pot",
+    timestamp: "2023-03-23T:14:00-07:00",
+    description: "CHAI POT YUM",
+    amount: 3.3,
+    currency: "GBP",
+    transaction_type: "DEBIT",
+    transaction_category: "PURCHASE",
+    transaction_classification: ["Food & Dining", "Restaurants"]
+  };
+
+export const TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
+  {
+    transaction_id: "0402944-dem-clothes",
+    timestamp: "2023-03-01T:00:00-00:00",
+    description: "ZARA",
+    amount: 132,
+    currency: "GBP",
+    transaction_type: "DEBIT",
+    transaction_category: "PURCHASE",
+    transaction_classification: ["Shopping"]
+  };
