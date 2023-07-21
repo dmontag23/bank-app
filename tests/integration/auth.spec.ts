@@ -1,4 +1,5 @@
 import {AxiosHeaders} from "axios";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import {handleTrueLayerDataApiError} from "../../api/interceptors";
 import {
@@ -22,12 +23,12 @@ describe("authentication flow", () => {
       token_type: "Bearer",
       scope: "info"
     };
-    const mockTrueLayerAuthApi = trueLayerAuthApi as jest.MockedObject<
-      typeof trueLayerAuthApi
-    >;
-    mockTrueLayerAuthApi.post.mockImplementation(
-      async () => mockConnectTokenResponse
-    );
+    (
+      trueLayerAuthApi.post as jest.MockedFunction<
+        typeof trueLayerAuthApi.post<ConnectTokenPostResponse>
+      >
+    ).mockImplementation(async () => mockConnectTokenResponse);
+
     const mockHeaders = {test: "headers"};
     const mockUnauthenticatedResponse: DataAPIErrorResponse = {
       error_description: "The token expired at '2020-12-07 12:34:56Z'",
@@ -58,10 +59,11 @@ describe("authentication flow", () => {
   test("returns an error if the connect/token endpoint fails", async () => {
     // setup mocks
     const authApiError: AuthAPIErrorResponse = {error: "invalid_grant"};
-    const mockTrueLayerAuthApi = trueLayerAuthApi as jest.MockedObject<
-      typeof trueLayerAuthApi
-    >;
-    mockTrueLayerAuthApi.post.mockImplementation(async () =>
+    (
+      trueLayerAuthApi.post as jest.MockedFunction<
+        typeof trueLayerAuthApi.post<ConnectTokenPostResponse>
+      >
+    ).mockImplementation(async () =>
       Promise.reject({response: {data: authApiError, status: 500}})
     );
     const mockHeaders = {test: "headers"};

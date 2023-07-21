@@ -1,4 +1,5 @@
 import React from "react";
+import {describe, expect, jest, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetForm from "./BudgetForm";
@@ -51,11 +52,8 @@ describe("BudgetForm component", () => {
   });
 
   test("can set the name", async () => {
-    const setBudget = jest.fn();
-    setBudget.mockImplementation(setBudgetFn => {
-      const newBudget = setBudgetFn(EMPTY_BUDGET);
-      expect(newBudget).toEqual({...EMPTY_BUDGET, name: "New name"});
-    });
+    const setBudget =
+      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
 
     render(
       <BudgetForm
@@ -70,19 +68,21 @@ describe("BudgetForm component", () => {
     expect(screen.getByDisplayValue("Test budget")).toBeVisible();
     fireEvent.changeText(screen.getByLabelText("Name"), "New name");
     expect(setBudget).toBeCalledTimes(1);
+    const newBudgetFn = setBudget.mock.calls[0][0] as (
+      prevValues: BudgetInput
+    ) => BudgetInput;
+    const newBudget = newBudgetFn(EMPTY_BUDGET);
+    expect(newBudget).toEqual({
+      ...EMPTY_BUDGET,
+      name: "New name"
+    });
   });
 
   test("can set the start date", async () => {
     const newDate = new Date("2023-03-01");
 
-    const setBudget = jest.fn();
-    setBudget.mockImplementation(setBudgetFn => {
-      const newBudget = setBudgetFn(EMPTY_BUDGET);
-      expect(newBudget).toEqual({
-        ...EMPTY_BUDGET,
-        window: {...EMPTY_BUDGET.window, start: newDate}
-      });
-    });
+    const setBudget =
+      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
 
     render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
       wrapper: ComponentTestWrapper
@@ -100,19 +100,21 @@ describe("BudgetForm component", () => {
       newDate
     );
     expect(setBudget).toBeCalledTimes(1);
+    const newBudgetFn = setBudget.mock.calls[0][0] as (
+      prevValues: BudgetInput
+    ) => BudgetInput;
+    const newBudget = newBudgetFn(EMPTY_BUDGET);
+    expect(newBudget).toEqual({
+      ...EMPTY_BUDGET,
+      window: {...EMPTY_BUDGET.window, start: newDate}
+    });
   });
 
   test("can set the end date", async () => {
     const newDate = new Date("2023-03-01");
 
-    const setBudget = jest.fn();
-    setBudget.mockImplementation(setBudgetFn => {
-      const newBudget = setBudgetFn(EMPTY_BUDGET);
-      expect(newBudget).toEqual({
-        ...EMPTY_BUDGET,
-        window: {...EMPTY_BUDGET.window, end: newDate}
-      });
-    });
+    const setBudget =
+      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
 
     render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
       wrapper: ComponentTestWrapper
@@ -130,6 +132,14 @@ describe("BudgetForm component", () => {
       newDate
     );
     expect(setBudget).toBeCalledTimes(1);
+    const newBudgetFn = setBudget.mock.calls[0][0] as (
+      prevValues: BudgetInput
+    ) => BudgetInput;
+    const newBudget = newBudgetFn(EMPTY_BUDGET);
+    expect(newBudget).toEqual({
+      ...EMPTY_BUDGET,
+      window: {...EMPTY_BUDGET.window, end: newDate}
+    });
   });
 
   test("does not change the budget if no start date is set", async () => {

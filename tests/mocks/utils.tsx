@@ -1,5 +1,6 @@
 import React, {ReactNode} from "react";
 import {Provider} from "react-native-paper";
+import {expect} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 

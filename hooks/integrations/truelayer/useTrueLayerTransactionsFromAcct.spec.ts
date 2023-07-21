@@ -1,3 +1,4 @@
+import {describe, expect, jest, test} from "@jest/globals";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct";
@@ -9,15 +10,17 @@ import {
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
 import {ERROR_429_RESPONSE} from "../../../tests/mocks/trueLayer/dataAPI/data/serverResponseData";
 import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 jest.mock("../../../axiosConfig");
 
 describe("useTrueLayerTransactions", () => {
   test("returns a correct list of card transactions on a 200 status code", async () => {
-    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
-      typeof trueLayerDataApi
-    >;
-    mockTrueLayerDataApi.get.mockImplementation(async () => [
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
@@ -38,12 +41,11 @@ describe("useTrueLayerTransactions", () => {
   });
 
   test("returns an error message on a 429 status code", async () => {
-    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
-      typeof trueLayerDataApi
-    >;
-    mockTrueLayerDataApi.get.mockImplementation(async () =>
-      Promise.reject(ERROR_429_RESPONSE)
-    );
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => Promise.reject(ERROR_429_RESPONSE));
 
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),

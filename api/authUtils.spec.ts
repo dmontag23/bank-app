@@ -1,4 +1,5 @@
 import {AxiosHeaders} from "axios";
+import {beforeEach, describe, expect, jest, test} from "@jest/globals";
 
 import {getNewToken, handleUnauthenticatedError} from "./authUtils";
 
@@ -7,7 +8,11 @@ import {
   trueLayerAuthApi
 } from "../axiosConfig";
 import config from "../config.json";
-import {GrantType} from "../types/trueLayer/authAPI/auth";
+import {
+  ConnectTokenPostRequest,
+  ConnectTokenPostResponse,
+  GrantType
+} from "../types/trueLayer/authAPI/auth";
 import {AuthAPIErrorResponse} from "../types/trueLayer/authAPI/serverResponse";
 import {DataAPIErrorResponse} from "../types/trueLayer/dataAPI/serverResponse";
 
@@ -15,7 +20,12 @@ jest.mock("../axiosConfig");
 
 beforeEach(() => {
   (
-    trueLayerAuthApi.post as jest.MockedFunction<typeof trueLayerAuthApi.post>
+    trueLayerAuthApi.post as jest.MockedFunction<
+      typeof trueLayerAuthApi.post<
+        ConnectTokenPostRequest,
+        ConnectTokenPostResponse
+      >
+    >
   ).mockImplementation(async () =>
     // TODO: Refactor the data below and the one in truelayerAuthRouter.ts into a single place
     ({

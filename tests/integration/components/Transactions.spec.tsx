@@ -1,4 +1,5 @@
 import React from "react";
+import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fireEvent,
@@ -41,8 +42,10 @@ describe("Transactions", () => {
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ];
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => testTransactions);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => testTransactions);
 
     render(<TransactionsScene />, {
       wrapper: ComponentTestWrapper
@@ -56,8 +59,10 @@ describe("Transactions", () => {
 
   test("sets a new category correctly", async () => {
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => [
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
 

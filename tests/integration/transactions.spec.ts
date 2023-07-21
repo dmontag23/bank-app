@@ -1,9 +1,11 @@
+import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../axiosConfig";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
+import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
@@ -15,10 +17,11 @@ jest.mock("../../axiosConfig");
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer transactions exist", async () => {
     // setup mocks
-    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
-      typeof trueLayerDataApi
-    >;
-    mockTrueLayerDataApi.get.mockImplementation(async () => []);
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     const {result} = renderHook(() => useTransactions("dummy"), {
       wrapper: TanstackQueryTestWrapper
@@ -30,10 +33,11 @@ describe("useTransactions transaction flow", () => {
 
   test("stores default category values", async () => {
     // setup mocks
-    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
-      typeof trueLayerDataApi
-    >;
-    mockTrueLayerDataApi.get.mockImplementation(async () => [
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
@@ -71,10 +75,11 @@ describe("useTransactions transaction flow", () => {
 
   test("merges transaction categories from storage", async () => {
     // setup mocks
-    const mockTrueLayerDataApi = trueLayerDataApi as jest.MockedObject<
-      typeof trueLayerDataApi
-    >;
-    mockTrueLayerDataApi.get.mockImplementation(async () => [
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);

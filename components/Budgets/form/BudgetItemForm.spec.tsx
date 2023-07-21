@@ -1,5 +1,6 @@
 import React from "react";
 import {View} from "react-native";
+import {beforeEach, describe, expect, jest, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetItemForm from "./BudgetItemForm";
@@ -17,7 +18,7 @@ jest.mock("./BudgetItemFormFields");
 jest.mock("../../ui/ExpandableAccordion");
 
 describe("BudgetItemForm component", () => {
-  const MOCK_ACCORDION = jest.fn();
+  const MOCK_ACCORDION = jest.fn<typeof ExpandableAccordion>();
   const MOCK_BUDGET_ITEM_FORM_FIELDS = jest.fn();
   const EMPTY_BUDGET: BudgetInput = {
     id: "1",
@@ -119,7 +120,8 @@ describe("BudgetItemForm component", () => {
       ...EMPTY_BUDGET,
       items: [ITEM_1, item2, item3]
     };
-    const setBudget = jest.fn();
+    const setBudget =
+      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
 
     render(<BudgetItemForm budget={budget} setBudget={setBudget} />, {
       wrapper: ComponentTestWrapper
@@ -131,8 +133,8 @@ describe("BudgetItemForm component", () => {
     expect(MOCK_ACCORDION).toBeCalledTimes(3);
 
     // test BudgetItemFormFields
-    const BudgetItemFormFieldsComponent =
-      MOCK_ACCORDION.mock.calls[1][0].children;
+    const BudgetItemFormFieldsComponent = MOCK_ACCORDION.mock.calls[1][0]
+      .children as JSX.Element;
     render(BudgetItemFormFieldsComponent, {
       wrapper: ComponentTestWrapper
     });
@@ -159,7 +161,10 @@ describe("BudgetItemForm component", () => {
     expect(setBudget).toBeCalledTimes(1);
 
     // test state change to set new budget from previous form values
-    const newBudget = setBudget.mock.calls[0][0](budget);
+    const newBudgetFn = setBudget.mock.calls[0][0] as (
+      prevValues: BudgetInput
+    ) => BudgetInput;
+    const newBudget = newBudgetFn(budget);
     expect(newBudget).toEqual({
       ...EMPTY_BUDGET,
       items: [ITEM_1, newBudgetItem, item3]
@@ -167,7 +172,8 @@ describe("BudgetItemForm component", () => {
   });
 
   test("correctly adds an item to the form", async () => {
-    const setBudget = jest.fn();
+    const setBudget =
+      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
 
     render(<BudgetItemForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
       wrapper: ComponentTestWrapper
@@ -175,7 +181,10 @@ describe("BudgetItemForm component", () => {
 
     fireEvent.press(screen.getByText("Add item"));
     expect(setBudget).toBeCalledTimes(1);
-    const newBudget = setBudget.mock.calls[0][0](EMPTY_BUDGET);
+    const newBudgetFn = setBudget.mock.calls[0][0] as (
+      prevValues: BudgetInput
+    ) => BudgetInput;
+    const newBudget = newBudgetFn(EMPTY_BUDGET);
     expect(newBudget).toEqual({
       ...EMPTY_BUDGET,
       items: [

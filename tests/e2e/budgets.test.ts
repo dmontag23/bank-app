@@ -1,4 +1,5 @@
 import {by, element, expect} from "detox";
+import {beforeEach, describe, it} from "@jest/globals";
 
 describe("Budget page", () => {
   beforeEach(async () => {

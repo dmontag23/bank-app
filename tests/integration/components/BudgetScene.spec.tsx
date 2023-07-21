@@ -1,4 +1,5 @@
 import React from "react";
+import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fireEvent,
@@ -10,6 +11,7 @@ import {
 import {trueLayerDataApi} from "../../../axiosConfig";
 import BudgetsScene from "../../../components/Budgets/BudgetsScene";
 import {TransactionCategory} from "../../../types/transaction";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM,
@@ -46,8 +48,10 @@ describe("Budget scene", () => {
 
     // setup mock transaction data
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => []);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     render(<BudgetsScene />, {
       wrapper: ComponentTestWrapper
@@ -80,8 +84,10 @@ describe("Budget scene", () => {
 
     // setup mock transaction data
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => []);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     render(<BudgetsScene />, {
       wrapper: ComponentTestWrapper
@@ -116,8 +122,10 @@ describe("Budget scene", () => {
 
     // setup mock transaction data
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => []);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     render(<BudgetsScene />, {
       wrapper: ComponentTestWrapper
@@ -158,8 +166,10 @@ describe("Budget scene", () => {
 
     // setup mock transaction data
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => [
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
     ]);
 
@@ -234,8 +244,10 @@ describe("Budget scene", () => {
   test("creates a budget", async () => {
     // setup mock transactions
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => [
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS

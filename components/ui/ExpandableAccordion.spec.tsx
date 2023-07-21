@@ -1,5 +1,6 @@
 import React from "react";
 import {Text} from "react-native-paper";
+import {describe, expect, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import ExpandableAccordion from "./ExpandableAccordion";

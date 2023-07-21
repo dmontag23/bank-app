@@ -1,5 +1,6 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import {describe, expect, jest, test} from "@jest/globals";
 import {
   fireEvent,
   render,
@@ -11,6 +12,7 @@ import {trueLayerDataApi} from "../../../axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
 import {Budget as BudgetType} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
@@ -51,8 +53,10 @@ describe("Budgets", () => {
 
   test("renders a budget with no items", async () => {
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => []);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     render(<Budget budget={EMPTY_BUDGET} />, {
       wrapper: ComponentTestWrapper
@@ -67,8 +71,10 @@ describe("Budgets", () => {
 
   test("renders a budget item with no transactions", async () => {
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => []);
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
 
     render(<Budget budget={BUDGET_WITH_ONE_ITEM} />, {
       wrapper: ComponentTestWrapper
@@ -97,8 +103,10 @@ describe("Budgets", () => {
     // helper where you just pass in the implementation for the data
     // mock
     (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => [
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => [
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);

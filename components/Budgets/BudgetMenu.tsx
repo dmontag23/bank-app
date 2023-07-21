@@ -7,7 +7,9 @@ import useGetAllBudgets from "../../hooks/budgets/useGetAllBudgets";
 import {Budget} from "../../types/budget";
 
 type BudgetMenuProps = {
-  renderMenuIcon: (openMenu: (e: GestureResponderEvent) => void) => JSX.Element;
+  renderMenuIcon: (
+    openMenu: (e?: GestureResponderEvent) => void
+  ) => JSX.Element;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
 };
 

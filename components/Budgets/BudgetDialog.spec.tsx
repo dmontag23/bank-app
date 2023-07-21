@@ -1,4 +1,5 @@
 import React from "react";
+import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
@@ -11,7 +12,7 @@ import BudgetDialog from "./BudgetDialog";
 import BudgetForm from "./form/BudgetForm";
 
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
-import {BudgetInput} from "../../types/budget";
+import {Budget, BudgetInput} from "../../types/budget";
 
 jest.mock("uuid", () => ({
   v4: () => "unique-id"
@@ -137,7 +138,7 @@ describe("BudgetDialog component", () => {
 
   test("creates a budget", async () => {
     const mockHideFn = jest.fn();
-    const mockOnSubmit = jest.fn();
+    const mockOnSubmit = jest.fn<(budget: Budget) => Promise<void>>();
 
     render(
       <BudgetDialog
