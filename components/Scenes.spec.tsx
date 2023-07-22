@@ -24,7 +24,7 @@ describe("Scenes component", () => {
     expect(BudgetsScene).toBeCalledTimes(1);
   });
 
-  test("renders the transactions scene", async () => {
+  test("renders the transactions scene", () => {
     render(<Screens />, {
       wrapper: ComponentTestWrapper
     });
@@ -40,7 +40,7 @@ describe("Scenes component", () => {
     expect(TransactionsScene).toBeCalledTimes(1);
   });
 
-  test("renders the settings scene", async () => {
+  test("renders the settings scene", () => {
     render(<Screens />, {
       wrapper: ComponentTestWrapper
     });
