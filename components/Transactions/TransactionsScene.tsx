@@ -1,6 +1,7 @@
 import React from "react";
 import {StyleSheet, View} from "react-native";
 import {Text} from "react-native-paper";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 import TransactionList from "./TransactionList";
 
@@ -12,8 +13,13 @@ const TransactionsScene = () => {
   const {isLoading, transactions} = useTransactions(
     "2cbf9b6063102763ccbe3ea62f1b3e72"
   );
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        paddingTop: insets.top
+      }}>
       {isLoading ? (
         <LoadingSpinner />
       ) : (
