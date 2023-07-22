@@ -5,7 +5,7 @@ describe("Settings page", () => {
   beforeEach(async () => {
     // Note: Tap does not currently work on android API 33.
     // See https://github.com/wix/Detox/issues/3762
-    await element(by.id("bottomNavigationSettings")).tap();
+    await element(by.id("settingsBottomNavButton")).tap();
   });
 
   it("should show all settings text", async () => {
