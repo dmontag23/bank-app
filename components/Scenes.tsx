@@ -61,7 +61,8 @@ const Screens = () => (
       name="Settings"
       component={Settings}
       options={{
-        tabBarIcon: ({focused}) => settingsIcon(focused)
+        tabBarIcon: ({focused}) => settingsIcon(focused),
+        tabBarTestID: "settingsBottomNavButton"
       }}
     />
   </Tab.Navigator>
