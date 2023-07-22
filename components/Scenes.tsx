@@ -54,7 +54,8 @@ const Screens = () => (
       name="Transactions"
       component={TransactionsScene}
       options={{
-        tabBarIcon: ({focused}) => transactionsIcon(focused)
+        tabBarIcon: ({focused}) => transactionsIcon(focused),
+        tabBarTestID: "transactionsBottomNavButton"
       }}
     />
     <Tab.Screen
