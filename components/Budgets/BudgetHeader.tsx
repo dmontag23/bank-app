@@ -36,7 +36,12 @@ const BudgetHeader = ({
         onSubmit={handleBudgetDialogSubmit}
       />
       <View style={styles.container}>
-        <IconButton icon="plus" size={30} onPress={showBudgetDialog} />
+        <IconButton
+          icon="plus"
+          size={30}
+          onPress={showBudgetDialog}
+          testID="addBudgetButton"
+        />
         <BudgetMenu
           renderMenuIcon={openMenu => (
             <TouchableOpacity

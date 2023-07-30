@@ -31,7 +31,7 @@ const BudgetItemSummary = ({item}: BudgetItemSummaryProps) => {
       </View>
       <View style={styles.progressBarContainer}>
         <ProgressBar
-          animatedValue={percentLeft > 0 ? percentLeft : 0}
+          progress={percentLeft > 0 ? percentLeft : 0}
           style={[
             styles.progressBar,
             {

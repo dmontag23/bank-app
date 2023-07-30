@@ -22,6 +22,7 @@ const BudgetItemFormFields = ({
       accessibilityLabel="Item name"
       value={budgetItem.name}
       onChangeText={name => setBudgetItem({...budgetItem, name})}
+      testID="budgetItemNameInput"
     />
     <TextInput
       label="Cap"
@@ -35,6 +36,7 @@ const BudgetItemFormFields = ({
           cap
         })
       }
+      testID="budgetItemCapInput"
     />
     <View>
       <Text variant="bodyLarge">Select categories</Text>

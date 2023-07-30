@@ -14,7 +14,9 @@ type BudgetFormProps = {
 
 // TODO: Add validation to this form
 const BudgetForm = ({budget, setBudget}: BudgetFormProps) => (
-  <ScrollView contentContainerStyle={styles.container}>
+  <ScrollView
+    contentContainerStyle={styles.container}
+    testID="budgetFormScrollView">
     <TextInput
       label="Name"
       accessibilityLabel="Name"
@@ -23,6 +25,7 @@ const BudgetForm = ({budget, setBudget}: BudgetFormProps) => (
         setBudget(prevBudgetFormValues => ({...prevBudgetFormValues, name}))
       }
       style={styles.textInput}
+      testID="budgetNameInput"
     />
     <View style={styles.dateContainer}>
       <DateTimePicker
@@ -60,7 +63,12 @@ const BudgetForm = ({budget, setBudget}: BudgetFormProps) => (
 
 const styles = StyleSheet.create({
   container: {marginBottom: 20, marginRight: 10},
-  dateContainer: {flexDirection: "row", marginBottom: 20},
+  dateContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+    marginLeft: -20, // TODO: investigate why this is needed to align date with start of name input
+    justifyContent: "space-between"
+  },
   textInput: {marginBottom: 20}
 });
 

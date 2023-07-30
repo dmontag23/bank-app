@@ -51,6 +51,7 @@ const BudgetMenu = ({renderMenuIcon, setSelectedBudget}: BudgetMenuProps) => {
               );
               deleteBudget(budget.id);
             }}
+            testID="deleteBudgetButton"
           />
         </View>
       ))}

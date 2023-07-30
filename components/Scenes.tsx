@@ -47,7 +47,8 @@ const Screens = () => (
       name="Budgets"
       component={BudgetsScene}
       options={{
-        tabBarIcon: ({focused}) => budgetsIcon(focused)
+        tabBarIcon: ({focused}) => budgetsIcon(focused),
+        tabBarTestID: "budgetsBottomNavButton"
       }}
     />
     <Tab.Screen

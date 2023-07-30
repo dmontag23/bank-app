@@ -1,21 +1,356 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
+import {Budget} from "../../types/budget";
+import {TransactionCategory} from "../../types/transaction";
+
+/* TODO: find a way to remove this function
+With Detox, you cannot interact with AsyncStorage directly
+because Detox runs in its own separate node process. This means
+it is impossible to pre-seed any data into AsyncStorage for a test,
+such as budget data. There are a few options to get around this
+that should be explored:
+  1. Mock AsyncStorage (using a module proxy) using the mock
+     server (i.e. add endpoints to the mock server in a way that
+     behaves like AsyncStorage).
+  2. Use a different testing library like Appium that might allow
+     for easier mocking or pre-seeding of AsyncStorage
+  3. Start the app for the test with something that signals to the
+     app that pre-seeded data should be created (e.g. create a launch
+     URL that contains the information needed to seed AsyncStorage).
+*/
+const createBudget = async (budget: Budget) => {
+  await element(by.id("addBudgetButton")).tap();
+
+  // add budget summary
+  const budgetNameInput = element(by.id("budgetNameInput"));
+  await budgetNameInput.typeText(budget.name);
+  await budgetNameInput.tapReturnKey();
+  await element(by.label("Start date")).tap();
+  await element(
+    by.type("UIDatePicker").withAncestor(by.type("_UIDatePickerContainerView"))
+  ).setDatePickerDate(budget.window.start.toISOString(), "ISO8601");
+  await element(by.type("_UIDatePickerContainerView")).tap(); // dismiss the modal
+  await element(by.label("End date")).tap();
+  await element(
+    by.type("UIDatePicker").withAncestor(by.type("_UIDatePickerContainerView"))
+  ).setDatePickerDate(budget.window.end.toISOString(), "ISO8601");
+  await element(by.type("_UIDatePickerContainerView")).tap(); // dismiss the modal
+
+  // create budget items
+  // have to use a for loop because array iterators don't know how to await a promise
+  // before continuing to the next item in the array
+  for (const [i, item] of budget.items.entries()) {
+    await element(by.text("Add item")).tap();
+    await waitFor(element(by.text("Add item")))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(400, "down");
+    await expect(
+      element(by.id("budgetItemNameInput")).atIndex(i)
+    ).toBeVisible();
+    await element(by.id("budgetItemNameInput")).atIndex(i).typeText(item.name);
+    const capInputElement = element(by.id("budgetItemCapInput")).atIndex(i);
+    await capInputElement.typeText(item.cap.toString());
+    await capInputElement.tapReturnKey();
+    for (const category of item.categories) {
+      await element(by.text(Object.keys(TransactionCategory)[category]))
+        .atIndex(i)
+        .tap();
+    }
+  }
+
+  // create the budget
+  await element(by.text("Create")).tap();
+};
+
 describe("Budget page", () => {
   beforeEach(async () => {
     // Note: Tap does not currently work on android API 33.
     // See https://github.com/wix/Detox/issues/3762
-    await element(by.id("bottomNavigationBudgets")).tap();
+    await element(by.id("budgetsBottomNavButton")).tap();
   });
 
-  it("should show correct elements for a budget item", async () => {
+  it("should ask to select a budget", async () => {
+    await expect(element(by.text("Please select a budget"))).toBeVisible();
+  });
+
+  it("should cancel the creation of a budget", async () => {
+    const addBudgetButton = await element(by.id("addBudgetButton"));
+    await expect(addBudgetButton).toBeVisible();
+    await addBudgetButton.tap();
+    await expect(element(by.text("New Budget"))).toBeVisible();
+
+    // cancel the budget form
+    const cancelButton = await element(by.text("Cancel"));
+    await expect(cancelButton).toBeVisible();
+    await cancelButton.tap();
+    await expect(element(by.text("Please select a budget"))).toBeVisible();
+  });
+
+  it("should create a budget", async () => {
+    const addBudgetButton = await element(by.id("addBudgetButton"));
+    await expect(addBudgetButton).toBeVisible();
+    await addBudgetButton.tap();
+    await expect(element(by.text("New Budget"))).toBeVisible();
+
+    // add budget summary
+    const nameInput = await element(by.id("budgetNameInput"));
+    await expect(nameInput).toBeVisible();
+    await nameInput.typeText("Budget for Barbie");
+    await nameInput.tapReturnKey();
+
+    // set the start date
+    const startDate = await element(by.label("Start date"));
+    await expect(startDate).toBeVisible();
+    await startDate.tap();
+    const dateTimePickerElementStartDate = await element(
+      by
+        .type("UIDatePicker")
+        .withAncestor(by.type("_UIDatePickerContainerView"))
+    );
+    await expect(dateTimePickerElementStartDate).toBeVisible();
+    await dateTimePickerElementStartDate.setDatePickerDate(
+      "2023-07-01",
+      "yyyy-MM-dd"
+    );
+    await element(by.type("_UIDatePickerContainerView")).tap(); // dismiss the modal
+
+    //set the end date
+    const endDate = await element(by.label("End date"));
+    await expect(endDate).toBeVisible();
+    await endDate.tap();
+    const dateTimePickerElementEndDate = await element(
+      by
+        .type("UIDatePicker")
+        .withAncestor(by.type("_UIDatePickerOverlayPlatterView"))
+    );
+    await expect(dateTimePickerElementEndDate).toBeVisible();
+    await dateTimePickerElementEndDate.setDatePickerDate(
+      "2023-07-31",
+      "yyyy-MM-dd"
+    );
+    await element(by.type("_UIDatePickerContainerView")).tap(); // dismiss the modal
+
+    // create the first budget item
+    const addItemButton = await element(by.text("Add item"));
+    await expect(addItemButton).toBeVisible();
+    await addItemButton.tap();
+
+    // add item name
+    const itemNameInput = await element(by.id("budgetItemNameInput"));
+    await expect(itemNameInput).toBeVisible();
+    await itemNameInput.typeText("Pink stuff");
+
+    // add item cap
+    const itemCapInput = await element(by.id("budgetItemCapInput"));
+    await expect(itemCapInput).toBeVisible();
+    await itemCapInput.typeText("300");
+    await itemCapInput.tapReturnKey();
+
+    // select the entertainment category
+    const firstCategoryButton = await element(by.text("ENTERTAINMENT"));
+    await expect(firstCategoryButton).toBeVisible();
+    await firstCategoryButton.tap();
+
+    // select the unknown category
+    await waitFor(element(by.text("Add item")))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(100, "down");
+    const secondCategoryButton = await element(by.text("UNKNOWN"));
+    await expect(secondCategoryButton).toBeVisible();
+    await secondCategoryButton.tap();
+
+    // create the budget
+    await element(by.text("Create")).tap();
+    await expect(element(by.text("Pink stuff"))).toBeVisible();
+    await expect(element(by.text("£300.00"))).toBeVisible();
+    await expect(element(by.text("left of £300.00"))).toBeVisible();
+    await expect(
+      element(
+        by.text("There are currently no transactions for this budget item.")
+      )
+    ).toBeVisible();
+    await expect(element(by.text("Bud"))).toBeVisible(); // menu
+  });
+
+  it("should swipe between budget scenes", async () => {
+    const budget: Budget = {
+      id: "first-budget",
+      name: "My first budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 150,
+          categories: [TransactionCategory.BILLS]
+        },
+        {
+          id: "item-2",
+          name: "Eating out",
+          cap: 500,
+          categories: [TransactionCategory.EATING_OUT]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(budget);
+
     await expect(element(by.text("Bills"))).toBeVisible();
+    await expect(element(by.text("£-42.52"))).toBeVisible();
+    await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
+    await expect(element(by.text(TransactionCategory.BILLS))).toBeVisible();
+    await expect(element(by.text("£192.52"))).toBeVisible();
+
+    // swipe to next budget item
+    await element(by.text("Bills")).swipe("left");
+
+    await expect(element(by.text("Eating out"))).toBeVisible();
+    await expect(element(by.text("£463.29"))).toBeVisible();
+    await expect(element(by.text("left of £500.00"))).toBeVisible();
+    await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
+    await expect(
+      element(by.text(TransactionCategory.EATING_OUT))
+    ).toBeVisible();
+    await expect(element(by.text("£36.71"))).toBeVisible();
   });
 
-  it("should swipe to next budget item", async () => {
-    await element(by.text("Bills")).swipe("left");
+  it("should delete a budget", async () => {
+    const budget: Budget = {
+      id: "first-budget",
+      name: "My first budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 150,
+          categories: [TransactionCategory.BILLS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(budget);
+
+    // open the menu
+    const menuItem = element(by.text("My "));
+    await expect(menuItem).toBeVisible();
+    await menuItem.tap();
+
+    // delete the budget
+    const deleteBudgetButton = element(by.id("deleteBudgetButton"));
+    await expect(deleteBudgetButton).toBeVisible();
+    await deleteBudgetButton.tap();
+
+    // ensure the budget is deleted
+    await expect(menuItem).not.toExist();
+    await expect(element(by.text("Please select a budget"))).toBeVisible();
+  });
+
+  it("can change budgets via the menu", async () => {
+    const firstBudget: Budget = {
+      id: "first-budget",
+      name: "First budget",
+      items: [],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    const secondBudget: Budget = {
+      id: "second-budget",
+      name: "Second budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Fun",
+          cap: 150,
+          categories: [TransactionCategory.SAVINGS]
+        }
+      ],
+      window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
+    };
+
+    await createBudget(firstBudget);
+    await createBudget(secondBudget);
+
+    // expect the second budget to be visible
     await expect(element(by.text("Fun"))).toBeVisible();
-    await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
+
+    // open the menu and choose the first budget
+    await element(by.text("Sec")).tap();
+    const firstBudgetMenu = element(by.text("First budget"));
+    await expect(firstBudgetMenu).toBeVisible();
+    await firstBudgetMenu.tap();
+
+    // check that the budget has switched
+    await expect(
+      element(by.text("There are no items in this budget."))
+    ).toBeVisible();
+  });
+
+  it("can change a transaction category on a budget", async () => {
+    const firstBudget: Budget = {
+      id: "first-budget",
+      name: "First budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 500,
+          categories: [TransactionCategory.BILLS]
+        },
+        {
+          id: "item-2",
+          name: "Savings",
+          cap: 150,
+          categories: [TransactionCategory.SAVINGS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(firstBudget);
+
+    // check the transaction exists for the bills budget item
+    await expect(element(by.text("Bills"))).toBeVisible();
+    await expect(element(by.text("£307.48"))).toBeVisible();
+    await expect(element(by.text("left of £500.00"))).toBeVisible();
+    const transaction = element(by.text("PAY OFF CREDIT CARD BILL"));
+    await expect(transaction).toBeVisible();
+    await expect(element(by.text("£192.52"))).toBeVisible();
+    await expect(element(by.text(TransactionCategory.BILLS))).toBeVisible();
+
+    // click the transaction
+    await transaction.tap();
+    await expect(element(by.text("Select a category"))).toBeVisible();
+    await expect(
+      element(by.text("PAY OFF CREDIT CARD BILL")).atIndex(0)
+    ).toBeVisible();
+    const savingsOption = element(by.text("SAVINGS"));
+    await expect(savingsOption).toBeVisible();
+
+    // click the savings option
+    await savingsOption.tap();
+    const billsTitle = element(by.text("Bills"));
+    await expect(billsTitle).toBeVisible();
+    await expect(element(by.text("£500.00"))).toBeVisible();
+    await expect(
+      element(
+        by.text("There are currently no transactions for this budget item.")
+      )
+    ).toBeVisible();
+
+    // swipe to the next screen
+    await billsTitle.swipe("left");
+
+    // check the transaction exists for the savings budget item
+    await expect(element(by.text("Savings"))).toBeVisible();
+    await expect(element(by.text("£-42.52"))).toBeVisible();
+    await expect(element(by.text("left of £150.00"))).toBeVisible();
+    await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
+    await expect(element(by.text("£192.52"))).toBeVisible();
+    await expect(element(by.text(TransactionCategory.SAVINGS))).toBeVisible();
   });
 });
