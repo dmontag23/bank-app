@@ -1,4 +1,5 @@
 import React from "react";
+import {Control, useFieldArray, useWatch} from "react-hook-form";
 import {LayoutAnimation} from "react-native";
 import {Button} from "react-native-paper";
 import "react-native-get-random-values";
@@ -11,11 +12,10 @@ import {TransactionCategory} from "../../../types/transaction";
 import ExpandableAccordion from "../../ui/ExpandableAccordion";
 
 type BudgetItemFormProps = {
-  budget: BudgetInput;
-  setBudget: React.Dispatch<React.SetStateAction<BudgetInput>>;
+  control: Control<BudgetInput>;
 };
 
-const BudgetItemForm = ({budget, setBudget}: BudgetItemFormProps) => {
+const BudgetItemForm = ({control}: BudgetItemFormProps) => {
   const defaultBudgetItem: BudgetItemInput = {
     id: uuid(),
     name: "",
@@ -23,46 +23,35 @@ const BudgetItemForm = ({budget, setBudget}: BudgetItemFormProps) => {
     categories: []
   };
 
-  const addBudgetItemToForm = () => {
-    setBudget(prevBudgetFormValues => ({
-      ...prevBudgetFormValues,
-      items: [...prevBudgetFormValues.items, defaultBudgetItem]
-    }));
-  };
-
-  const createSetBudgetItem =
-    (budgetItemIndex: number) => (newBudgetItem: BudgetItemInput) =>
-      setBudget(prevBudgetFormValues => ({
-        ...prevBudgetFormValues,
-        items: [
-          ...prevBudgetFormValues.items.slice(0, budgetItemIndex),
-          newBudgetItem,
-          ...prevBudgetFormValues.items.slice(budgetItemIndex + 1)
-        ]
-      }));
+  const {fields, append} = useFieldArray({name: "items", control});
+  const budgetItems = useWatch({name: "items", control});
 
   // TODO: Add functionality to remove budget item
   return (
     <>
-      {budget.items.map((item, i) => (
-        <ExpandableAccordion key={item.id} title={item.name || "Budget Item"}>
+      {fields.map((field, i) => (
+        <ExpandableAccordion key={field.id} title={field.name || "Budget Item"}>
           <BudgetItemFormFields
-            budgetItem={item}
-            disabledCategories={budget.items.reduce<TransactionCategory[]>(
+            disabledCategories={budgetItems.reduce<TransactionCategory[]>(
               (accCategories, curBudgetItem) =>
-                item.id === curBudgetItem.id
+                // note: have to use budgetItems[i].id instead of field.id here due
+                // to how react-hook-form handles dynamic ids (it adds its own id
+                // prop to manage the dynamic array)
+                // see https://github.com/orgs/react-hook-form/discussions/8935
+                budgetItems[i]?.id === curBudgetItem.id
                   ? accCategories
                   : [...accCategories, ...curBudgetItem.categories],
               []
             )}
-            setBudgetItem={createSetBudgetItem(i)}
+            control={control}
+            index={i}
           />
         </ExpandableAccordion>
       ))}
       <Button
         icon="plus"
         onPress={() => {
-          addBudgetItemToForm();
+          append(defaultBudgetItem);
           LayoutAnimation.easeInEaseOut();
         }}>
         Add item

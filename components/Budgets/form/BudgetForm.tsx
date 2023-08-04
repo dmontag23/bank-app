@@ -1,4 +1,5 @@
 import React from "react";
+import {Control, Controller} from "react-hook-form";
 import {ScrollView, StyleSheet, View} from "react-native";
 import {TextInput} from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -8,56 +9,58 @@ import BudgetItemForm from "./BudgetItemForm";
 import {BudgetInput} from "../../../types/budget";
 
 type BudgetFormProps = {
-  budget: BudgetInput;
-  setBudget: React.Dispatch<React.SetStateAction<BudgetInput>>;
+  control: Control<BudgetInput>;
 };
 
 // TODO: Add validation to this form
-const BudgetForm = ({budget, setBudget}: BudgetFormProps) => (
+const BudgetForm = ({control}: BudgetFormProps) => (
   <ScrollView
     contentContainerStyle={styles.container}
     testID="budgetFormScrollView">
-    <TextInput
-      label="Name"
-      accessibilityLabel="Name"
-      value={budget.name}
-      onChangeText={name =>
-        setBudget(prevBudgetFormValues => ({...prevBudgetFormValues, name}))
-      }
-      style={styles.textInput}
-      testID="budgetNameInput"
+    <Controller
+      control={control}
+      render={({field: {onChange, onBlur, value}}) => (
+        <TextInput
+          label="Name"
+          accessibilityLabel="Name"
+          onBlur={onBlur}
+          onChangeText={onChange}
+          value={value}
+          style={styles.textInput}
+          testID="budgetNameInput"
+        />
+      )}
+      name="name"
     />
     <View style={styles.dateContainer}>
-      <DateTimePicker
-        accessibilityLabel="Start date"
-        value={budget.window.start}
-        onChange={(event, newStartDate) => {
-          if (newStartDate)
-            setBudget(prevBudgetFormValues => ({
-              ...prevBudgetFormValues,
-              window: {
-                ...prevBudgetFormValues.window,
-                start: newStartDate
-              }
-            }));
-        }}
+      <Controller
+        control={control}
+        render={({field: {onChange, value}}) => (
+          <DateTimePicker
+            accessibilityLabel="Start date"
+            value={value}
+            onChange={(event, newStartDate) => {
+              if (newStartDate) onChange(newStartDate);
+            }}
+          />
+        )}
+        name="window.start"
       />
-      <DateTimePicker
-        accessibilityLabel="End date"
-        value={budget.window.end}
-        onChange={(event, newEndDate) => {
-          if (newEndDate)
-            setBudget(prevBudgetFormValues => ({
-              ...prevBudgetFormValues,
-              window: {
-                ...prevBudgetFormValues.window,
-                end: newEndDate
-              }
-            }));
-        }}
+      <Controller
+        control={control}
+        render={({field: {onChange, value}}) => (
+          <DateTimePicker
+            accessibilityLabel="End date"
+            value={value}
+            onChange={(event, newEndDate) => {
+              if (newEndDate) onChange(newEndDate);
+            }}
+          />
+        )}
+        name="window.end"
       />
     </View>
-    <BudgetItemForm budget={budget} setBudget={setBudget} />
+    <BudgetItemForm control={control} />
   </ScrollView>
 );
 
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row",
     marginBottom: 20,
-    marginLeft: -20, // TODO: investigate why this is needed to align date with start of name input
+    marginLeft: -5, // TODO: investigate why this is needed to align date with start of name input
     justifyContent: "space-between"
   },
   textInput: {marginBottom: 20}
