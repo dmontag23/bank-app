@@ -21,7 +21,7 @@ describe("BudgetItemFormFields component", () => {
     window: {start: new Date("01-01-2023"), end: new Date("01-02-2023")},
     items: [
       {
-        id: "1",
+        id: "item-1",
         name: "",
         cap: "",
         categories: []
@@ -30,11 +30,8 @@ describe("BudgetItemFormFields component", () => {
   };
 
   test("renders the correct form fields", async () => {
-    const {result} = renderHook(
-      () => useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM}),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
     render(
@@ -59,11 +56,8 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("renders disabled categories", () => {
-    const {result} = renderHook(
-      () => useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM}),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
     const disabledCategories = [
@@ -94,17 +88,13 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can set item name", async () => {
-    const {result} = renderHook(
-      () =>
-        useForm<BudgetInput>({
-          defaultValues: {
-            ...BUDGET_WITH_EMPTY_ITEM,
-            items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], name: "Test item"}]
-          }
-        }),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({
+        defaultValues: {
+          ...BUDGET_WITH_EMPTY_ITEM,
+          items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], name: "Test item"}]
+        }
+      })
     );
 
     render(
@@ -125,17 +115,13 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can set item cap", async () => {
-    const {result} = renderHook(
-      () =>
-        useForm<BudgetInput>({
-          defaultValues: {
-            ...BUDGET_WITH_EMPTY_ITEM,
-            items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], cap: "20"}]
-          }
-        }),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({
+        defaultValues: {
+          ...BUDGET_WITH_EMPTY_ITEM,
+          items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], cap: "20"}]
+        }
+      })
     );
 
     render(
@@ -157,11 +143,8 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("cannot set disabled category", async () => {
-    const {result} = renderHook(
-      () => useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM}),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
     render(
@@ -184,11 +167,8 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can select and deselect enabled category", async () => {
-    const {result} = renderHook(
-      () => useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM}),
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
     render(
