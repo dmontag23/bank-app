@@ -74,7 +74,7 @@ const BudgetItemFormFields = ({
                       ? value.filter(
                           curCategory => curCategory !== categoryValue
                         )
-                      : [...value, category]
+                      : [...value, categoryValue]
                   )
                 }
                 status={value.includes(categoryValue) ? "checked" : "unchecked"}
