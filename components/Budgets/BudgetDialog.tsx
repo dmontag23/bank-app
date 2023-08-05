@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, {useEffect, useMemo} from "react";
+import {SubmitHandler, useForm} from "react-hook-form";
 import {StyleSheet, useWindowDimensions} from "react-native";
 import {Button, Dialog, Portal, Text, useTheme} from "react-native-paper";
 import "react-native-get-random-values";
@@ -6,6 +7,7 @@ import {v4 as uuid} from "uuid";
 
 import BudgetForm from "./form/BudgetForm";
 
+import useStoreBudget from "../../hooks/budgets/useStoreBudget";
 import {Budget, BudgetInput} from "../../types/budget";
 
 const mapBudgetInputToBudget = (budgetInput: BudgetInput): Budget => ({
@@ -16,24 +18,59 @@ const mapBudgetInputToBudget = (budgetInput: BudgetInput): Budget => ({
 type BudgetDialogProps = {
   isVisible: boolean;
   hide: () => void;
-  onSubmit: (budget: Budget) => Promise<void>;
+  setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
 };
 
-const BudgetDialog = ({isVisible, hide, onSubmit}: BudgetDialogProps) => {
+const BudgetDialog = ({
+  isVisible,
+  hide,
+  setSelectedBudget
+}: BudgetDialogProps) => {
   const theme = useTheme();
   const {height: deviceHeight} = useWindowDimensions();
+  const {mutate: storeBudget} = useStoreBudget();
 
-  const today = new Date();
-  const defaultBudget: BudgetInput = {
-    id: uuid(),
-    name: "",
-    window: {
-      start: new Date(today.getFullYear(), today.getMonth(), 1), // first day of current month
-      end: new Date(today.getFullYear(), today.getMonth() + 1, 0) // last day of current month
-    },
-    items: []
+  const defaultBudget: BudgetInput = useMemo(
+    () => ({
+      id: uuid(),
+      name: "",
+      window: {
+        start: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // first day of current month
+        end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0) // last day of current month
+      },
+      items: []
+    }),
+    []
+  );
+
+  /* TODO: Note there is currently an issue where onChangeText fires whenever
+  the field is blurred, even if the text in the field has not changed. This means
+  that any un-focused fields (e.g. "name") might not be reset correctly.
+  
+  This seems to be a react native issue as it also happens with a regular 
+  RN TextBox component. It could be peripherally related to 
+  https://github.com/facebook/react-native/issues/36494 but I should verify if 
+  this is actually an issue and I might need to raise a bug for it. */
+  const {
+    control,
+    handleSubmit,
+    formState: {isSubmitSuccessful},
+    reset
+  } = useForm<BudgetInput>({defaultValues: defaultBudget});
+
+  useEffect(() => {
+    // the default budget needs to be passed in here in order to
+    // get a new unique uuid for the next budget
+    if (isSubmitSuccessful) reset({...defaultBudget, id: uuid()});
+  }, [isSubmitSuccessful, reset, defaultBudget]);
+
+  const onBudgetDialogSubmit: SubmitHandler<
+    BudgetInput
+  > = async submittedBudgetInput => {
+    const budget = mapBudgetInputToBudget(submittedBudgetInput);
+    await storeBudget(budget);
+    setSelectedBudget(budget);
   };
-  const [budget, setBudget] = useState(defaultBudget);
 
   return (
     <Portal>
@@ -54,22 +91,21 @@ const BudgetDialog = ({isVisible, hide, onSubmit}: BudgetDialogProps) => {
           </Text>
         </Dialog.Title>
         <Dialog.ScrollArea>
-          <BudgetForm budget={budget} setBudget={setBudget} />
+          <BudgetForm control={control} />
         </Dialog.ScrollArea>
         <Dialog.Actions>
           <Button
             onPress={() => {
               hide();
-              setBudget(defaultBudget);
+              reset({...defaultBudget, id: uuid()});
             }}
             textColor={theme.colors.error}>
             Cancel
           </Button>
           <Button
             onPress={async () => {
-              await onSubmit(mapBudgetInputToBudget(budget));
               hide();
-              setBudget(defaultBudget);
+              handleSubmit(onBudgetDialogSubmit)();
             }}>
             Create
           </Button>

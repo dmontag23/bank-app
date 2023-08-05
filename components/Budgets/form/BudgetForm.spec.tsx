@@ -1,6 +1,12 @@
 import React from "react";
+import {useForm} from "react-hook-form";
 import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
+import {
+  fireEvent,
+  render,
+  renderHook,
+  screen
+} from "@testing-library/react-native";
 
 import BudgetForm from "./BudgetForm";
 import BudgetItemForm from "./BudgetItemForm";
@@ -22,9 +28,11 @@ describe("BudgetForm component", () => {
   };
 
   test("renders the correct form fields", async () => {
-    const setBudget = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
+    );
 
-    render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
+    render(<BudgetForm control={result.current.control} />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -43,51 +51,42 @@ describe("BudgetForm component", () => {
 
     expect(BudgetItemForm).toBeCalledTimes(1);
     expect(BudgetItemForm).toBeCalledWith(
-      {
-        budget: EMPTY_BUDGET,
-        setBudget
-      },
+      {control: result.current.control},
       {}
     );
   });
 
   test("can set the name", async () => {
-    const setBudget =
-      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
-
-    render(
-      <BudgetForm
-        budget={{...EMPTY_BUDGET, name: "Test budget"}}
-        setBudget={setBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({
+        defaultValues: {...EMPTY_BUDGET, name: "Test budget"}
+      })
     );
 
-    expect(screen.getByDisplayValue("Test budget")).toBeVisible();
-    fireEvent.changeText(screen.getByLabelText("Name"), "New name");
-    expect(setBudget).toBeCalledTimes(1);
-    const newBudgetFn = setBudget.mock.calls[0][0] as (
-      prevValues: BudgetInput
-    ) => BudgetInput;
-    const newBudget = newBudgetFn(EMPTY_BUDGET);
-    expect(newBudget).toEqual({
-      ...EMPTY_BUDGET,
-      name: "New name"
+    render(<BudgetForm control={result.current.control} />, {
+      wrapper: ComponentTestWrapper
     });
+
+    expect(screen.getByDisplayValue("Test budget")).toBeVisible();
+    expect(result.current.getValues("name")).toEqual("Test budget");
+    fireEvent.changeText(screen.getByLabelText("Name"), "New name");
+    expect(result.current.getValues("name")).toEqual("New name");
   });
 
   test("can set the start date", async () => {
     const newDate = new Date("2023-03-01");
 
-    const setBudget =
-      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
+    );
 
-    render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
+    render(<BudgetForm control={result.current.control} />, {
       wrapper: ComponentTestWrapper
     });
 
+    expect(result.current.getValues("window.start")).toEqual(
+      EMPTY_BUDGET.window.start
+    );
     fireEvent(
       screen.getByLabelText("Start date"),
       "onChange",
@@ -99,27 +98,23 @@ describe("BudgetForm component", () => {
       },
       newDate
     );
-    expect(setBudget).toBeCalledTimes(1);
-    const newBudgetFn = setBudget.mock.calls[0][0] as (
-      prevValues: BudgetInput
-    ) => BudgetInput;
-    const newBudget = newBudgetFn(EMPTY_BUDGET);
-    expect(newBudget).toEqual({
-      ...EMPTY_BUDGET,
-      window: {...EMPTY_BUDGET.window, start: newDate}
-    });
+    expect(result.current.getValues("window.start")).toEqual(newDate);
   });
 
   test("can set the end date", async () => {
     const newDate = new Date("2023-03-01");
 
-    const setBudget =
-      jest.fn<React.Dispatch<React.SetStateAction<BudgetInput>>>();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
+    );
 
-    render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
+    render(<BudgetForm control={result.current.control} />, {
       wrapper: ComponentTestWrapper
     });
 
+    expect(result.current.getValues("window.end")).toEqual(
+      EMPTY_BUDGET.window.end
+    );
     fireEvent(
       screen.getByLabelText("End date"),
       "onChange",
@@ -131,38 +126,44 @@ describe("BudgetForm component", () => {
       },
       newDate
     );
-    expect(setBudget).toBeCalledTimes(1);
-    const newBudgetFn = setBudget.mock.calls[0][0] as (
-      prevValues: BudgetInput
-    ) => BudgetInput;
-    const newBudget = newBudgetFn(EMPTY_BUDGET);
-    expect(newBudget).toEqual({
-      ...EMPTY_BUDGET,
-      window: {...EMPTY_BUDGET.window, end: newDate}
-    });
+    expect(result.current.getValues("window.end")).toEqual(newDate);
   });
 
   test("does not change the budget if no start date is set", async () => {
-    const setBudget = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
+    );
 
-    render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
+    render(<BudgetForm control={result.current.control} />, {
       wrapper: ComponentTestWrapper
     });
 
+    expect(result.current.getValues("window.start")).toEqual(
+      EMPTY_BUDGET.window.start
+    );
     fireEvent(screen.getByLabelText("Start date"), "onChange", {
       nativeEvent: {}
     });
-    expect(setBudget).not.toBeCalled();
+    expect(result.current.getValues("window.start")).toEqual(
+      EMPTY_BUDGET.window.start
+    );
   });
 
   test("does not change the budget if no end date is set", async () => {
-    const setBudget = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
+    );
 
-    render(<BudgetForm budget={EMPTY_BUDGET} setBudget={setBudget} />, {
+    render(<BudgetForm control={result.current.control} />, {
       wrapper: ComponentTestWrapper
     });
 
+    expect(result.current.getValues("window.end")).toEqual(
+      EMPTY_BUDGET.window.end
+    );
     fireEvent(screen.getByLabelText("End date"), "onChange", {nativeEvent: {}});
-    expect(setBudget).not.toBeCalled();
+    expect(result.current.getValues("window.end")).toEqual(
+      EMPTY_BUDGET.window.end
+    );
   });
 });

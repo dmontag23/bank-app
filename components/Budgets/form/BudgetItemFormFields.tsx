@@ -1,42 +1,53 @@
 import React from "react";
+import {Control, Controller} from "react-hook-form";
 import {StyleSheet, View} from "react-native";
 import {Checkbox, Text, TextInput} from "react-native-paper";
 
-import {BudgetItemInput} from "../../../types/budget";
+import {BudgetInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 
 type BudgetItemFormFieldsProps = {
-  budgetItem: BudgetItemInput;
   disabledCategories: TransactionCategory[];
-  setBudgetItem: (budgetItem: BudgetItemInput) => void;
+  control: Control<BudgetInput>;
+  index: number;
 };
 
 const BudgetItemFormFields = ({
-  budgetItem,
   disabledCategories,
-  setBudgetItem
+  control,
+  index
 }: BudgetItemFormFieldsProps) => (
   <View style={styles.container}>
-    <TextInput
-      label="Item name"
-      accessibilityLabel="Item name"
-      value={budgetItem.name}
-      onChangeText={name => setBudgetItem({...budgetItem, name})}
-      testID="budgetItemNameInput"
+    <Controller
+      control={control}
+      render={({field: {onChange, onBlur, value}}) => (
+        <TextInput
+          label="Item name"
+          accessibilityLabel="Item name"
+          onBlur={onBlur}
+          onChangeText={onChange}
+          value={value}
+          testID="budgetItemNameInput"
+        />
+      )}
+      name={`items.${index}.name`}
     />
-    <TextInput
-      label="Cap"
-      accessibilityLabel="Cap"
-      keyboardType="numeric"
-      value={budgetItem.cap}
-      left={<TextInput.Affix text="£ " />}
-      onChangeText={cap =>
-        setBudgetItem({
-          ...budgetItem,
-          cap
-        })
-      }
-      testID="budgetItemCapInput"
+    <Controller
+      control={control}
+      render={({field: {onChange, onBlur, value}}) => (
+        <TextInput
+          label="Cap"
+          accessibilityLabel="Cap"
+          keyboardType="numeric"
+          // TODO: Use dynamic currency here!
+          left={<TextInput.Affix text="£ " />}
+          onBlur={onBlur}
+          onChangeText={onChange}
+          value={value}
+          testID="budgetItemCapInput"
+        />
+      )}
+      name={`items.${index}.cap`}
     />
     <View>
       <Text variant="bodyLarge">Select categories</Text>
@@ -45,29 +56,32 @@ const BudgetItemFormFields = ({
           keyof typeof TransactionCategory
         >
       ).map((category, i) => {
-        const transactionCategoryValue = TransactionCategory[category];
-        const checked = budgetItem.categories.includes(
-          transactionCategoryValue
-        );
+        const categoryValue = TransactionCategory[category];
 
         return (
-          <Checkbox.Item
+          <Controller
             key={i}
-            disabled={disabledCategories.includes(transactionCategoryValue)}
-            label={category}
-            labelVariant="bodyMedium"
-            onPress={() =>
-              setBudgetItem({
-                ...budgetItem,
-                categories: checked
-                  ? budgetItem.categories.filter(
-                      curCategory => curCategory !== transactionCategoryValue
-                    )
-                  : [...budgetItem.categories, transactionCategoryValue]
-              })
-            }
-            status={checked ? "checked" : "unchecked"}
-            style={styles.checkbox}
+            control={control}
+            render={({field: {onChange, value}}) => (
+              <Checkbox.Item
+                key={i}
+                disabled={disabledCategories.includes(categoryValue)}
+                label={category}
+                labelVariant="bodyMedium"
+                onPress={() =>
+                  onChange(
+                    value.includes(categoryValue)
+                      ? value.filter(
+                          curCategory => curCategory !== categoryValue
+                        )
+                      : [...value, categoryValue]
+                  )
+                }
+                status={value.includes(categoryValue) ? "checked" : "unchecked"}
+                style={styles.checkbox}
+              />
+            )}
+            name={`items.${index}.categories`}
           />
         );
       })}
@@ -76,7 +90,7 @@ const BudgetItemFormFields = ({
 );
 
 const styles = StyleSheet.create({
-  // align the text in the checkbox items more to the left
+  // the code below aligns the text in the checkbox items more to the left
   // https://stackoverflow.com/questions/60201837/is-there-a-way-to-remove-default-padding-from-react-native-picker-component
   checkbox: {marginLeft: -10},
   container: {rowGap: 20}

@@ -1,34 +1,19 @@
 import React from "react";
 import {describe, expect, jest, test} from "@jest/globals";
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
+import {act, fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetDialog from "./BudgetDialog";
 import BudgetHeader from "./BudgetHeader";
 import BudgetMenu from "./BudgetMenu";
 
-import useStoreBudget from "../../hooks/budgets/useStoreBudget";
 import {BUDGET_WITH_ONE_ITEM} from "../../tests/mocks/data/budgets";
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 jest.mock("./BudgetDialog");
 jest.mock("./BudgetMenu");
-jest.mock("../../hooks/budgets/useStoreBudget");
 
 describe("BudgetHeader component", () => {
   test("renders elements", () => {
-    // setup mocks
-    // TODO: any should probably not be used as a type here, but since a
-    // mutation from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    (useStoreBudget as jest.MockedFunction<any>).mockImplementation(() => ({
-      mutate: () => {}
-    }));
     const mockSetSelectedBudget = jest.fn();
 
     render(
@@ -47,7 +32,7 @@ describe("BudgetHeader component", () => {
       {
         isVisible: false,
         hide: expect.any(Function),
-        onSubmit: expect.any(Function)
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );
@@ -93,14 +78,6 @@ describe("BudgetHeader component", () => {
   });
 
   test("has correct label on menu button", () => {
-    // setup mocks
-    // TODO: any should probably not be used as a type here, but since a
-    // mutation from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    (useStoreBudget as jest.MockedFunction<any>).mockImplementation(() => ({
-      mutate: () => {}
-    }));
-
     render(
       <BudgetHeader
         selectedBudget={BUDGET_WITH_ONE_ITEM}
@@ -127,15 +104,7 @@ describe("BudgetHeader component", () => {
   });
 
   test("can open and close the budget dialog", async () => {
-    // setup mocks
-    // TODO: any should probably not be used as a type here, but since a
-    // mutation from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    const mockMutate = jest.fn();
     const mockSetSelectedBudget = jest.fn();
-    (useStoreBudget as jest.MockedFunction<any>).mockImplementation(() => ({
-      mutate: mockMutate
-    }));
 
     render(
       <BudgetHeader
@@ -152,7 +121,7 @@ describe("BudgetHeader component", () => {
       {
         isVisible: false,
         hide: expect.any(Function),
-        onSubmit: expect.any(Function)
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );
@@ -172,16 +141,8 @@ describe("BudgetHeader component", () => {
     expect(secondCall).toMatchObject({
       isVisible: true,
       hide: expect.any(Function),
-      onSubmit: expect.any(Function)
+      setSelectedBudget: mockSetSelectedBudget
     });
-
-    // check on onSubmit function
-    const onSubmitFn = secondCall.onSubmit;
-    onSubmitFn(BUDGET_WITH_ONE_ITEM);
-    await waitFor(() => expect(mockMutate).toBeCalledTimes(1));
-    expect(mockMutate).toBeCalledWith(BUDGET_WITH_ONE_ITEM);
-    expect(mockSetSelectedBudget).toBeCalledTimes(1);
-    expect(mockSetSelectedBudget).toBeCalledWith(BUDGET_WITH_ONE_ITEM);
 
     // hide the dialog
     const hideFn = secondCall.hide;
@@ -194,7 +155,7 @@ describe("BudgetHeader component", () => {
     expect(thirdCall).toMatchObject({
       isVisible: false,
       hide: expect.any(Function),
-      onSubmit: expect.any(Function)
+      setSelectedBudget: mockSetSelectedBudget
     });
   });
 });

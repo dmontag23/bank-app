@@ -5,7 +5,6 @@ import {Avatar, IconButton} from "react-native-paper";
 import BudgetDialog from "./BudgetDialog";
 import BudgetMenu from "./BudgetMenu";
 
-import useStoreBudget from "../../hooks/budgets/useStoreBudget";
 import {Budget} from "../../types/budget";
 
 type BudgetHeaderProps = {
@@ -17,23 +16,16 @@ const BudgetHeader = ({
   selectedBudget,
   setSelectedBudget
 }: BudgetHeaderProps) => {
-  const {mutate: storeBudget} = useStoreBudget();
-
   const [isBudgetDialogVisible, setIsBudgetDialogVisible] = useState(false);
   const showBudgetDialog = () => setIsBudgetDialogVisible(true);
   const hideBudgetDialog = () => setIsBudgetDialogVisible(false);
-
-  const handleBudgetDialogSubmit = async (newBudget: Budget) => {
-    await storeBudget(newBudget);
-    setSelectedBudget(newBudget);
-  };
 
   return (
     <>
       <BudgetDialog
         isVisible={isBudgetDialogVisible}
         hide={hideBudgetDialog}
-        onSubmit={handleBudgetDialogSubmit}
+        setSelectedBudget={setSelectedBudget}
       />
       <View style={styles.container}>
         <IconButton

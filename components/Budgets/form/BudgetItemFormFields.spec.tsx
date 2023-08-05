@@ -1,28 +1,44 @@
 import React from "react";
-import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
+import {useForm} from "react-hook-form";
+import {describe, expect, test} from "@jest/globals";
+import {
+  fireEvent,
+  render,
+  renderHook,
+  screen
+} from "@testing-library/react-native";
 
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
-import {BUDGET_ITEM_BILLS} from "../../../tests/mocks/data/budgets";
 import {ComponentTestWrapper} from "../../../tests/mocks/utils";
-import {BudgetItemInput} from "../../../types/budget";
+import {BudgetInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 
 describe("BudgetItemFormFields component", () => {
-  const EMPTY_BUDGET_ITEM: BudgetItemInput = {
-    id: "1",
+  const BUDGET_WITH_EMPTY_ITEM: BudgetInput = {
+    id: "budget-1",
     name: "",
-    cap: "",
-    categories: []
+    window: {start: new Date("01-01-2023"), end: new Date("01-02-2023")},
+    items: [
+      {
+        id: "item-1",
+        name: "",
+        cap: "",
+        categories: []
+      }
+    ]
   };
 
   test("renders the correct form fields", async () => {
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
+
     render(
       <BudgetItemFormFields
-        budgetItem={EMPTY_BUDGET_ITEM}
         disabledCategories={[]}
-        setBudgetItem={() => {}}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -40,6 +56,10 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("renders disabled categories", () => {
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
+
     const disabledCategories = [
       TransactionCategory.ENTERTAINMENT,
       TransactionCategory.SAVINGS
@@ -47,9 +67,9 @@ describe("BudgetItemFormFields component", () => {
 
     render(
       <BudgetItemFormFields
-        budgetItem={EMPTY_BUDGET_ITEM}
         disabledCategories={disabledCategories}
-        setBudgetItem={() => {}}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -68,13 +88,20 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can set item name", async () => {
-    const setBudgetItem = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({
+        defaultValues: {
+          ...BUDGET_WITH_EMPTY_ITEM,
+          items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], name: "Test item"}]
+        }
+      })
+    );
 
     render(
       <BudgetItemFormFields
-        budgetItem={{...EMPTY_BUDGET_ITEM, name: "Test item"}}
         disabledCategories={[]}
-        setBudgetItem={setBudgetItem}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -82,19 +109,26 @@ describe("BudgetItemFormFields component", () => {
     );
 
     expect(screen.getByDisplayValue("Test item")).toBeVisible();
+    expect(result.current.getValues("items.0.name")).toEqual("Test item");
     fireEvent.changeText(screen.getByLabelText("Item name"), "It");
-    expect(setBudgetItem).toBeCalledTimes(1);
-    expect(setBudgetItem).toBeCalledWith({...EMPTY_BUDGET_ITEM, name: "It"});
+    expect(result.current.getValues("items.0.name")).toEqual("It");
   });
 
   test("can set item cap", async () => {
-    const setBudgetItem = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({
+        defaultValues: {
+          ...BUDGET_WITH_EMPTY_ITEM,
+          items: [{...BUDGET_WITH_EMPTY_ITEM.items[0], cap: "20"}]
+        }
+      })
+    );
 
     render(
       <BudgetItemFormFields
-        budgetItem={{...EMPTY_BUDGET_ITEM, cap: "20"}}
         disabledCategories={[]}
-        setBudgetItem={setBudgetItem}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -103,19 +137,21 @@ describe("BudgetItemFormFields component", () => {
 
     expect(screen.getByText("£ ")).toBeVisible();
     expect(screen.getByDisplayValue("20")).toBeVisible();
+    expect(result.current.getValues("items.0.cap")).toEqual("20");
     fireEvent.changeText(screen.getByLabelText("Cap"), "42");
-    expect(setBudgetItem).toBeCalledTimes(1);
-    expect(setBudgetItem).toBeCalledWith({...EMPTY_BUDGET_ITEM, cap: "42"});
+    expect(result.current.getValues("items.0.cap")).toEqual("42");
   });
 
   test("cannot set disabled category", async () => {
-    const setBudgetItem = jest.fn();
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
 
     render(
       <BudgetItemFormFields
-        budgetItem={EMPTY_BUDGET_ITEM}
         disabledCategories={[TransactionCategory.EATING_OUT]}
-        setBudgetItem={setBudgetItem}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -123,41 +159,23 @@ describe("BudgetItemFormFields component", () => {
     );
 
     const eatingOutCheckbox = screen.getByLabelText("EATING_OUT");
+    expect(eatingOutCheckbox).toBeDisabled();
+    expect(result.current.getValues("items.0.categories")).toEqual([]);
     fireEvent.press(eatingOutCheckbox);
     expect(eatingOutCheckbox).toBeDisabled();
-    expect(setBudgetItem).not.toBeCalled();
+    expect(result.current.getValues("items.0.categories")).toEqual([]);
   });
 
-  test("can set enabled category", async () => {
-    const setBudgetItem = jest.fn();
-
-    render(
-      <BudgetItemFormFields
-        budgetItem={EMPTY_BUDGET_ITEM}
-        disabledCategories={[]}
-        setBudgetItem={setBudgetItem}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+  test("can select and deselect enabled category", async () => {
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
-    fireEvent.press(screen.getByLabelText("BILLS"));
-    expect(setBudgetItem).toBeCalledTimes(1);
-    expect(setBudgetItem).toBeCalledWith({
-      ...EMPTY_BUDGET_ITEM,
-      categories: [TransactionCategory.BILLS]
-    });
-  });
-
-  test("can deselect enabled category", async () => {
-    const setBudgetItem = jest.fn();
-
     render(
       <BudgetItemFormFields
-        budgetItem={{...BUDGET_ITEM_BILLS, cap: ""}}
         disabledCategories={[]}
-        setBudgetItem={setBudgetItem}
+        control={result.current.control}
+        index={0}
       />,
       {
         wrapper: ComponentTestWrapper
@@ -166,14 +184,14 @@ describe("BudgetItemFormFields component", () => {
 
     const billsCheckbox = screen.getByLabelText("BILLS");
     expect(billsCheckbox).toBeEnabled();
-
+    expect(result.current.getValues("items.0.categories")).toEqual([]);
     fireEvent.press(billsCheckbox);
     expect(billsCheckbox).toBeEnabled();
-    expect(setBudgetItem).toBeCalledTimes(1);
-    expect(setBudgetItem).toBeCalledWith({
-      ...BUDGET_ITEM_BILLS,
-      cap: "",
-      categories: []
-    });
+    expect(result.current.getValues("items.0.categories")).toEqual([
+      TransactionCategory.BILLS
+    ]);
+    fireEvent.press(billsCheckbox);
+    expect(billsCheckbox).toBeEnabled();
+    expect(result.current.getValues("items.0.categories")).toEqual([]);
   });
 });
