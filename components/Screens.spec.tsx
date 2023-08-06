@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetsScene from "./Budgets/BudgetsScene";
-import Screens from "./Scenes";
+import Screens from "./Screens";
 import TransactionsScene from "./Transactions/TransactionsScene";
 
 import {ComponentTestWrapper} from "../tests/mocks/utils";

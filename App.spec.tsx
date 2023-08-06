@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {render} from "@testing-library/react-native";
 
 import App from "./App";
-import Screens from "./components/Scenes";
+import Screens from "./components/Screens";
 
 jest.mock("./components/Scenes");
 
