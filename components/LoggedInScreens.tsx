@@ -41,7 +41,7 @@ const Settings = () => {
   );
 };
 
-const Screens = () => (
+const LoggedInScreens = () => (
   <Tab.Navigator>
     <Tab.Screen
       name="Budgets"
@@ -70,4 +70,4 @@ const Screens = () => (
   </Tab.Navigator>
 );
 
-export default Screens;
+export default LoggedInScreens;

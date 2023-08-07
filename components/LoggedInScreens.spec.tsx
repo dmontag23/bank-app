@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetsScene from "./Budgets/BudgetsScene";
-import Screens from "./Screens";
+import LoggedInScreens from "./LoggedInScreens";
 import TransactionsScene from "./Transactions/TransactionsScene";
 
 import {ComponentTestWrapper} from "../tests/mocks/utils";
@@ -13,7 +13,7 @@ jest.mock("./Transactions/TransactionsScene");
 
 describe("Scenes component", () => {
   test("renders the budgets scene as the default screen", () => {
-    render(<Screens />, {
+    render(<LoggedInScreens />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -25,7 +25,7 @@ describe("Scenes component", () => {
   });
 
   test("renders the transactions scene", () => {
-    render(<Screens />, {
+    render(<LoggedInScreens />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -41,7 +41,7 @@ describe("Scenes component", () => {
   });
 
   test("renders the settings scene", () => {
-    render(<Screens />, {
+    render(<LoggedInScreens />, {
       wrapper: ComponentTestWrapper
     });
 
