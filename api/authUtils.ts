@@ -22,8 +22,8 @@ export const getNewToken = async () => {
       ConnectTokenPostResponse
     >("connect/token", {
       grant_type: GrantType.REFRESH,
-      client_id: `${config.integrations.trueLayer.clientId}`,
-      client_secret: `${config.integrations.trueLayer.clientSecret}`,
+      client_id: config.integrations.trueLayer.clientId,
+      client_secret: config.integrations.trueLayer.clientSecret,
       refresh_token: ""
     });
     return newAccessData.access_token;
