@@ -6,8 +6,6 @@ import useGetTruelayerTokens from "./useGetTruelayerTokens";
 
 import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 
-jest.mock("../../../axiosConfig");
-
 describe("useGetTruelayerTokens", () => {
   test("returns correct auth token with no refresh token", async () => {
     // setup AsyncStorage with correct data
