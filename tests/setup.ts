@@ -11,12 +11,7 @@ jest.mock("@react-native-async-storage/async-storage", () => MockAsyncStorage);
 
 // this is needed for the WebView component
 // see https://github.com/react-native-webview/react-native-webview/issues/2934#issuecomment-1524101977
-jest.mock("react-native-webview", () => {
-  const {View} = require("react-native");
-  return {
-    WebView: View
-  };
-});
+jest.mock("react-native-webview", () => jest.fn());
 
 // needed for animated components
 // see https://github.com/jestjs/jest/issues/6434
