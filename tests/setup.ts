@@ -4,7 +4,19 @@ import MockAsyncStorage from "@react-native-async-storage/async-storage/jest/asy
 
 import {testQueryClient} from "./mocks/utils";
 
+// included following https://reactnavigation.org/docs/testing/
+import "react-native-gesture-handler/jestSetup";
+
 jest.mock("@react-native-async-storage/async-storage", () => MockAsyncStorage);
+
+// this is needed for the WebView component
+// see https://github.com/react-native-webview/react-native-webview/issues/2934#issuecomment-1524101977
+jest.mock("react-native-webview", () => {
+  const {View} = require("react-native");
+  return {
+    WebView: View
+  };
+});
 
 // needed for animated components
 // see https://github.com/jestjs/jest/issues/6434

@@ -11,7 +11,7 @@ import {ComponentTestWrapper} from "../tests/mocks/utils";
 jest.mock("./Budgets/BudgetsScene");
 jest.mock("./Transactions/TransactionsScene");
 
-describe("Scenes component", () => {
+describe("LoggedInScreens component", () => {
   test("renders the budgets scene as the default screen", () => {
     render(<LoggedInScreens />, {
       wrapper: ComponentTestWrapper
