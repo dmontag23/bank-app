@@ -1,7 +1,6 @@
 import React from "react";
-import {Text} from "react-native-paper";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, screen, waitFor} from "@testing-library/react-native";
+import {render, waitFor} from "@testing-library/react-native";
 
 import App from "./App";
 import AuthScreens from "./components/AuthScreens/AuthScreens";
