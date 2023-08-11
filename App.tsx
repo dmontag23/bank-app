@@ -1,14 +1,38 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Portal, useTheme} from "react-native-paper";
-import {NavigationContainer} from "@react-navigation/native";
+import {
+  LinkingOptions,
+  NavigationContainer,
+  ParamListBase
+} from "@react-navigation/native";
 
-import Screens from "./components/Scenes";
+import AuthScreens from "./components/AuthScreens/AuthScreens";
+import LoggedInScreens from "./components/LoggedInScreens";
+import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
+import config from "./config.json";
+import TruelayerAuthContext from "./store/truelayer-auth-context";
 
 const App = () => {
   const theme = useTheme();
 
+  const {isLoading, authToken: truelayerAuthToken} =
+    useContext(TruelayerAuthContext);
+
+  const linking: LinkingOptions<ParamListBase> = {
+    prefixes: [config.uri],
+    config: {
+      screens: {
+        TruelayerAuthValidation: config.integrations.trueLayer.callbackEndpoint
+      }
+    }
+  };
+
+  if (isLoading) return <CenteredLoadingSpinner />;
+
   return (
     <NavigationContainer
+      linking={linking}
+      fallback={<CenteredLoadingSpinner />}
       theme={{
         ...theme,
         // TODO: Check these colors to see if they make sense for the react navigation theme
@@ -21,7 +45,7 @@ const App = () => {
         }
       }}>
       <Portal.Host>
-        <Screens />
+        {truelayerAuthToken ? <LoggedInScreens /> : <AuthScreens />}
       </Portal.Host>
     </NavigationContainer>
   );

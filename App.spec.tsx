@@ -1,17 +1,52 @@
 import React from "react";
+import {Text} from "react-native-paper";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render} from "@testing-library/react-native";
+import {render, screen, waitFor} from "@testing-library/react-native";
 
 import App from "./App";
-import Screens from "./components/Screens";
+import AuthScreens from "./components/AuthScreens/AuthScreens";
+import LoggedInScreens from "./components/LoggedInScreens";
+import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
+import TruelayerAuthContext from "./store/truelayer-auth-context";
 
-jest.mock("./components/Scenes");
+jest.mock("./components/AuthScreens/AuthScreens");
+jest.mock("./components/LoggedInScreens");
+jest.mock("./components/ui/CenteredLoadingSpinner");
 
 describe("App component", () => {
-  test("renders correctly", () => {
-    render(<App />);
+  test("renders loading spinner when loading truelayer auth context", () => {
+    render(
+      <TruelayerAuthContext.Provider
+        value={{isLoading: true, authToken: "", refreshToken: ""}}>
+        <App />
+      </TruelayerAuthContext.Provider>
+    );
 
-    expect(Screens).toBeCalledTimes(1);
-    expect(Screens).toBeCalledWith({}, {});
+    expect(CenteredLoadingSpinner).toBeCalledTimes(1);
+    expect(CenteredLoadingSpinner).toBeCalledWith({}, {});
+  });
+
+  test("renders logged in screens with truelayer auth token", async () => {
+    render(
+      <TruelayerAuthContext.Provider
+        value={{isLoading: false, authToken: "dummy-token", refreshToken: ""}}>
+        <App />
+      </TruelayerAuthContext.Provider>
+    );
+
+    await waitFor(() => expect(LoggedInScreens).toBeCalledTimes(1));
+    expect(LoggedInScreens).toBeCalledWith({}, {});
+  });
+
+  test("renders auth screens without truelayer auth token", async () => {
+    render(
+      <TruelayerAuthContext.Provider
+        value={{isLoading: false, authToken: "", refreshToken: ""}}>
+        <App />
+      </TruelayerAuthContext.Provider>
+    );
+
+    await waitFor(() => expect(AuthScreens).toBeCalledTimes(1));
+    expect(AuthScreens).toBeCalledWith({}, {});
   });
 });
