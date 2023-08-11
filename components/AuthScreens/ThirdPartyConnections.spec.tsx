@@ -16,7 +16,7 @@ import {TruelayerAuthStackParamList} from "../../types/screens";
 describe("ThirdPartyConnections component", () => {
   test("does not render button with truelayer auth token", () => {
     // setup route and navigation object to use component
-    const {result: navigation} = renderHook(
+    const {result} = renderHook(
       () =>
         useNavigation<
           StackNavigationProp<
@@ -34,7 +34,7 @@ describe("ThirdPartyConnections component", () => {
         value={{isLoading: false, authToken: "dummy-token", refreshToken: ""}}>
         <ThirdPartyConnections
           route={{key: "", name: "ThirdPartyConnections"}}
-          navigation={navigation.current}
+          navigation={result.current}
         />
       </TruelayerAuthContext.Provider>,
       {
