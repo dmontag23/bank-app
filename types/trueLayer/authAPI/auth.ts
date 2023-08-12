@@ -82,9 +82,9 @@ export type AuthRedirectResponse =
 export const isAuthRedirectSuccess = (
   response: AuthRedirectResponse
 ): response is AuthRedirectSuccessResponse =>
-  (response as AuthRedirectSuccessResponse).code !== undefined;
+  (response as AuthRedirectSuccessResponse)?.code !== undefined;
 
 export const isAuthAPIErrorResponse = (
   response: AuthRedirectResponse
 ): response is AuthAPIErrorResponse =>
-  (response as AuthAPIErrorResponse).error !== undefined;
+  (response as AuthAPIErrorResponse)?.error !== undefined;
