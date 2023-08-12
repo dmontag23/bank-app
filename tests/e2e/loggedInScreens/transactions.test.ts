@@ -1,14 +1,16 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
-import {TransactionCategory} from "../../types/transaction";
+import {TransactionCategory} from "../../../types/transaction";
 import {
   EATING_OUT_CARD_TRANSACTION,
   PAY_BILL_CARD_TRANSACTION
-} from "../mocks/data/transactions";
+} from "../../mocks/data/transactions";
+import {logIn} from "../utils/utils";
 
 describe("Transactions page", () => {
   beforeEach(async () => {
+    await logIn();
     // Note: Tap does not currently work on android API 33.
     // See https://github.com/wix/Detox/issues/3762
     await element(by.id("transactionsBottomNavButton")).tap();

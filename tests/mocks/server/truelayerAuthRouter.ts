@@ -19,9 +19,9 @@ truelayerAuthRouter.post("/connect/token", (req, res) => {
       break;
     default:
       res.status(200).json({
-        access_token: "good-access-token",
+        access_token: "truelayer-access-token",
         expires_in: 3600,
-        refresh_token: "refresh-token",
+        refresh_token: "truelayer-refresh-token",
         token_type: "Bearer",
         scope: "info"
       });
