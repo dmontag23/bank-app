@@ -1,6 +1,7 @@
 import React from "react";
 import {Provider} from "react-native-paper";
-import {describe, expect, test} from "@jest/globals";
+import {describe, expect, jest, test} from "@jest/globals";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {
   fireEvent,
@@ -10,20 +11,40 @@ import {
 } from "@testing-library/react-native";
 
 import App from "../../App";
+import {trueLayerDataApi} from "../../axiosConfig";
+import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
+import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {testQueryClient} from "../mocks/utils";
 
-describe("App views", () => {
+jest.mock("../../axiosConfig");
+
+describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
+    // setup mocks
+    await AsyncStorage.setItem(
+      "truelayer-auth-token",
+      "dummy-truelayer-auth-token"
+    );
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
+
     render(
       <QueryClientProvider client={testQueryClient}>
-        <Provider>
-          <App />
-        </Provider>
+        <TruelayerAuthContextProvider>
+          <Provider>
+            <App />
+          </Provider>
+        </TruelayerAuthContextProvider>
       </QueryClientProvider>
     );
 
     // check the budgets scene is rendered by default
-    expect(screen.getByText("Please select a budget")).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText("Please select a budget")).toBeVisible()
+    );
 
     // navigate to the transactions scene
     expect(screen.getAllByText("Transactions").length).toBe(2);
