@@ -5,7 +5,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
-import BudgetsScene from "./Budgets/BudgetsScene";
+import BudgetsScreen from "./Budgets/BudgetsScreen";
 import TransactionsScene from "./Transactions/TransactionsScene";
 
 const Tab = createMaterialBottomTabNavigator();
@@ -45,7 +45,7 @@ const LoggedInScreens = () => (
   <Tab.Navigator>
     <Tab.Screen
       name="Budgets"
-      component={BudgetsScene}
+      component={BudgetsScreen}
       options={{
         tabBarIcon: ({focused}) => budgetsIcon(focused),
         tabBarTestID: "budgetsBottomNavButton"

@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../../axiosConfig";
-import BudgetsScene from "../../../components/Budgets/BudgetsScene";
+import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
 import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
@@ -28,7 +28,7 @@ jest.mock("../../../axiosConfig");
 
 describe("Budget scene", () => {
   test("renders the default home page with no selected budget", () => {
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -53,7 +53,7 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -89,7 +89,7 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -127,7 +127,7 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -173,7 +173,7 @@ describe("Budget scene", () => {
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
     ]);
 
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -220,7 +220,7 @@ describe("Budget scene", () => {
   });
 
   test("cancels the new budget form", async () => {
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -253,7 +253,7 @@ describe("Budget scene", () => {
       TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
     ]);
 
-    render(<BudgetsScene />, {
+    render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
     });
 

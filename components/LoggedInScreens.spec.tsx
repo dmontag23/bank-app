@@ -2,13 +2,13 @@ import React from "react";
 import {describe, expect, jest, test} from "@jest/globals";
 import {fireEvent, render, screen} from "@testing-library/react-native";
 
-import BudgetsScene from "./Budgets/BudgetsScene";
+import BudgetsScreen from "./Budgets/BudgetsScreen";
 import LoggedInScreens from "./LoggedInScreens";
 import TransactionsScene from "./Transactions/TransactionsScene";
 
 import {ComponentTestWrapper} from "../tests/mocks/utils";
 
-jest.mock("./Budgets/BudgetsScene");
+jest.mock("./Budgets/BudgetsScreen");
 jest.mock("./Transactions/TransactionsScene");
 
 describe("LoggedInScreens component", () => {
@@ -21,7 +21,7 @@ describe("LoggedInScreens component", () => {
     expect(allButtons.length).toBe(3);
 
     allButtons.map(button => expect(button).toBeVisible());
-    expect(BudgetsScene).toBeCalledTimes(1);
+    expect(BudgetsScreen).toBeCalledTimes(1);
   });
 
   test("renders the transactions scene", () => {

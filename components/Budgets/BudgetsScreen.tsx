@@ -8,7 +8,7 @@ import BudgetHeader from "./BudgetHeader";
 
 import {Budget as BudgetType} from "../../types/budget";
 
-const BudgetsScene = () => {
+const BudgetsScreen = () => {
   const [selectedBudget, setSelectedBudget] = useState<BudgetType | null>(null);
   const insets = useSafeAreaInsets();
 
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   text: {textAlign: "center"}
 });
 
-export default BudgetsScene;
+export default BudgetsScreen;
