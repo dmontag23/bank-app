@@ -12,7 +12,7 @@ import {ComponentTestWrapper} from "../../tests/mocks/utils";
 jest.mock("./Budget");
 jest.mock("./BudgetHeader");
 
-describe("BudgetScene component", () => {
+describe("BudgetsScreen component", () => {
   test("renders a screen without a selected budget", () => {
     render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper

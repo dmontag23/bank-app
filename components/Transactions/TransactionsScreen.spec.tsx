@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {render, screen} from "@testing-library/react-native";
 
 import TransactionList from "./TransactionList";
-import TransactionsScene from "./TransactionsScene";
+import TransactionsScreen from "./TransactionsScreen";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
@@ -15,7 +15,7 @@ jest.mock("./TransactionList");
 jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useTransactions");
 
-describe("TransactionsScene component", () => {
+describe("TransactionsScreen component", () => {
   test("renders a loading spinner when loading transactions", () => {
     // setup mocks
     const mockUseTransactions =
@@ -28,7 +28,7 @@ describe("TransactionsScene component", () => {
       transactions: []
     }));
 
-    render(<TransactionsScene />, {
+    render(<TransactionsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -59,7 +59,7 @@ describe("TransactionsScene component", () => {
       transactions: testTransactions
     }));
 
-    render(<TransactionsScene />, {
+    render(<TransactionsScreen />, {
       wrapper: ComponentTestWrapper
     });
 

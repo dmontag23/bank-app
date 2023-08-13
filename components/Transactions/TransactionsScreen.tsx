@@ -8,7 +8,7 @@ import TransactionList from "./TransactionList";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
-const TransactionsScene = () => {
+const TransactionsScreen = () => {
   // TODO: Come back and use actual account number
   const {isLoading, transactions} = useTransactions(
     "2cbf9b6063102763ccbe3ea62f1b3e72"
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
   text: {marginVertical: 20, textAlign: "center"}
 });
 
-export default TransactionsScene;
+export default TransactionsScreen;

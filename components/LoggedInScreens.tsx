@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
 import BudgetsScreen from "./Budgets/BudgetsScreen";
-import TransactionsScene from "./Transactions/TransactionsScene";
+import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 const Tab = createMaterialBottomTabNavigator();
 const ICON_SIZE = 24;
@@ -53,7 +53,7 @@ const LoggedInScreens = () => (
     />
     <Tab.Screen
       name="Transactions"
-      component={TransactionsScene}
+      component={TransactionsScreen}
       options={{
         tabBarIcon: ({focused}) => transactionsIcon(focused),
         tabBarTestID: "transactionsBottomNavButton"

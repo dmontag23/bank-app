@@ -4,12 +4,12 @@ import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetsScreen from "./Budgets/BudgetsScreen";
 import LoggedInScreens from "./LoggedInScreens";
-import TransactionsScene from "./Transactions/TransactionsScene";
+import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 import {ComponentTestWrapper} from "../tests/mocks/utils";
 
 jest.mock("./Budgets/BudgetsScreen");
-jest.mock("./Transactions/TransactionsScene");
+jest.mock("./Transactions/TransactionsScreen");
 
 describe("LoggedInScreens component", () => {
   test("renders the budgets scene as the default screen", () => {
@@ -37,7 +37,7 @@ describe("LoggedInScreens component", () => {
     // TODO: Investigate why fireEvent.press does not work here
     fireEvent(transactionButton, "click");
 
-    expect(TransactionsScene).toBeCalledTimes(1);
+    expect(TransactionsScreen).toBeCalledTimes(1);
   });
 
   test("renders the settings scene", () => {

@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../../axiosConfig";
-import TransactionsScene from "../../../components/Transactions/TransactionsScene";
+import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
@@ -29,7 +29,7 @@ describe("Transactions", () => {
       trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
     ).get.mockImplementation(async () => new Promise(() => {}));
 
-    render(<TransactionsScene />, {
+    render(<TransactionsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -47,7 +47,7 @@ describe("Transactions", () => {
       >
     ).mockImplementation(async () => testTransactions);
 
-    render(<TransactionsScene />, {
+    render(<TransactionsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
@@ -70,7 +70,7 @@ describe("Transactions", () => {
     const testTransactionName =
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.description;
 
-    render(<TransactionsScene />, {
+    render(<TransactionsScreen />, {
       wrapper: ComponentTestWrapper
     });
 
