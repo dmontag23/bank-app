@@ -1,3 +1,5 @@
+import {AuthAPIErrorResponse} from "./serverResponse";
+
 import {Permutations} from "../../utils";
 
 export enum GrantType {
@@ -66,3 +68,23 @@ export type ConnectTokenPostResponse = {
   // that are space-delineated, e.g. "info accounts balance" etc
   scope: Permutations<`${ResponseScope}`>;
 };
+
+type AuthRedirectSuccessResponse = {
+  code: string;
+  scope: Permutations<`${ResponseScope}`>;
+};
+
+export type AuthRedirectResponse =
+  | AuthRedirectSuccessResponse
+  | AuthAPIErrorResponse;
+
+// type guards for the auth redirect response
+export const isAuthRedirectSuccess = (
+  response: AuthRedirectResponse
+): response is AuthRedirectSuccessResponse =>
+  (response as AuthRedirectSuccessResponse)?.code !== undefined;
+
+export const isAuthAPIErrorResponse = (
+  response: AuthRedirectResponse
+): response is AuthAPIErrorResponse =>
+  (response as AuthAPIErrorResponse)?.error !== undefined;

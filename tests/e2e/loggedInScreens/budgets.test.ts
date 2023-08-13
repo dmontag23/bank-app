@@ -1,8 +1,9 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
-import {Budget} from "../../types/budget";
-import {TransactionCategory} from "../../types/transaction";
+import {Budget} from "../../../types/budget";
+import {TransactionCategory} from "../../../types/transaction";
+import {logIn} from "../utils/utils";
 
 /* TODO: find a way to remove this function
 With Detox, you cannot interact with AsyncStorage directly
@@ -66,6 +67,7 @@ const createBudget = async (budget: Budget) => {
 
 describe("Budget page", () => {
   beforeEach(async () => {
+    await logIn();
     // Note: Tap does not currently work on android API 33.
     // See https://github.com/wix/Detox/issues/3762
     await element(by.id("budgetsBottomNavButton")).tap();

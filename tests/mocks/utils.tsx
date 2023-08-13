@@ -28,7 +28,11 @@ type TanstackQueryTestWrapperProps = {
 export const TanstackQueryTestWrapper = ({
   children
 }: TanstackQueryTestWrapperProps) => (
-  <QueryClientProvider client={testQueryClient}>{children}</QueryClientProvider>
+  <NavigationContainer>
+    <QueryClientProvider client={testQueryClient}>
+      {children}
+    </QueryClientProvider>
+  </NavigationContainer>
 );
 
 type ComponentTestWrapperProps = {
