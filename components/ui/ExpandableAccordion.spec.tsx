@@ -7,9 +7,6 @@ import ExpandableAccordion from "./ExpandableAccordion";
 
 import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
-// TODO: See if there's a good way to test the icon here
-// Also see if its possible to test the colors (other than the text colors already tested)
-
 describe("ExpandableAccordion component", () => {
   test("renders a closed accordion by default", async () => {
     render(
@@ -84,6 +81,7 @@ describe("ExpandableAccordion component", () => {
     expect(accordionChild).not.toBeOnTheScreen();
   });
 
+  // TODO: See if its possible to test the colors (other than the text colors already tested)
   test("accordion uses different color scheme", async () => {
     render(
       <ExpandableAccordion
@@ -103,5 +101,19 @@ describe("ExpandableAccordion component", () => {
     fireEvent.press(accordionTitle);
 
     expect(accordionTitle).toHaveStyle({color: "green"});
+  });
+
+  // TODO: See if there's a good way to test the icon here
+  test("renders an accordion with an icon", async () => {
+    render(
+      <ExpandableAccordion title="Test title" icon="folder">
+        <Text>Expanded</Text>
+      </ExpandableAccordion>,
+      {
+        wrapper: ComponentTestWrapper
+      }
+    );
+
+    expect(screen.getByText("Test title")).toBeVisible();
   });
 });
