@@ -7,8 +7,10 @@ import {
 } from "@react-navigation/native";
 
 import AuthScreens from "./components/AuthScreens/AuthScreens";
+import ErrorModal from "./components/errors/ErrorModal";
 import LoggedInScreens from "./components/LoggedInScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
+import Toasts from "./components/ui/Toasts";
 import config from "./config.json";
 import TruelayerAuthContext from "./store/truelayer-auth-context";
 
@@ -46,6 +48,8 @@ const App = () => {
       }}>
       <Portal.Host>
         {truelayerAuthToken ? <LoggedInScreens /> : <AuthScreens />}
+        <Toasts />
+        <ErrorModal />
       </Portal.Host>
     </NavigationContainer>
   );
