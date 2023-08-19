@@ -49,7 +49,8 @@ describe("BudgetItemForm component", () => {
     expect(ExpandableAccordion).toBeCalledTimes(1);
     expect(ExpandableAccordion).toBeCalledWith(
       expect.objectContaining({
-        title: "Budget Item"
+        title: "Budget Item",
+        isInitiallyExpanded: true
       }),
       {}
     );
@@ -69,7 +70,8 @@ describe("BudgetItemForm component", () => {
     expect(ExpandableAccordion).toBeCalledTimes(1);
     expect(ExpandableAccordion).toBeCalledWith(
       expect.objectContaining({
-        title: "Item 1"
+        title: "Item 1",
+        isInitiallyExpanded: true
       }),
       {}
     );
