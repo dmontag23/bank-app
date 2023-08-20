@@ -13,11 +13,7 @@ const BudgetsScreen = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        paddingTop: insets.top
-      }}>
+    <View style={[styles.container, {paddingTop: insets.top}]}>
       <BudgetHeader
         selectedBudget={selectedBudget}
         setSelectedBudget={setSelectedBudget}

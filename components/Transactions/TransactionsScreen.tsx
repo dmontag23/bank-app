@@ -15,11 +15,7 @@ const TransactionsScreen = () => {
   );
   const insets = useSafeAreaInsets();
   return (
-    <View
-      style={{
-        ...styles.container,
-        paddingTop: insets.top
-      }}>
+    <View style={[styles.container, {paddingTop: insets.top}]}>
       {isLoading ? (
         <LoadingSpinner />
       ) : (
