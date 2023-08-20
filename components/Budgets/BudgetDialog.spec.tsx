@@ -2,6 +2,7 @@ import React from "react";
 import {v4} from "uuid";
 import {describe, expect, jest, test} from "@jest/globals";
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -160,7 +161,7 @@ describe("BudgetDialog component", () => {
       ...DEFAULT_BUDGET,
       items: [{id: "item-1", name: "Item 1", cap: "30", categories: []}]
     };
-    control._reset(newBudget);
+    act(() => control._reset(newBudget));
 
     const createButton = screen.getByText("Create");
     expect(createButton).toBeVisible();
