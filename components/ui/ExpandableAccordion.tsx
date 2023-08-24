@@ -35,6 +35,7 @@ const ExpandableAccordion = ({
   return (
     <List.Accordion
       title={title}
+      titleNumberOfLines={2}
       left={props => icon && createIcon({...props, icon})}
       onPress={() => {
         LayoutAnimation.easeInEaseOut();
