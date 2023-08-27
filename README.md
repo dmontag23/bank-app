@@ -6,6 +6,8 @@ The app is built with [React Native](https://reactnative.dev/), the [React Nativ
 
 ## Requirements
 
+This project requires [npm](https://www.npmjs.com/) in order to run locally.
+
 Follow the [instructions](https://reactnative.dev/docs/environment-setup) from the React Native docs to setup the development environment in order to run this project locally.
 
 In order to run the Detox e2e tests, follow the [getting started instructions](https://wix.github.io/Detox/docs/introduction/getting-started) from the Detox docs. Note that, on the [project setup](https://wix.github.io/Detox/docs/introduction/project-setup) page, only step 5 (building the app) might need to be followed in order for the tests to run locally.
@@ -26,7 +28,7 @@ To configure the app to use the mock server instead of the external APIs, replac
 
 To run the unit and integration tests, run `npm run test:unit`.
 
-To run the e2e tests, run `export E2E_CONFIG=ios.sim.debug` to run the tests on IOS or `export E2E_CONFIG=android.att.debug` to run the tests on Android. Run `npm start` to start the development server. Choose the platform on which you want to run the tests from the metro menu. Then, in a separate terminal, run `npm run test:e2e`.
+To run the e2e tests, firstly ensure `config.json` in the root of the repo has the contents of `config-mock-server.json`. Run `npm start` to start the development server and choose the platform on which you want to run the tests from the metro menu. In a separate terminal, run `export E2E_CONFIG=ios.sim.debug` to run the tests on IOS or `export E2E_CONFIG=android.att.debug` to run the tests on Android. Then run `npm run test:e2e`.
 
 To run all of the tests for the project, follow the steps for the e2e tests outlined in the paragraph above, but run `npm test` instead of `npm run test:e2e`.
 
