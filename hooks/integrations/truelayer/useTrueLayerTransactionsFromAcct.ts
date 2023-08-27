@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 
-import {trueLayerDataApi} from "../../../axiosConfig";
+import {trueLayerDataApi} from "../../../api/axiosConfig";
+import {AppError} from "../../../types/errors";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
-import {DataAPIErrorResponse} from "../../../types/trueLayer/dataAPI/serverResponse";
 
 const getTransactions = async (acctId: string) =>
   await trueLayerDataApi.get<CardTransaction[]>(
@@ -10,7 +10,7 @@ const getTransactions = async (acctId: string) =>
   );
 
 const useTrueLayerTransactionsFromAcct = (acctId: string) =>
-  useQuery<CardTransaction[], DataAPIErrorResponse>({
+  useQuery<CardTransaction[], AppError>({
     queryKey: ["trueLayerTransactions", acctId],
     queryFn: () => getTransactions(acctId)
   });

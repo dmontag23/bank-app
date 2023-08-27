@@ -8,7 +8,7 @@ import {
   waitFor
 } from "@testing-library/react-native";
 
-import {trueLayerDataApi} from "../../../axiosConfig";
+import {trueLayerDataApi} from "../../../api/axiosConfig";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";

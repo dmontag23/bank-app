@@ -5,8 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {render, screen, waitFor} from "@testing-library/react-native";
 
+import {trueLayerDataApi} from "../../api/axiosConfig";
 import App from "../../App";
-import {trueLayerDataApi} from "../../axiosConfig";
 import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {testQueryClient} from "../mocks/utils";

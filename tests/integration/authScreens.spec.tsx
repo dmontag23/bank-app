@@ -10,7 +10,7 @@ import {
   waitFor
 } from "@testing-library/react-native";
 
-import {trueLayerAuthApi} from "../../axiosConfig";
+import {trueLayerAuthApi} from "../../api/axiosConfig";
 import AuthScreens from "../../components/AuthScreens/AuthScreens";
 import ThirdPartyConnections from "../../components/AuthScreens/ThirdPartyConnections";
 import TruelayerAuthValidation from "../../components/AuthScreens/Truelayer/TruelayerAuthValidation";

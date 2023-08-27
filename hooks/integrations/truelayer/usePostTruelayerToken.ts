@@ -1,6 +1,6 @@
 import {useMutation} from "@tanstack/react-query";
 
-import {trueLayerAuthApi} from "../../../axiosConfig";
+import {trueLayerAuthApi} from "../../../api/axiosConfig";
 import config from "../../../config.json";
 import {
   ConnectTokenPostRequest,

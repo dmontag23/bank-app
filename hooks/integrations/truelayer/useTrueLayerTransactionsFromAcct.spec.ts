@@ -3,16 +3,16 @@ import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct";
 
-import {trueLayerDataApi} from "../../../axiosConfig";
+import {trueLayerDataApi} from "../../../api/axiosConfig";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
-import {ERROR_429_RESPONSE} from "../../../tests/mocks/trueLayer/dataAPI/data/serverResponseData";
 import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
+import {AppError} from "../../../types/errors";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
 describe("useTrueLayerTransactions", () => {
   test("returns a correct list of card transactions on a 200 status code", async () => {
@@ -40,12 +40,13 @@ describe("useTrueLayerTransactions", () => {
     expect(result.current.error).toBeNull();
   });
 
-  test("returns an error message on a 429 status code", async () => {
+  test("returns an error message", async () => {
+    const mockError: AppError = {id: "error", error: "error"};
     (
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<CardTransaction[]>
       >
-    ).mockImplementation(async () => Promise.reject(ERROR_429_RESPONSE));
+    ).mockImplementation(async () => Promise.reject(mockError));
 
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
@@ -56,6 +57,6 @@ describe("useTrueLayerTransactions", () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toEqual(ERROR_429_RESPONSE);
+    expect(result.current.error).toEqual(mockError);
   });
 });

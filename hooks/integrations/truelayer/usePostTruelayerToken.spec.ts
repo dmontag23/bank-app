@@ -3,7 +3,7 @@ import {renderHook, waitFor} from "@testing-library/react-native";
 
 import usePostTruelayerToken from "./usePostTruelayerToken";
 
-import {trueLayerAuthApi} from "../../../axiosConfig";
+import {trueLayerAuthApi} from "../../../api/axiosConfig";
 import config from "../../../config.json";
 import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 import {

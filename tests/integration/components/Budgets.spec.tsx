@@ -8,7 +8,7 @@ import {
   waitFor
 } from "@testing-library/react-native";
 
-import {trueLayerDataApi} from "../../../axiosConfig";
+import {trueLayerDataApi} from "../../../api/axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
 import {Budget as BudgetType} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";

@@ -2,7 +2,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {renderHook, waitFor} from "@testing-library/react-native";
 
-import {trueLayerDataApi} from "../../axiosConfig";
+import {trueLayerDataApi} from "../../api/axiosConfig";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
