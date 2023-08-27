@@ -10,11 +10,13 @@ This project requires [npm](https://www.npmjs.com/) in order to run locally.
 
 Follow the [instructions](https://reactnative.dev/docs/environment-setup) from the React Native docs to setup the development environment in order to run this project locally.
 
-In order to run the Detox e2e tests, follow the [getting started instructions](https://wix.github.io/Detox/docs/introduction/getting-started) from the Detox docs. Note that, on the [project setup](https://wix.github.io/Detox/docs/introduction/project-setup) page, only step 5 (building the app) might need to be followed in order for the tests to run locally.
+In order to run the Detox e2e tests, follow the [getting started instructions](https://wix.github.io/Detox/docs/introduction/getting-started) from the Detox docs.
 
-## Cloning the project and starting the development server
+## Cloning the project, installing dependencies, and starting the development server
 
-Clone the repo by running `git clone git@github.com:dmontag23/bank-app.git`. Navigate into the cloned directory and run `npm i` to install all of the project dependencies, followed by `npm start` to start the development sever.
+Clone the repo by running `git clone git@github.com:dmontag23/bank-app.git`. Navigate into the cloned directory and run `npm i` to install all of the project dependencies. Then navigate into the `ios` directory with `cd ios` and run `pod install` to install all the pods needed for ios development. To run the Detox e2e tests locally, follow step 5 (building the app) from the [project setup Detox docs](https://wix.github.io/Detox/docs/introduction/project-setup) to build the app for each desired configuration (the debug configurations are sufficient for local testing).
+
+Run `npm start` to start the development sever.
 
 ## Mock server
 
