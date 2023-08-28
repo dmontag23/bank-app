@@ -26,7 +26,7 @@ import {ComponentTestWrapper} from "../../mocks/utils";
 
 jest.mock("../../../api/axiosConfig");
 
-describe("Budget scene", () => {
+describe("Budget screen", () => {
   test("renders the default home page with no selected budget", () => {
     render(<BudgetsScreen />, {
       wrapper: ComponentTestWrapper
