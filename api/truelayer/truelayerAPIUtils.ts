@@ -1,6 +1,5 @@
 // TODO: COME BACK AND USE SECURE STORAGE FOR STORING TOKENS!!!
 import {AxiosError, isAxiosError} from "axios";
-import {v4 as uuid} from "uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // TODO: this is needed in order to be able to unit test these functions
@@ -10,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as truelayerAPIUtils from "./truelayerAPIUtils";
 
 import config from "../../config.json";
-import {AppError} from "../../types/errors";
+import {IntegrationErrorResponse} from "../../types/errors";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -24,10 +23,12 @@ import {trueLayerAuthApi} from "../axiosConfig";
 // TODO: Cleanup this function as all the conditions are confusing
 export const handleTruelayerError =
   (apiName: string) => async (error: Error | AxiosError) => {
-    console.error(`A Truelayer ${apiName} error has occurred: `, error);
+    console.error(
+      `A Truelayer ${apiName} error has occurred: `,
+      isAxiosError(error) ? JSON.stringify(error) : error
+    );
 
-    const errorToReturn: AppError = {
-      id: uuid(),
+    const errorToReturn: IntegrationErrorResponse = {
       error: "",
       // TODO: Make the service name an enum?
       service: `Truelayer ${apiName}`
@@ -36,7 +37,7 @@ export const handleTruelayerError =
     if (isAxiosError<AuthAPIErrorResponse | DataAPIErrorResponse>(error)) {
       const errorResponse = error.response;
 
-      if (errorResponse) {
+      if (errorResponse?.data) {
         if (errorResponse.status === 401 && apiName === "Data API")
           await truelayerAPIUtils.getNewToken();
 
@@ -48,7 +49,9 @@ export const handleTruelayerError =
               errorResponse.data.error_description ||
               errorResponse.data.error_details
                 ? `${errorResponse.data.error_description ?? ""} ${
-                    JSON.stringify(errorResponse.data.error_details) ?? ""
+                    Object.keys(errorResponse.data.error_details ?? {}).length
+                      ? JSON.stringify(errorResponse.data.error_details)
+                      : ""
                   }`.trim()
                 : error.message,
             status: errorResponse.status,
@@ -100,7 +103,6 @@ export const getNewToken = async () => {
   );
   if (!refreshToken)
     return Promise.reject({
-      id: uuid(),
       error: "No refresh token found",
       errorMessage: "Could not get a valid refresh token from storage"
     });
@@ -134,7 +136,6 @@ export const storeNewTokens = async (
     ]);
   } catch (error: unknown) {
     return Promise.reject({
-      id: uuid(),
       error: "Cannot store new tokens in AsyncStorage",
       errorMessage: `An error occurred when trying to store the access and refresh tokens in storage: ${error}`
     });
@@ -146,7 +147,6 @@ export const getTokenFromStorage = async (tokenName: string) => {
     return await AsyncStorage.getItem(tokenName);
   } catch (error: unknown) {
     return Promise.reject({
-      id: uuid(),
       error: `Cannot fetch AsyncStorage ${tokenName} token`,
       errorMessage: `An error occurred when trying to fetch the token from storage: ${error}`
     });

@@ -12,7 +12,7 @@ import {
 } from "./truelayerAPIUtils";
 
 import config from "../../config.json";
-import {AppError} from "../../types/errors";
+import {IntegrationErrorResponse} from "../../types/errors";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -22,9 +22,6 @@ import {AuthAPIErrorResponse} from "../../types/trueLayer/authAPI/serverResponse
 import {DataAPIErrorResponse} from "../../types/trueLayer/dataAPI/serverResponse";
 import {trueLayerAuthApi} from "../axiosConfig";
 
-jest.mock("uuid", () => ({
-  v4: () => "unique-id"
-}));
 jest.mock("../axiosConfig");
 
 describe("Truelayer API Utils", () => {
@@ -35,8 +32,7 @@ describe("Truelayer API Utils", () => {
 
       const mockError = new Error("This is a test error message");
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "Error",
         errorMessage: "This is a test error message",
         service: "Truelayer Test API Name"
@@ -59,8 +55,7 @@ describe("Truelayer API Utils", () => {
 
       const mockError = new AxiosError("This is an axios error");
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "AxiosError",
         errorMessage: "This is an axios error",
         service: "Truelayer Test API Name"
@@ -73,7 +68,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Test API Name error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
     });
 
@@ -93,8 +88,7 @@ describe("Truelayer API Utils", () => {
         toJSON: () => ({})
       };
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "AxiosError",
         errorMessage: "This is an axios error",
         service: "Truelayer Test API Name",
@@ -109,7 +103,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Test API Name error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
     });
 
@@ -140,8 +134,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "access_denied",
         errorMessage: "Test error message",
         service: "Truelayer Auth API",
@@ -155,7 +148,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Auth API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -193,8 +186,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "not_found",
         errorMessage: "Cannot find the page",
         service: "Truelayer Data API",
@@ -209,7 +201,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Data API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -247,8 +239,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "not_found",
         errorMessage: '{"reason":"Not sure why"}',
         service: "Truelayer Data API",
@@ -263,7 +254,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Data API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -302,8 +293,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "Error title",
         errorMessage: "see There's likely a url here",
         service: "Truelayer Data API",
@@ -317,7 +307,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Data API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -358,8 +348,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "Error title",
         errorMessage: "You had an oopsie see There's likely a url here",
         service: "Truelayer Data API",
@@ -374,7 +363,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Data API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -415,8 +404,7 @@ describe("Truelayer API Utils", () => {
         response
       );
 
-      const expectedAppError: AppError = {
-        id: "unique-id",
+      const expectedAppError: IntegrationErrorResponse = {
         error: "Error title",
         errorMessage: "You had an oopsie see There's likely a url here",
         service: "Truelayer Data API",
@@ -431,7 +419,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleError).toBeCalledTimes(1);
       expect(consoleError).toBeCalledWith(
         "A Truelayer Data API error has occurred: ",
-        mockError
+        JSON.stringify(mockError)
       );
       expect(getNewTokenMock).not.toBeCalled();
 
@@ -481,7 +469,6 @@ describe("Truelayer API Utils", () => {
         .mockImplementation(async () => null);
 
       await expect(getNewToken()).rejects.toEqual({
-        id: "unique-id",
         error: "No refresh token found",
         errorMessage: "Could not get a valid refresh token from storage"
       });
@@ -602,7 +589,6 @@ describe("Truelayer API Utils", () => {
       await expect(
         storeNewTokens("access-token", "refresh-token")
       ).rejects.toEqual({
-        id: "unique-id",
         error: "Cannot store new tokens in AsyncStorage",
         errorMessage:
           "An error occurred when trying to store the access and refresh tokens in storage: Error with multiSet"
@@ -627,7 +613,6 @@ describe("Truelayer API Utils", () => {
       );
 
       await expect(getTokenFromStorage("test-token")).rejects.toEqual({
-        id: "unique-id",
         error: "Cannot fetch AsyncStorage test-token token",
         errorMessage:
           "An error occurred when trying to fetch the token from storage: Error with getItem"
