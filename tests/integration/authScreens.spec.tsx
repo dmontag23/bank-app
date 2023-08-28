@@ -25,7 +25,7 @@ import {
 } from "../../types/trueLayer/authAPI/auth";
 import {ComponentTestWrapper} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("Auth screen views", () => {
   // creating a mock navigator here because you can only access the

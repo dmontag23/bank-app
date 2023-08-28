@@ -13,7 +13,7 @@ import {
 } from "../../../types/trueLayer/authAPI/auth";
 import {AuthAPIErrorResponse} from "../../../types/trueLayer/authAPI/serverResponse";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
 describe("usePostTruelayerToken", () => {
   test("returns correct data on a successful request", async () => {

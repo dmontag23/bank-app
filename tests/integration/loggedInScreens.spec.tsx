@@ -14,7 +14,7 @@ import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {ComponentTestWrapper} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
@@ -60,7 +60,7 @@ describe("Logged in screen views", () => {
     expect(settingsButton).toBeVisible();
     // TODO: investigate why fireEvent.press does not work here
     fireEvent(settingsButton, "click");
-    expect(screen.getByText("All settings")).toBeVisible();
+    expect(screen.getAllByText("Settings").length).toBe(3);
 
     // navigate back to the budgets scene
     const budgetsButton = screen.getByRole("button", {

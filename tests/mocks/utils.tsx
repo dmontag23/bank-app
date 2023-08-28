@@ -4,7 +4,7 @@ import {expect} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
-import ErrorContext, {defaultErrorContext} from "../../store/error-context";
+import ErrorContext from "../../store/error-context";
 
 export const testQueryClient = new QueryClient({
   defaultOptions: {
@@ -31,15 +31,22 @@ type TanstackQueryTestWrapperProps = {
 export const TanstackQueryTestWrapper = ({
   children,
   errorContextValue
-}: TanstackQueryTestWrapperProps) => (
-  <NavigationContainer>
-    <QueryClientProvider client={testQueryClient}>
-      <ErrorContext.Provider value={errorContextValue ?? defaultErrorContext}>
-        {children}
-      </ErrorContext.Provider>
-    </QueryClientProvider>
-  </NavigationContainer>
-);
+}: TanstackQueryTestWrapperProps) => {
+  const errorContextWrapper = errorContextValue ? (
+    <ErrorContext.Provider value={errorContextValue}>
+      {children}
+    </ErrorContext.Provider>
+  ) : (
+    children
+  );
+  return (
+    <NavigationContainer>
+      <QueryClientProvider client={testQueryClient}>
+        {errorContextWrapper}
+      </QueryClientProvider>
+    </NavigationContainer>
+  );
+};
 
 type ComponentTestWrapperProps = {
   children: ReactNode;

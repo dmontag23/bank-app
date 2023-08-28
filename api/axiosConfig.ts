@@ -17,7 +17,7 @@ export const trueLayerAuthApi = axios.create({
 });
 
 export const trueLayerDataApi = axios.create({
-  baseURL: `${config.integrations.trueLayer.sandboxDataUrl}/`,
+  baseURL: `${config.integrations.trueLayer.sandboxDataUrl}/data`,
   headers: {
     "Content-Type": "application/json",
     // ensures TrueLayer's cache is not used

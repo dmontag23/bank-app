@@ -12,7 +12,7 @@ import {
 } from "../mocks/trueLayer/dataAPI/data/cardData";
 import {TanstackQueryTestWrapper} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer transactions exist", async () => {

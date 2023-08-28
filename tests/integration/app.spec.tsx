@@ -11,7 +11,7 @@ import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {testQueryClient} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("App component", () => {
   test("shows the auth screens if not logged in", async () => {

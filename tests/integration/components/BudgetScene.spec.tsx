@@ -24,7 +24,7 @@ import {
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {ComponentTestWrapper} from "../../mocks/utils";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
 describe("Budget scene", () => {
   test("renders the default home page with no selected budget", () => {

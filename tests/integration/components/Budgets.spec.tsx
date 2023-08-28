@@ -23,7 +23,7 @@ import {
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {ComponentTestWrapper} from "../../mocks/utils";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
 describe("Budgets", () => {
   const EMPTY_BUDGET: BudgetType = {

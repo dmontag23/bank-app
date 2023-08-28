@@ -18,7 +18,7 @@ import {
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {ComponentTestWrapper} from "../../mocks/utils";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
 describe("Transactions", () => {
   test("renders a loading spinner when loading", () => {
