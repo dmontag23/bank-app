@@ -11,7 +11,7 @@ describe("Settings page", () => {
     await element(by.id("settingsBottomNavButton")).tap();
   });
 
-  it("should show all settings text", async () => {
-    await expect(element(by.text("All settings"))).toBeVisible();
+  it("should show settings title", async () => {
+    await expect(element(by.text("Settings")).atIndex(0)).toBeVisible();
   });
 });

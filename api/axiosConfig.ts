@@ -10,14 +10,14 @@ import {handleTruelayerError} from "./truelayer/truelayerAPIUtils";
 import config from "../config.json";
 
 export const trueLayerAuthApi = axios.create({
-  baseURL: `${config.integrations.trueLayer.sandboxAuthUrl}/`,
+  baseURL: config.integrations.trueLayer.sandboxAuthUrl,
   headers: {
     "Content-Type": "application/json"
   }
 });
 
 export const trueLayerDataApi = axios.create({
-  baseURL: `${config.integrations.trueLayer.sandboxDataUrl}/data`,
+  baseURL: config.integrations.trueLayer.sandboxDataUrl,
   headers: {
     "Content-Type": "application/json",
     // ensures TrueLayer's cache is not used

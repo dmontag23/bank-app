@@ -33,7 +33,7 @@ describe("authentication flow", () => {
     };
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/data/v1/cards/1/transactions")
+      .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
     await expect(
@@ -70,7 +70,7 @@ describe("authentication flow", () => {
     };
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/data/v1/cards/1/transactions")
+      .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
     await expect(
@@ -96,7 +96,7 @@ describe("authentication flow", () => {
     };
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/data/v1/cards/1/transactions")
+      .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
     await expect(
@@ -121,7 +121,7 @@ describe("authentication flow", () => {
     };
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/data/v1/cards/1/transactions")
+      .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
     await expect(
@@ -164,7 +164,7 @@ describe("authentication flow", () => {
     };
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/data/v1/cards/1/transactions")
+      .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
     await expect(
@@ -217,7 +217,7 @@ describe("basic success and error response from Truelayer APIs", () => {
         Authorization: "Bearer good-truelayer-auth-token"
       }
     })
-      .get("/data/test")
+      .get("/test")
       .reply(200, mockSuccessResponse);
 
     expect(await trueLayerDataApi.get("test")).toEqual(["Test result"]);
@@ -241,7 +241,7 @@ describe("basic success and error response from Truelayer APIs", () => {
         Authorization: "Bearer good-truelayer-auth-token"
       }
     })
-      .get("/data/test")
+      .get("/test")
       .reply(404, mockErrorResponse);
 
     await expect(trueLayerDataApi.get("test")).rejects.toEqual({
