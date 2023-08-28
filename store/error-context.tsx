@@ -4,6 +4,17 @@ import ToastContext, {ToastType} from "./toast-context";
 
 import {AppError} from "../types/errors";
 
+export const defaultErrorContext = {
+  errors: [],
+  addError: () => {},
+  removeError: () => {},
+  errorModal: {
+    isVisible: false,
+    showModal: () => {},
+    hideModal: () => {}
+  }
+};
+
 const ErrorContext = createContext<{
   errors: AppError[];
   addError: (error: AppError) => void;
@@ -14,16 +25,7 @@ const ErrorContext = createContext<{
     hideModal: () => void;
     selectedErrorId?: string;
   };
-}>({
-  errors: [],
-  addError: () => {},
-  removeError: () => {},
-  errorModal: {
-    isVisible: false,
-    showModal: () => {},
-    hideModal: () => {}
-  }
-});
+}>(defaultErrorContext);
 
 type ErrorContextProviderProps = {
   children: React.ReactNode;

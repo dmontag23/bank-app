@@ -1,8 +1,10 @@
-import React, {ReactNode} from "react";
+import React, {ContextType, ReactNode} from "react";
 import {Provider} from "react-native-paper";
 import {expect} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 
 export const testQueryClient = new QueryClient({
   defaultOptions: {
@@ -23,14 +25,18 @@ export const testQueryClient = new QueryClient({
 
 type TanstackQueryTestWrapperProps = {
   children: ReactNode;
+  errorContextValue?: ContextType<typeof ErrorContext>;
 };
 
 export const TanstackQueryTestWrapper = ({
-  children
+  children,
+  errorContextValue
 }: TanstackQueryTestWrapperProps) => (
   <NavigationContainer>
     <QueryClientProvider client={testQueryClient}>
-      {children}
+      <ErrorContext.Provider value={errorContextValue ?? defaultErrorContext}>
+        {children}
+      </ErrorContext.Provider>
     </QueryClientProvider>
   </NavigationContainer>
 );

@@ -6,3 +6,5 @@ export type AppError = {
   status?: number;
   url?: string;
 };
+
+export type IntegrationErrorResponse = Omit<AppError, "id">;
