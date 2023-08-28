@@ -11,7 +11,17 @@ describe("Settings page", () => {
     await element(by.id("settingsBottomNavButton")).tap();
   });
 
-  it("should show settings title", async () => {
+  it("should render all elements", async () => {
     await expect(element(by.text("Settings")).atIndex(0)).toBeVisible();
+    await expect(element(by.text("Show Errors"))).toBeVisible();
+  });
+
+  it("should display all app errors", async () => {
+    const showErrorsButton = element(by.text("Show Errors"));
+    await expect(showErrorsButton).toBeVisible();
+
+    await showErrorsButton.tap();
+
+    await expect(element(by.text("Errors"))).toBeVisible();
   });
 });
