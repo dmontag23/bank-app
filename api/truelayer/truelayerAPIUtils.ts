@@ -147,8 +147,8 @@ export const getTokenFromStorage = async (tokenName: string) => {
     return await AsyncStorage.getItem(tokenName);
   } catch (error: unknown) {
     return Promise.reject({
-      error: `Cannot fetch AsyncStorage ${tokenName} token`,
-      errorMessage: `An error occurred when trying to fetch the token from storage: ${error}`
+      name: `Cannot fetch AsyncStorage ${tokenName} token`,
+      message: `An error occurred when trying to fetch the token from storage: ${error}`
     });
   }
 };

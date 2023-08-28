@@ -15,8 +15,10 @@ jest.mock("react-native-webview", () => jest.fn());
 
 // needed for animated components
 // see https://github.com/jestjs/jest/issues/6434
+// the doNotFake option is due to an open issue with nock
+// see https://github.com/nock/nock/issues/2200
 beforeEach(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({doNotFake: ["nextTick", "setImmediate"]});
 });
 
 afterEach(() => {

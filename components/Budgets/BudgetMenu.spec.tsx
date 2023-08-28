@@ -119,12 +119,13 @@ describe("BudgetMenu component", () => {
   });
 
   test("correctly selects a budget", async () => {
-    // TODO: any should probably not be used as a type here, but since a
-    // query from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
     const renderMenuIcon =
       jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
     const setSelectedBudget = jest.fn();
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
       data: [BUDGET_WITH_NO_ITEMS, BUDGET_WITH_ONE_ITEM]
     }));

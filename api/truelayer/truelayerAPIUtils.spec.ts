@@ -613,8 +613,8 @@ describe("Truelayer API Utils", () => {
       );
 
       await expect(getTokenFromStorage("test-token")).rejects.toEqual({
-        error: "Cannot fetch AsyncStorage test-token token",
-        errorMessage:
+        name: "Cannot fetch AsyncStorage test-token token",
+        message:
           "An error occurred when trying to fetch the token from storage: Error with getItem"
       });
     });
