@@ -1,5 +1,7 @@
 import React from "react";
+import {AppState} from "react-native";
 import {describe, expect, jest, test} from "@jest/globals";
+import {focusManager} from "@tanstack/react-query";
 import {render, waitFor} from "@testing-library/react-native";
 
 import App from "./App";
@@ -59,5 +61,50 @@ describe("App component", () => {
     expect(Toasts).toBeCalledWith({}, {});
     expect(ErrorModal).toBeCalledTimes(1);
     expect(ErrorModal).toBeCalledWith({}, {});
+  });
+
+  test("re-fetches queries when the user returns to the app on ios", async () => {
+    const appStateSpy = jest.spyOn(AppState, "addEventListener");
+    const focusManagerSpy = jest.spyOn(focusManager, "setFocused");
+
+    render(
+      <TruelayerAuthContext.Provider
+        value={{isLoading: false, authToken: "", refreshToken: ""}}>
+        <App />
+      </TruelayerAuthContext.Provider>
+    );
+
+    waitFor(() => expect(appStateSpy).toBeCalledTimes(1));
+    const onAppStateChange = appStateSpy.mock.calls[0][1];
+
+    onAppStateChange("active");
+
+    expect(focusManagerSpy).toBeCalledTimes(1);
+    expect(focusManagerSpy).toBeCalledWith(true);
+  });
+
+  test("does not re-fetch queries when the user returns to the app on web", async () => {
+    jest.doMock("react-native/Libraries/Utilities/Platform", () => ({
+      OS: "web"
+    }));
+
+    const appStateSpy = jest.spyOn(AppState, "addEventListener");
+    const focusManagerSpy = jest.spyOn(focusManager, "setFocused");
+
+    render(
+      <TruelayerAuthContext.Provider
+        value={{isLoading: false, authToken: "", refreshToken: ""}}>
+        <App />
+      </TruelayerAuthContext.Provider>
+    );
+
+    waitFor(() => expect(appStateSpy).toBeCalledTimes(1));
+    const onAppStateChange = appStateSpy.mock.calls[0][1];
+
+    onAppStateChange("active");
+
+    expect(focusManagerSpy).toBeCalledTimes(0);
+
+    jest.dontMock("react-native/Libraries/Utilities/Platform");
   });
 });
