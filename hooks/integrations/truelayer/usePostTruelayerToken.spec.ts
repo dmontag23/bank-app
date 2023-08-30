@@ -1,11 +1,10 @@
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import usePostTruelayerToken from "./usePostTruelayerToken";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
 import config from "../../../config.json";
-import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -33,9 +32,7 @@ describe("usePostTruelayerToken", () => {
       >
     ).mockImplementation(async () => mockResponseData);
 
-    const {result} = renderHook(() => usePostTruelayerToken(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => usePostTruelayerToken());
     result.current.mutate("dummy-code");
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -64,9 +61,7 @@ describe("usePostTruelayerToken", () => {
       >
     ).mockImplementation(async () => Promise.reject(error));
 
-    const {result} = renderHook(() => usePostTruelayerToken(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => usePostTruelayerToken());
     result.current.mutate("error-code");
 
     await waitFor(() => expect(result.current.isError).toBe(true));

@@ -1,12 +1,11 @@
 import React from "react";
+import {render} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render} from "@testing-library/react-native";
 
 import Transaction from "./Transaction";
 import TransactionList from "./TransactionList";
 
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {
   TransactionCategory,
   Transaction as TransactionType
@@ -27,9 +26,7 @@ describe("TransactionList component", () => {
       }
     ];
 
-    render(<TransactionList transactions={testTransactions} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionList transactions={testTransactions} />);
 
     expect(Transaction).toBeCalledTimes(testTransactions.length);
     testTransactions.map(transaction =>

@@ -1,22 +1,13 @@
-import React from "react";
+import React, {ReactNode} from "react";
+import {fireEvent, render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {useNavigation} from "@react-navigation/native";
+import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {StackNavigationProp} from "@react-navigation/stack";
-import {
-  fireEvent,
-  render,
-  renderHook,
-  screen
-} from "@testing-library/react-native";
 
 import TruelayerAuthValidation from "./TruelayerAuthValidation";
 
 import usePostTruelayerToken from "../../../hooks/integrations/truelayer/usePostTruelayerToken";
 import useStoreTruelayerTokens from "../../../hooks/integrations/truelayer/useStoreTruelayerTokens";
-import {
-  ComponentTestWrapper,
-  TanstackQueryTestWrapper
-} from "../../../tests/mocks/utils";
 import {TruelayerAuthStackParamList} from "../../../types/screens";
 import CenteredLoadingSpinner from "../../ui/CenteredLoadingSpinner";
 
@@ -27,10 +18,10 @@ jest.mock("../../ui/CenteredLoadingSpinner");
 describe("TruelayerAuthValidation component", () => {
   test("renders loading spinner when post to tokens is loading", () => {
     // setup mocks
+    const mockExchangeCodeForAuthTokens = jest.fn();
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    const mockExchangeCodeForAuthTokens = jest.fn();
     (usePostTruelayerToken as jest.MockedFunction<any>).mockImplementation(
       () => ({
         mutate: mockExchangeCodeForAuthTokens,
@@ -47,7 +38,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -56,9 +50,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     render(
@@ -69,8 +61,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {code: "test-code", scope: "accounts"}
         }}
         navigation={result.current}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     expect(mockExchangeCodeForAuthTokens).toBeCalledTimes(1);
@@ -82,10 +73,10 @@ describe("TruelayerAuthValidation component", () => {
 
   test("renders loading spinner when storing tokens", () => {
     // setup mocks
+    const mockExchangeCodeForAuthTokens = jest.fn();
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    const mockExchangeCodeForAuthTokens = jest.fn();
     (usePostTruelayerToken as jest.MockedFunction<any>).mockImplementation(
       () => ({
         mutate: mockExchangeCodeForAuthTokens,
@@ -107,7 +98,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -116,9 +110,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     render(
@@ -129,8 +121,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {code: "test-code", scope: "accounts"}
         }}
         navigation={result.current}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     expect(mockExchangeCodeForAuthTokens).toBeCalledTimes(1);
@@ -161,7 +152,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -170,9 +164,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     const mockReplaceFunction = jest.fn();
@@ -185,8 +177,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {error: "access_denied"}
         }}
         navigation={{...result.current, replace: mockReplaceFunction}}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     // test the text
@@ -232,7 +223,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -241,9 +235,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     const mockReplaceFunction = jest.fn();
@@ -256,8 +248,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {code: "", scope: "accounts"}
         }}
         navigation={{...result.current, replace: mockReplaceFunction}}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     expect(screen.getByText("An error has occurred")).toBeVisible();
@@ -291,7 +282,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -300,9 +294,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     render(
@@ -313,8 +305,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {code: "", scope: "accounts"}
         }}
         navigation={result.current}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     expect(mockStoreTruelayerTokens).toBeCalledTimes(1);
@@ -355,7 +346,10 @@ describe("TruelayerAuthValidation component", () => {
       })
     );
 
-    // setup route and navigation object to use component
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
     const {result} = renderHook(
       () =>
         useNavigation<
@@ -364,9 +358,7 @@ describe("TruelayerAuthValidation component", () => {
             "TruelayerAuthValidation"
           >
         >(),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     render(
@@ -377,8 +369,7 @@ describe("TruelayerAuthValidation component", () => {
           params: {code: "", scope: "accounts"}
         }}
         navigation={result.current}
-      />,
-      {wrapper: ComponentTestWrapper}
+      />
     );
 
     expect(mockStoreTruelayerTokens).toBeCalledTimes(1);

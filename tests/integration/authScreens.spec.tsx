@@ -1,14 +1,10 @@
 import React from "react";
 import WebView from "react-native-webview";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
 
 import {trueLayerAuthApi} from "../../api/axiosConfig";
 import AuthScreens from "../../components/AuthScreens/AuthScreens";
@@ -16,14 +12,12 @@ import ThirdPartyConnections from "../../components/AuthScreens/ThirdPartyConnec
 import TruelayerAuthValidation from "../../components/AuthScreens/Truelayer/TruelayerAuthValidation";
 import TruelayerWebAuth from "../../components/AuthScreens/Truelayer/TruelayerWebAuth";
 import config from "../../config.json";
-import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {TruelayerAuthStackParamList} from "../../types/screens";
 import {
   AuthRedirectResponse,
   ConnectTokenPostRequest,
   ConnectTokenPostResponse
 } from "../../types/trueLayer/authAPI/auth";
-import {ComponentTestWrapper} from "../mocks/utils";
 
 jest.mock("../../api/axiosConfig");
 
@@ -35,7 +29,7 @@ describe("Auth screen views", () => {
   const renderMockAuthScreens = (
     params: Partial<AuthRedirectResponse> | undefined
   ) => (
-    <TruelayerAuthContextProvider>
+    <NavigationContainer>
       <MockStackNavigator.Navigator>
         <MockStackNavigator.Screen
           name="TruelayerAuthValidation"
@@ -51,15 +45,14 @@ describe("Auth screen views", () => {
           component={TruelayerWebAuth}
         />
       </MockStackNavigator.Navigator>
-    </TruelayerAuthContextProvider>
+    </NavigationContainer>
   );
 
   test("renders the third party connections screen as a default", () => {
     render(
-      <TruelayerAuthContextProvider>
+      <NavigationContainer>
         <AuthScreens />
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      </NavigationContainer>
     );
 
     expect(
@@ -89,10 +82,9 @@ describe("Auth screen views", () => {
     );
 
     render(
-      <TruelayerAuthContextProvider>
+      <NavigationContainer>
         <AuthScreens />
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      </NavigationContainer>
     );
 
     expect(
@@ -104,9 +96,7 @@ describe("Auth screen views", () => {
   });
 
   test("renders Truelayer error page and allows users to try logging in again", () => {
-    render(renderMockAuthScreens({error: "access_denied"}), {
-      wrapper: ComponentTestWrapper
-    });
+    render(renderMockAuthScreens({error: "access_denied"}));
 
     expect(screen.getByText("An error has occurred")).toBeVisible();
     expect(
@@ -134,7 +124,7 @@ describe("Auth screen views", () => {
   });
 
   test("renders unknown error page and allows users to return to the home screen", () => {
-    render(renderMockAuthScreens(undefined), {wrapper: ComponentTestWrapper});
+    render(renderMockAuthScreens(undefined));
 
     expect(screen.getByText("An error has occurred")).toBeVisible();
     expect(screen.getByText("The error is unknown")).toBeVisible();
@@ -164,8 +154,7 @@ describe("Auth screen views", () => {
     );
 
     render(
-      renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"}),
-      {wrapper: ComponentTestWrapper}
+      renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"})
     );
 
     expect(screen.getByText("An error has occurred")).toBeVisible();
@@ -191,8 +180,7 @@ describe("Auth screen views", () => {
     }));
 
     render(
-      renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"}),
-      {wrapper: ComponentTestWrapper}
+      renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"})
     );
 
     await waitFor(() =>

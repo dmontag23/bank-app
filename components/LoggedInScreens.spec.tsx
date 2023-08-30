@@ -1,6 +1,7 @@
 import React from "react";
+import {fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
+import {NavigationContainer} from "@react-navigation/native";
 
 import BudgetsScreen from "./Budgets/BudgetsScreen";
 import LoggedInScreens from "./LoggedInScreens";
@@ -8,7 +9,6 @@ import SettingsScreen from "./Settings/SettingsScreen";
 import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 import ErrorContext from "../store/error-context";
-import {ComponentTestWrapper} from "../tests/mocks/utils";
 
 jest.mock("./Budgets/BudgetsScreen");
 jest.mock("./Settings/SettingsScreen");
@@ -17,9 +17,11 @@ jest.mock("./Transactions/TransactionsScreen");
 // TODO: Come back and see if there's a way to test the icons
 describe("LoggedInScreens component", () => {
   test("renders the budgets scene as the default screen", () => {
-    render(<LoggedInScreens />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <LoggedInScreens />
+      </NavigationContainer>
+    );
 
     const allButtons = screen.getAllByRole("button");
     expect(allButtons.length).toBe(3);
@@ -29,9 +31,11 @@ describe("LoggedInScreens component", () => {
   });
 
   test("renders the transactions screen", () => {
-    render(<LoggedInScreens />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <LoggedInScreens />
+      </NavigationContainer>
+    );
 
     const transactionButton = screen.getByRole("button", {
       name: "Transactions"
@@ -45,9 +49,11 @@ describe("LoggedInScreens component", () => {
   });
 
   test("renders the settings screen", () => {
-    render(<LoggedInScreens />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <LoggedInScreens />
+      </NavigationContainer>
+    );
 
     const settingsButton = screen.getByRole("button", {
       name: "Settings"
@@ -76,11 +82,10 @@ describe("LoggedInScreens component", () => {
             hideModal: () => {}
           }
         }}>
-        <LoggedInScreens />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+        <NavigationContainer>
+          <LoggedInScreens />
+        </NavigationContainer>
+      </ErrorContext.Provider>
     );
 
     expect(screen.getByText("2")).toBeVisible();

@@ -1,12 +1,7 @@
 import React from "react";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
@@ -16,7 +11,6 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
-import {ComponentTestWrapper} from "../../mocks/utils";
 
 jest.mock("../../../api/axiosConfig");
 
@@ -29,9 +23,7 @@ describe("Transactions", () => {
       trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
     ).get.mockImplementation(async () => new Promise(() => {}));
 
-    render(<TransactionsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     expect(screen.getByTestId("loadingSpinner")).toBeVisible();
   });
@@ -47,9 +39,7 @@ describe("Transactions", () => {
       >
     ).mockImplementation(async () => testTransactions);
 
-    render(<TransactionsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     await waitFor(() => expect(screen.getByText("Transactions")).toBeVisible());
     testTransactions.map(transaction => {
@@ -70,9 +60,7 @@ describe("Transactions", () => {
     const testTransactionName =
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.description;
 
-    render(<TransactionsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     // check that the original transaction category is displayed
     // and nothing is in Async Storage

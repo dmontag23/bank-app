@@ -1,13 +1,12 @@
 import React from "react";
+import {act, fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {act, fireEvent, render, screen} from "@testing-library/react-native";
 
 import BudgetDialog from "./BudgetDialog";
 import BudgetHeader from "./BudgetHeader";
 import BudgetMenu from "./BudgetMenu";
 
 import {BUDGET_WITH_ONE_ITEM} from "../../tests/mocks/data/budgets";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 jest.mock("./BudgetDialog");
 jest.mock("./BudgetMenu");
@@ -20,10 +19,7 @@ describe("BudgetHeader component", () => {
       <BudgetHeader
         selectedBudget={null}
         setSelectedBudget={mockSetSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     // check the budget dialog component
@@ -64,9 +60,7 @@ describe("BudgetHeader component", () => {
       BudgetMenu as jest.MockedFunction<typeof BudgetMenu>
     ).mock.calls[0][0].renderMenuIcon;
 
-    render(renderMenuIconFn(mockOpenMenu), {
-      wrapper: ComponentTestWrapper
-    });
+    render(renderMenuIconFn(mockOpenMenu));
 
     const budgetMenuButton = screen.getByLabelText("Budget menu");
     expect(budgetMenuButton).toBeVisible();
@@ -82,22 +76,14 @@ describe("BudgetHeader component", () => {
       <BudgetHeader
         selectedBudget={BUDGET_WITH_ONE_ITEM}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     const renderMenuIconFn = (
       BudgetMenu as jest.MockedFunction<typeof BudgetMenu>
     ).mock.calls[0][0].renderMenuIcon;
 
-    render(
-      renderMenuIconFn(() => {}),
-      {
-        wrapper: ComponentTestWrapper
-      }
-    );
+    render(renderMenuIconFn(() => {}));
 
     const budgetMenuButton = screen.getByText("Bil");
     expect(budgetMenuButton).toBeVisible();
@@ -110,10 +96,7 @@ describe("BudgetHeader component", () => {
       <BudgetHeader
         selectedBudget={null}
         setSelectedBudget={mockSetSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(BudgetDialog).toBeCalledTimes(1);

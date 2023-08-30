@@ -1,12 +1,11 @@
 import React from "react";
 import {isEqual} from "lodash";
+import {render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, screen} from "@testing-library/react-native";
 
 import BudgetItem from "./BudgetItem";
 import BudgetItemSummary from "./BudgetItemSummary";
 
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {BudgetItemWithTransactions} from "../../types/budget";
 import {Transaction, TransactionCategory} from "../../types/transaction";
 import TransactionList from "../Transactions/TransactionList";
@@ -35,9 +34,7 @@ describe("BudgetItem component", () => {
   };
 
   test("renders item with no transactions correctly", () => {
-    render(<BudgetItem item={{...testItem, transactions: []}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItem item={{...testItem, transactions: []}} />);
 
     expect(
       screen.getByText(
@@ -52,9 +49,7 @@ describe("BudgetItem component", () => {
   });
 
   test("renders item with transactions correctly", () => {
-    render(<BudgetItem item={testItem} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItem item={testItem} />);
 
     expect(BudgetItemSummary).toBeCalledTimes(1);
     expect(BudgetItemSummary).toBeCalledWith({item: testItem}, {});
@@ -66,9 +61,7 @@ describe("BudgetItem component", () => {
   });
 
   test("equality of two BudgetItems", () => {
-    const {rerender} = render(<BudgetItem item={testItem} />, {
-      wrapper: ComponentTestWrapper
-    });
+    const {rerender} = render(<BudgetItem item={testItem} />);
 
     rerender(<BudgetItem item={{...testItem, id: "2"}} />);
 

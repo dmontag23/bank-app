@@ -1,13 +1,13 @@
+import {
+  createQueryClient,
+  renderHook,
+  waitFor
+} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
-import {
-  TanstackQueryTestWrapper,
-  testQueryClient
-} from "../../tests/mocks/utils";
 import {
   TransactionCategory,
   TransactionIDToCategoryMapping
@@ -15,9 +15,7 @@ import {
 
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
-    const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useStoreTransactionCategoryMap());
     result.current.mutate({});
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -26,13 +24,15 @@ describe("useStoreTransactionCategoryMap", () => {
   });
 
   test("stores transaction map correctly", async () => {
+    const queryClient = createQueryClient();
+
     // put some test data in the cache
     const previouslyCachedTransactions: TransactionIDToCategoryMapping = {
       "id-1": TransactionCategory.BILLS,
       "id-2": TransactionCategory.EATING_OUT
     };
     const queryKey = ["transactionCategoryMapping", "id-1", "id-2"];
-    testQueryClient.setQueryData<TransactionIDToCategoryMapping>(
+    queryClient.setQueryData<TransactionIDToCategoryMapping>(
       queryKey,
       () => previouslyCachedTransactions
     );
@@ -43,7 +43,7 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: TanstackQueryTestWrapper
+      queryClient
     });
     result.current.mutate(testData);
 
@@ -58,10 +58,12 @@ describe("useStoreTransactionCategoryMap", () => {
     expect(await AsyncStorage.multiGet(Object.keys(testData))).toEqual(
       expectedDataInAsyncStorage
     );
-    expect(testQueryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
   });
 
   test("errors correctly on failed storage call", async () => {
+    const queryClient = createQueryClient();
+
     // setup mock for async storage
     const mockAsyncStorageMultiSet =
       AsyncStorage.multiSet as jest.MockedFunction<
@@ -77,7 +79,7 @@ describe("useStoreTransactionCategoryMap", () => {
       "id-2": TransactionCategory.EATING_OUT
     };
     const queryKey = ["transactionCategoryMapping", "id-1", "id-2"];
-    testQueryClient.setQueryData<TransactionIDToCategoryMapping>(
+    queryClient.setQueryData<TransactionIDToCategoryMapping>(
       queryKey,
       () => previouslyCachedTransactions
     );
@@ -88,15 +90,15 @@ describe("useStoreTransactionCategoryMap", () => {
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      wrapper: TanstackQueryTestWrapper
+      queryClient
     });
     result.current.mutate(testData);
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");
-    expect(testQueryClient.getQueryData(queryKey)).toEqual(
+    expect(queryClient.getQueryData(queryKey)).toEqual(
       previouslyCachedTransactions
     );
-    expect(testQueryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
   });
 });

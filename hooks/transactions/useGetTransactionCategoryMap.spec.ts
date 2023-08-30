@@ -1,19 +1,15 @@
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
-import {TanstackQueryTestWrapper} from "../../tests/mocks/utils";
 import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: []}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: []})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -26,11 +22,8 @@ describe("useGetTransactionCategoryMap", () => {
     // setup AsyncStorage with mock data
     await AsyncStorage.setItem("id-2", TransactionCategory.BILLS);
 
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -43,11 +36,8 @@ describe("useGetTransactionCategoryMap", () => {
   });
 
   test("does not fetch from storage when disabled", async () => {
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: [], enabled: false}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: [], enabled: false})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -65,11 +55,8 @@ describe("useGetTransactionCategoryMap", () => {
       Promise.reject("Cannot connect to async storage")
     );
 
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: []}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: []})
     );
 
     await waitFor(() => expect(result.current.isError).toBe(true));

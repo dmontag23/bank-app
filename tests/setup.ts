@@ -2,8 +2,6 @@ import "@testing-library/jest-native/extend-expect";
 import {afterEach, beforeEach, jest} from "@jest/globals";
 import MockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 
-import {testQueryClient} from "./mocks/utils";
-
 // included following https://reactnavigation.org/docs/testing/
 import "react-native-gesture-handler/jestSetup";
 
@@ -23,6 +21,5 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.clearAllMocks();
-  testQueryClient.clear();
   MockAsyncStorage.clear();
 });

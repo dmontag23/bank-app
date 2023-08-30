@@ -1,21 +1,16 @@
 import React from "react";
 import {MD3LightTheme, Text} from "react-native-paper";
+import {fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import ExpandableAccordion from "./ExpandableAccordion";
-
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 describe("ExpandableAccordion component", () => {
   test("renders a closed accordion by default", async () => {
     render(
       <ExpandableAccordion title="Test title">
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     const titleText = screen.getByText("Test title");
@@ -29,10 +24,7 @@ describe("ExpandableAccordion component", () => {
     render(
       <ExpandableAccordion title="Test title" isInitiallyExpanded>
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     const titleText = screen.getByText("Test title");
@@ -46,10 +38,7 @@ describe("ExpandableAccordion component", () => {
     render(
       <ExpandableAccordion title="Test title">
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     const accordionTitle = screen.getByText("Test title");
@@ -65,10 +54,7 @@ describe("ExpandableAccordion component", () => {
     render(
       <ExpandableAccordion title="Test title" isInitiallyExpanded>
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     const accordionTitle = screen.getByText("Test title");
@@ -89,10 +75,7 @@ describe("ExpandableAccordion component", () => {
         unselectedColor="red"
         selectedColor="green">
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     const accordionTitle = screen.getByText("Test title");
@@ -108,10 +91,7 @@ describe("ExpandableAccordion component", () => {
     render(
       <ExpandableAccordion title="Test title" icon="folder">
         <Text>Expanded</Text>
-      </ExpandableAccordion>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ExpandableAccordion>
     );
 
     expect(screen.getByText("Test title")).toBeVisible();

@@ -1,18 +1,12 @@
 import React from "react";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
+import {NavigationContainer} from "@react-navigation/native";
 
 import {trueLayerDataApi} from "../../api/axiosConfig";
 import LoggedInScreens from "../../components/LoggedInScreens";
-import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
-import {ComponentTestWrapper} from "../mocks/utils";
 
 jest.mock("../../api/axiosConfig");
 
@@ -30,10 +24,9 @@ describe("Logged in screen views", () => {
     ).mockImplementation(async () => []);
 
     render(
-      <TruelayerAuthContextProvider>
+      <NavigationContainer>
         <LoggedInScreens />
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      </NavigationContainer>
     );
 
     // check the budgets scene is rendered by default

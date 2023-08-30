@@ -1,15 +1,11 @@
 import React from "react";
-import {Provider} from "react-native-paper";
+import {render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {QueryClientProvider} from "@tanstack/react-query";
-import {render, screen, waitFor} from "@testing-library/react-native";
 
 import {trueLayerDataApi} from "../../api/axiosConfig";
 import App from "../../App";
-import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
-import {testQueryClient} from "../mocks/utils";
 
 jest.mock("../../api/axiosConfig");
 
@@ -22,15 +18,7 @@ describe("App component", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(
-      <QueryClientProvider client={testQueryClient}>
-        <TruelayerAuthContextProvider>
-          <Provider>
-            <App />
-          </Provider>
-        </TruelayerAuthContextProvider>
-      </QueryClientProvider>
-    );
+    render(<App />);
 
     // check the third party connections scene is rendered by default
     await waitFor(() =>
@@ -52,15 +40,7 @@ describe("App component", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(
-      <QueryClientProvider client={testQueryClient}>
-        <TruelayerAuthContextProvider>
-          <Provider>
-            <App />
-          </Provider>
-        </TruelayerAuthContextProvider>
-      </QueryClientProvider>
-    );
+    render(<App />);
 
     // check the budgets scene is rendered by default
     await waitFor(() =>

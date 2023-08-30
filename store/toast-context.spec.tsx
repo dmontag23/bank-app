@@ -1,14 +1,12 @@
-import React, {useContext} from "react";
+import React, {ReactNode, useContext} from "react";
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import ToastContext, {
   Toast,
   ToastContextProvider,
   ToastType
 } from "./toast-context";
-
-import {TanstackQueryTestWrapper} from "../tests/mocks/utils";
 
 describe("ToastContext", () => {
   const toast: Toast = {
@@ -17,9 +15,7 @@ describe("ToastContext", () => {
     type: ToastType.LOG
   };
   test("defaults values correctly", () => {
-    const {result} = renderHook(() => useContext(ToastContext), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useContext(ToastContext));
 
     expect(result.current.toasts).toEqual([]);
     expect(result.current.addToast).toEqual(expect.any(Function));
@@ -31,12 +27,12 @@ describe("ToastContext", () => {
   });
 
   test("ToastContextProvider adds and clears a toast", async () => {
+    const customWrapper = (children: ReactNode) => (
+      <ToastContextProvider>{children}</ToastContextProvider>
+    );
+
     const {result} = renderHook(() => useContext(ToastContext), {
-      wrapper: children => (
-        <ToastContextProvider>
-          {TanstackQueryTestWrapper(children)}
-        </ToastContextProvider>
-      )
+      customWrapper
     });
 
     expect(result.current.toasts).toEqual([]);
@@ -51,12 +47,12 @@ describe("ToastContext", () => {
   });
 
   test("ToastContextProvider clears all toasts", async () => {
+    const customWrapper = (children: ReactNode) => (
+      <ToastContextProvider>{children}</ToastContextProvider>
+    );
+
     const {result} = renderHook(() => useContext(ToastContext), {
-      wrapper: children => (
-        <ToastContextProvider>
-          {TanstackQueryTestWrapper(children)}
-        </ToastContextProvider>
-      )
+      customWrapper
     });
 
     expect(result.current.toasts).toEqual([]);

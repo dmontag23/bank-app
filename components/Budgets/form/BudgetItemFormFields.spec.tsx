@@ -1,16 +1,10 @@
 import React from "react";
 import {useForm} from "react-hook-form";
+import {fireEvent, render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
-import {
-  fireEvent,
-  render,
-  renderHook,
-  screen
-} from "@testing-library/react-native";
 
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
-import {ComponentTestWrapper} from "../../../tests/mocks/utils";
 import {BudgetInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 
@@ -39,10 +33,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={[]}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(screen.getByLabelText("Item name")).toBeVisible();
@@ -70,10 +61,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={disabledCategories}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     Object.keys(TransactionCategory).map(category => {
@@ -102,10 +90,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={[]}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(screen.getByDisplayValue("Test item")).toBeVisible();
@@ -129,10 +114,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={[]}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(screen.getByText("£ ")).toBeVisible();
@@ -152,10 +134,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={[TransactionCategory.EATING_OUT]}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     const eatingOutCheckbox = screen.getByLabelText("EATING_OUT");
@@ -176,10 +155,7 @@ describe("BudgetItemFormFields component", () => {
         disabledCategories={[]}
         control={result.current.control}
         index={0}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     const billsCheckbox = screen.getByLabelText("BILLS");

@@ -1,18 +1,15 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import {fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import SettingsScreen from "./SettingsScreen";
 
 import ErrorContext from "../../store/error-context";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 describe("SettingsScreen component", () => {
   test("renders all items without badge", () => {
-    render(<SettingsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<SettingsScreen />);
 
     expect(screen.getByText("Settings")).toBeVisible();
     expect(screen.getByText("Show Errors")).toBeVisible();
@@ -39,10 +36,7 @@ describe("SettingsScreen component", () => {
           }
         }}>
         <SettingsScreen />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     expect(screen.getByText("Show Errors")).toBeVisible();
@@ -65,10 +59,7 @@ describe("SettingsScreen component", () => {
           }
         }}>
         <SettingsScreen />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     const showErrorsButton = screen.getByText("Show Errors");

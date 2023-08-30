@@ -1,6 +1,5 @@
-import React, {useContext} from "react";
+import React, {ReactNode, useContext} from "react";
 import {Button} from "react-native-paper";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
@@ -8,28 +7,19 @@ import {
   renderHook,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import ErrorContext, {ErrorContextProvider} from "./error-context";
-import ToastContext, {
-  Toast,
-  ToastContextProvider,
-  ToastType
-} from "./toast-context";
+import ToastContext, {Toast, ToastType} from "./toast-context";
 
-import {
-  ComponentTestWrapper,
-  TanstackQueryTestWrapper
-} from "../tests/mocks/utils";
 import {AppError} from "../types/errors";
 
 describe("ErrorContext", () => {
   const appError: AppError = {id: "id-1", error: "Test error"};
 
   test("defaults values correctly", () => {
-    const {result} = renderHook(() => useContext(ErrorContext), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useContext(ErrorContext));
 
     expect(result.current.errors).toEqual([]);
     expect(result.current.addError).toEqual(expect.any(Function));
@@ -46,14 +36,12 @@ describe("ErrorContext", () => {
   });
 
   test("ErrorContextProvider shows and hides error modal", async () => {
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContextProvider>{children}</ErrorContextProvider>
+    );
+
     const {result} = renderHook(() => useContext(ErrorContext), {
-      wrapper: children => (
-        <ErrorContextProvider>
-          <ToastContextProvider>
-            {TanstackQueryTestWrapper(children)}
-          </ToastContextProvider>
-        </ErrorContextProvider>
-      )
+      customWrapper
     });
 
     expect(result.current.errorModal.isVisible).toBe(false);
@@ -74,20 +62,20 @@ describe("ErrorContext", () => {
   test("ErrorContextProvider adds an error with error modal visible and removes error", async () => {
     const mockAddToast = jest.fn();
 
+    const customWrapper = (children: ReactNode) => (
+      <ToastContext.Provider
+        value={{
+          toasts: [],
+          addToast: mockAddToast,
+          clearToast: () => {},
+          clearAllToasts: () => {}
+        }}>
+        <ErrorContextProvider>{children}</ErrorContextProvider>
+      </ToastContext.Provider>
+    );
+
     const {result} = renderHook(() => useContext(ErrorContext), {
-      wrapper: children => (
-        <ToastContext.Provider
-          value={{
-            toasts: [],
-            addToast: mockAddToast,
-            clearToast: () => {},
-            clearAllToasts: () => {}
-          }}>
-          <ErrorContextProvider>
-            {TanstackQueryTestWrapper(children)}
-          </ErrorContextProvider>
-        </ToastContext.Provider>
-      )
+      customWrapper
     });
 
     expect(result.current.errors).toEqual([]);
@@ -109,20 +97,20 @@ describe("ErrorContext", () => {
     const mockAddToast = jest.fn<(toast: Toast) => void>();
     const mockClearAllToasts = jest.fn();
 
+    const customWrapper = (children: ReactNode) => (
+      <ToastContext.Provider
+        value={{
+          toasts: [],
+          addToast: mockAddToast,
+          clearToast: () => {},
+          clearAllToasts: mockClearAllToasts
+        }}>
+        <ErrorContextProvider>{children}</ErrorContextProvider>
+      </ToastContext.Provider>
+    );
+
     const {result} = renderHook(() => useContext(ErrorContext), {
-      wrapper: children => (
-        <ToastContext.Provider
-          value={{
-            toasts: [],
-            addToast: mockAddToast,
-            clearToast: () => {},
-            clearAllToasts: mockClearAllToasts
-          }}>
-          <ErrorContextProvider>
-            {TanstackQueryTestWrapper(children)}
-          </ErrorContextProvider>
-        </ToastContext.Provider>
-      )
+      customWrapper
     });
 
     expect(result.current.errors).toEqual([]);
@@ -146,9 +134,7 @@ describe("ErrorContext", () => {
     const onPressFunction =
       mockAddToast.mock.calls[0][0].action?.onPress ?? (() => {});
 
-    render(<Button onPress={onPressFunction}>Test</Button>, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<Button onPress={onPressFunction}>Test</Button>);
     fireEvent.press(screen.getByText("Test"));
     expect(result.current.errorModal.selectedErrorId).toBe(appError.id);
     expect(result.current.errorModal.isVisible).toBe(true);

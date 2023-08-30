@@ -1,8 +1,8 @@
 import React from "react";
 import {AppState} from "react-native";
+import {render, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import {focusManager} from "@tanstack/react-query";
-import {render, waitFor} from "@testing-library/react-native";
 
 import App from "./App";
 import AuthScreens from "./components/AuthScreens/AuthScreens";

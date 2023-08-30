@@ -1,11 +1,13 @@
 import React from "react";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   fireEvent,
+  navigationObject,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
+import {NavigationContainer} from "@react-navigation/native";
 
 import Budget from "./Budget";
 import BudgetItem from "./BudgetItem";
@@ -16,13 +18,12 @@ import {
   PAY_BILL_CARD_TRANSACTION,
   PAY_RENT_TRANSACTION
 } from "../../tests/mocks/data/transactions";
-import {ComponentTestWrapper, navigationObject} from "../../tests/mocks/utils";
 import {BudgetItem as BudgetItemType} from "../../types/budget";
 import {TransactionCategory} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 // TODO: Figure out why you need to return jest.fn()
-// here for a memo-ized component
+// here for a memoized component
 jest.mock("./BudgetItem", () => jest.fn());
 jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useTransactions");
@@ -47,9 +48,11 @@ describe("Budget component", () => {
       transactions: []
     }));
 
-    render(<Budget budget={emptyBudget} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={emptyBudget} />
+      </NavigationContainer>
+    );
 
     expect(LoadingSpinner).toBeCalledTimes(1);
     expect(LoadingSpinner).toBeCalledWith({}, {});
@@ -64,9 +67,11 @@ describe("Budget component", () => {
       transactions: [EATING_OUT_CARD_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
     }));
 
-    render(<Budget budget={emptyBudget} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={emptyBudget} />
+      </NavigationContainer>
+    );
 
     expect(
       screen.getByText("There are no items in this budget.")
@@ -91,9 +96,11 @@ describe("Budget component", () => {
       transactions: []
     }));
 
-    render(<Budget budget={{...emptyBudget, items: testBudgetItems}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+      </NavigationContainer>
+    );
 
     expect(BudgetItem).toBeCalledTimes(1);
     expect(BudgetItem).toBeCalledWith(
@@ -138,9 +145,11 @@ describe("Budget component", () => {
       ]
     }));
 
-    render(<Budget budget={{...emptyBudget, items: testBudgetItems}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+      </NavigationContainer>
+    );
 
     await waitFor(() => expect(BudgetItem).toBeCalledTimes(1));
     expect(BudgetItem).toBeCalledWith(
@@ -189,9 +198,11 @@ describe("Budget component", () => {
       ]
     }));
 
-    render(<Budget budget={{...emptyBudget, items: testBudgetItems}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+      </NavigationContainer>
+    );
 
     expect(BudgetItem).toBeCalledTimes(1);
     expect(BudgetItem).toBeCalledWith(

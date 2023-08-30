@@ -1,13 +1,12 @@
 import React from "react";
+import {render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, screen} from "@testing-library/react-native";
 
 import TransactionList from "./TransactionList";
 import TransactionsScreen from "./TransactionsScreen";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Transaction, TransactionCategory} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
@@ -28,9 +27,7 @@ describe("TransactionsScreen component", () => {
       transactions: []
     }));
 
-    render(<TransactionsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     expect(LoadingSpinner).toBeCalledTimes(1);
   });
@@ -59,9 +56,7 @@ describe("TransactionsScreen component", () => {
       transactions: testTransactions
     }));
 
-    render(<TransactionsScreen />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     expect(screen.getByText("Transactions")).toBeVisible();
     expect(TransactionList).toBeCalledTimes(1);

@@ -1,13 +1,13 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import Toast from "./Toast";
 
@@ -15,7 +15,6 @@ import ToastContext, {
   Toast as ToastObjectType,
   ToastType
 } from "../../store/toast-context";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 describe("Toast component", () => {
   const baseToast: ToastObjectType = {
@@ -56,10 +55,7 @@ describe("Toast component", () => {
             clearAllToasts: () => {}
           }}>
           <Toast toast={toast} />
-        </ToastContext.Provider>,
-        {
-          wrapper: ComponentTestWrapper
-        }
+        </ToastContext.Provider>
       );
 
       const toastElement = screen.getByText("First message");
@@ -82,10 +78,7 @@ describe("Toast component", () => {
           clearAllToasts: () => {}
         }}>
         <Toast toast={baseToast} />
-      </ToastContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ToastContext.Provider>
     );
 
     const toastElement = screen.getByText("First message");
@@ -108,10 +101,7 @@ describe("Toast component", () => {
           clearAllToasts: () => {}
         }}>
         <Toast toast={baseToast} />
-      </ToastContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ToastContext.Provider>
     );
 
     const cancelIcon = screen.getByLabelText("Close icon");
@@ -140,10 +130,7 @@ describe("Toast component", () => {
           clearAllToasts: () => {}
         }}>
         <Toast toast={toast} />
-      </ToastContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ToastContext.Provider>
     );
 
     const actionButton = screen.getByText("Button to press");

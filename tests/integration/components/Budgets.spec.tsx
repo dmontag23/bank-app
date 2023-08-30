@@ -1,12 +1,8 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
+import {NavigationContainer} from "@react-navigation/native";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
@@ -21,7 +17,6 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
-import {ComponentTestWrapper} from "../../mocks/utils";
 
 jest.mock("../../../api/axiosConfig");
 
@@ -44,9 +39,11 @@ describe("Budgets", () => {
       trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
     ).get.mockImplementation(async () => new Promise(() => {}));
 
-    render(<Budget budget={EMPTY_BUDGET} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={EMPTY_BUDGET} />
+      </NavigationContainer>
+    );
 
     expect(screen.getByTestId("loadingSpinner")).toBeVisible();
   });
@@ -58,9 +55,11 @@ describe("Budgets", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<Budget budget={EMPTY_BUDGET} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={EMPTY_BUDGET} />
+      </NavigationContainer>
+    );
 
     await waitFor(() =>
       expect(
@@ -76,9 +75,11 @@ describe("Budgets", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<Budget budget={BUDGET_WITH_ONE_ITEM} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={BUDGET_WITH_ONE_ITEM} />
+      </NavigationContainer>
+    );
 
     // Budget summary
     await waitFor(() => expect(screen.getByText("Bills")).toBeVisible());
@@ -112,15 +113,14 @@ describe("Budgets", () => {
     ]);
 
     render(
-      <Budget
-        budget={{
-          ...BUDGET_WITH_ONE_ITEM,
-          items: [{...BUDGET_WITH_ONE_ITEM.items[0], cap: 150}]
-        }}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      <NavigationContainer>
+        <Budget
+          budget={{
+            ...BUDGET_WITH_ONE_ITEM,
+            items: [{...BUDGET_WITH_ONE_ITEM.items[0], cap: 150}]
+          }}
+        />
+      </NavigationContainer>
     );
 
     // Budget summary
@@ -142,9 +142,11 @@ describe("Budgets", () => {
   });
 
   test("switches between budget items", async () => {
-    render(<Budget budget={BUDGET_WITH_TWO_ITEMS} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <Budget budget={BUDGET_WITH_TWO_ITEMS} />
+      </NavigationContainer>
+    );
 
     await waitFor(() => expect(screen.getByText("Bills")).toBeVisible());
 

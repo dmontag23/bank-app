@@ -1,19 +1,18 @@
 import React from "react";
 import {Text} from "react-native";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import CategoryList from "./CategoryList";
 import Transaction from "./Transaction";
 
 import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {
   TransactionCategory,
   Transaction as TransactionType
@@ -42,9 +41,7 @@ describe("Transaction component", () => {
       mutate: jest.fn()
     }));
 
-    render(<Transaction transaction={testTransaction} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<Transaction transaction={testTransaction} />);
 
     expect(screen.getByText(testTransaction.name)).toBeVisible();
     expect(screen.getByText(testTransaction.category)).toBeVisible();
@@ -74,9 +71,7 @@ describe("Transaction component", () => {
       return <Text>Category 1</Text>;
     });
 
-    render(<Transaction transaction={testTransaction} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<Transaction transaction={testTransaction} />);
 
     // press the transaction to bring up the dialog
     fireEvent.press(screen.getByText(testTransaction.name));

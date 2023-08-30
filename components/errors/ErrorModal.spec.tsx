@@ -1,12 +1,11 @@
 import React from "react";
+import {fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import ErrorItem from "./ErrorItem";
 import ErrorModal from "./ErrorModal";
 
 import ErrorContext from "../../store/error-context";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {AppError} from "../../types/errors";
 
 jest.mock("./ErrorItem");
@@ -33,10 +32,7 @@ describe("ErrorModal component", () => {
           errorModal: {...defaultErrorContextValue.errorModal, isVisible: false}
         }}>
         <ErrorModal />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     expect(screen.queryByText("Errors")).toBeNull();
@@ -46,10 +42,7 @@ describe("ErrorModal component", () => {
     render(
       <ErrorContext.Provider value={defaultErrorContextValue}>
         <ErrorModal />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     expect(screen.getByText("Errors")).toBeVisible();
@@ -71,10 +64,7 @@ describe("ErrorModal component", () => {
           }
         }}>
         <ErrorModal />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     expect(screen.getByText("Errors")).toBeVisible();
@@ -99,10 +89,7 @@ describe("ErrorModal component", () => {
           }
         }}>
         <ErrorModal />
-      </ErrorContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ErrorContext.Provider>
     );
 
     const closeButton = screen.getByText("Close");

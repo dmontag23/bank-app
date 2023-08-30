@@ -1,15 +1,15 @@
+import React, {ReactNode} from "react";
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
-import {defaultErrorContext} from "../../../store/error-context";
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
-import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 import {AppError} from "../../../types/errors";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
@@ -28,18 +28,16 @@ describe("useTrueLayerTransactions", () => {
 
     const mockRemoveError = jest.fn();
 
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
-      {
-        wrapper: ({children}) =>
-          TanstackQueryTestWrapper({
-            children,
-            errorContextValue: {
-              ...defaultErrorContext,
-              removeError: mockRemoveError
-            }
-          })
-      }
+      {customWrapper}
     );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -63,18 +61,16 @@ describe("useTrueLayerTransactions", () => {
 
     const mockAddError = jest.fn();
 
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(
       () => useTrueLayerTransactionsFromAcct("dummy"),
-      {
-        wrapper: ({children}) =>
-          TanstackQueryTestWrapper({
-            children,
-            errorContextValue: {
-              ...defaultErrorContext,
-              addError: mockAddError
-            }
-          })
-      }
+      {customWrapper}
     );
 
     await waitFor(() => expect(result.current.isError).toBe(true));

@@ -1,13 +1,13 @@
 import React from "react";
 import {GestureResponderEvent} from "react-native";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import BudgetMenu from "./BudgetMenu";
 
@@ -17,7 +17,6 @@ import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM
 } from "../../tests/mocks/data/budgets";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Budget} from "../../types/budget";
 
 jest.mock("../../hooks/budgets/useDeleteBudget");
@@ -41,10 +40,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -68,10 +64,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -95,10 +88,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -137,10 +127,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -181,10 +168,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -228,10 +212,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);

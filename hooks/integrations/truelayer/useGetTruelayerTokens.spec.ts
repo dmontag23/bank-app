@@ -1,10 +1,8 @@
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTruelayerTokens from "./useGetTruelayerTokens";
-
-import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
 
 describe("useGetTruelayerTokens", () => {
   test("returns correct auth token with no refresh token", async () => {
@@ -12,9 +10,7 @@ describe("useGetTruelayerTokens", () => {
     const dummyAuthToken = "auth-token";
     await AsyncStorage.setItem("truelayer-auth-token", dummyAuthToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -29,9 +25,7 @@ describe("useGetTruelayerTokens", () => {
     const dummyRefreshToken = "refresh-token";
     await AsyncStorage.setItem("truelayer-refresh-token", dummyRefreshToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -48,9 +42,7 @@ describe("useGetTruelayerTokens", () => {
     await AsyncStorage.setItem("truelayer-auth-token", dummyAuthToken);
     await AsyncStorage.setItem("truelayer-refresh-token", dummyRefreshToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -68,9 +60,7 @@ describe("useGetTruelayerTokens", () => {
       Promise.reject("Cannot connect to async storage")
     );
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");

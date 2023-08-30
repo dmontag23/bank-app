@@ -1,6 +1,6 @@
 import React from "react";
+import {fireEvent, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {fireEvent, render, screen} from "@testing-library/react-native";
 
 import CategoryList from "./CategoryList";
 

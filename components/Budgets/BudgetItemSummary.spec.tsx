@@ -1,11 +1,10 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import {render, screen} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
-import {render, screen} from "@testing-library/react-native";
 
 import BudgetItemSummary from "./BudgetItemSummary";
 
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {BudgetItemWithTransactions} from "../../types/budget";
 
 describe("BudgetItemSummary component", () => {
@@ -19,9 +18,7 @@ describe("BudgetItemSummary component", () => {
   };
 
   test("renders item with no cap correctly", () => {
-    render(<BudgetItemSummary item={testItem} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemSummary item={testItem} />);
 
     expect(screen.getByText(testItem.name)).toBeVisible();
     expect(screen.getByText("£0.00")).toBeVisible();
@@ -35,9 +32,7 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with negative percentage correctly", () => {
-    render(<BudgetItemSummary item={{...testItem, cap: 1.5, spent: 2.2}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemSummary item={{...testItem, cap: 1.5, spent: 2.2}} />);
 
     expect(screen.getByText(testItem.name)).toBeVisible();
     expect(screen.getByText("£-0.70")).toBeVisible();
@@ -53,9 +48,7 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with positive percentage correctly", () => {
-    render(<BudgetItemSummary item={{...testItem, cap: 3.2, spent: 2.2}} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemSummary item={{...testItem, cap: 3.2, spent: 2.2}} />);
 
     expect(screen.getByText(testItem.name)).toBeVisible();
     expect(screen.getByText("£1.00")).toBeVisible();

@@ -1,6 +1,6 @@
 import React from "react";
+import {render} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render} from "@testing-library/react-native";
 
 import Toast from "./Toast";
 import Toasts from "./Toasts";
@@ -9,7 +9,6 @@ import ToastContext, {
   Toast as ToastObjectType,
   ToastType
 } from "../../store/toast-context";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 jest.mock("./Toast");
 
@@ -36,10 +35,7 @@ describe("Toasts component", () => {
           clearAllToasts: () => {}
         }}>
         <Toasts />
-      </ToastContext.Provider>,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      </ToastContext.Provider>
     );
 
     expect(Toast).toBeCalledTimes(2);

@@ -1,11 +1,10 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import {render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, screen} from "@testing-library/react-native";
 
 import ErrorItem from "./ErrorItem";
 
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {AppError} from "../../types/errors";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
@@ -15,9 +14,7 @@ describe("ErrorItem component", () => {
   test("renders divider", () => {
     const testError: AppError = {id: "id-1", error: "Test error"};
 
-    render(<ErrorItem error={testError} isSelected={false} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<ErrorItem error={testError} isSelected={false} />);
 
     const divider = screen.getByTestId("error-item-divider");
     expect(divider).toBeVisible();
@@ -29,9 +26,7 @@ describe("ErrorItem component", () => {
   test("renders accordion", () => {
     const testError: AppError = {id: "id-1", error: "Test error"};
 
-    render(<ErrorItem error={testError} isSelected={false} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<ErrorItem error={testError} isSelected={false} />);
 
     expect(ExpandableAccordion).toBeCalledTimes(1);
     expect(ExpandableAccordion).toBeCalledWith(
@@ -50,9 +45,7 @@ describe("ErrorItem component", () => {
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
     ).mock.calls[0][0].children as JSX.Element;
 
-    render(accordionChildren, {
-      wrapper: ComponentTestWrapper
-    });
+    render(accordionChildren);
 
     const errorDetailsText = screen.getByText("Error details:");
     expect(errorDetailsText).toBeVisible();
