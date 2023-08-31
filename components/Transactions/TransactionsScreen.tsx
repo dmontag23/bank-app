@@ -6,13 +6,17 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import TransactionList from "./TransactionList";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
+import useRefetchOnFocus from "../../hooks/utils/useRefetchOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScreen = () => {
   // TODO: Come back and use actual account number
-  const {isLoading, transactions} = useTransactions(
+  const {isLoading, transactions, refetch} = useTransactions(
     "2cbf9b6063102763ccbe3ea62f1b3e72"
   );
+
+  useRefetchOnFocus(refetch);
+
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, {paddingTop: insets.top}]}>

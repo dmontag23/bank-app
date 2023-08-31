@@ -2,6 +2,7 @@ import React from "react";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {NavigationContainer} from "@react-navigation/native";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
@@ -23,7 +24,11 @@ describe("Transactions", () => {
       trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
     ).get.mockImplementation(async () => new Promise(() => {}));
 
-    render(<TransactionsScreen />);
+    render(
+      <NavigationContainer>
+        <TransactionsScreen />
+      </NavigationContainer>
+    );
 
     expect(screen.getByTestId("loadingSpinner")).toBeVisible();
   });
@@ -39,7 +44,11 @@ describe("Transactions", () => {
       >
     ).mockImplementation(async () => testTransactions);
 
-    render(<TransactionsScreen />);
+    render(
+      <NavigationContainer>
+        <TransactionsScreen />
+      </NavigationContainer>
+    );
 
     await waitFor(() => expect(screen.getByText("Transactions")).toBeVisible());
     testTransactions.map(transaction => {
@@ -60,7 +69,11 @@ describe("Transactions", () => {
     const testTransactionName =
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.description;
 
-    render(<TransactionsScreen />);
+    render(
+      <NavigationContainer>
+        <TransactionsScreen />
+      </NavigationContainer>
+    );
 
     // check that the original transaction category is displayed
     // and nothing is in Async Storage
