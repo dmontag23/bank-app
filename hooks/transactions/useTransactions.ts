@@ -56,7 +56,6 @@ const assignCategoriesToTransactions = (
     }
   );
 
-// TODO: Add error handling
 const useTransactions = (acctId: string) => {
   const {
     isLoading: isTrueLayerTransactionsLoading,
