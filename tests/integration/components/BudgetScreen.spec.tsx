@@ -1,15 +1,11 @@
 import React from "react";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
+import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../../axiosConfig";
-import BudgetsScene from "../../../components/Budgets/BudgetsScene";
+import {trueLayerDataApi} from "../../../api/axiosConfig";
+import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
 import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
@@ -22,15 +18,16 @@ import {
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
-import {ComponentTestWrapper} from "../../mocks/utils";
 
-jest.mock("../../../axiosConfig");
+jest.mock("../../../api/axiosConfig");
 
-describe("Budget scene", () => {
+describe("Budget screen", () => {
   test("renders the default home page with no selected budget", () => {
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     expect(screen.getByText("Please select a budget")).toBeVisible();
 
@@ -53,9 +50,11 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // select the budget from the menu
     await waitFor(() => {
@@ -89,9 +88,11 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // select the budget from the menu
     await waitFor(() => {
@@ -127,9 +128,11 @@ describe("Budget scene", () => {
       >
     ).mockImplementation(async () => []);
 
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // select the budget from the menu
     await waitFor(() => {
@@ -173,9 +176,11 @@ describe("Budget scene", () => {
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
     ]);
 
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // select the budget from the menu
     await waitFor(() => {
@@ -220,9 +225,11 @@ describe("Budget scene", () => {
   });
 
   test("cancels the new budget form", async () => {
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // press button to add a new budget
     const addBudgetButton = screen.getAllByRole("button")[0];
@@ -253,9 +260,11 @@ describe("Budget scene", () => {
       TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
     ]);
 
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
 
     // press button to add a new budget
     const addBudgetButton = screen.getAllByRole("button")[0];

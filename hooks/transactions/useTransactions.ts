@@ -61,7 +61,8 @@ const useTransactions = (acctId: string) => {
   const {
     isLoading: isTrueLayerTransactionsLoading,
     isSuccess: isTrueLayerTransactionsSuccess,
-    data: trueLayerTransactions
+    data: trueLayerTransactions,
+    refetch
   } = useTrueLayerTransactionsFromAcct(acctId);
 
   // TODO: This id is being generated in multiple places (3).
@@ -106,7 +107,8 @@ const useTransactions = (acctId: string) => {
   return {
     isLoading:
       isTrueLayerTransactionsLoading || isTransactionToCategoryMapLoading,
-    transactions
+    transactions,
+    refetch
   };
 };
 

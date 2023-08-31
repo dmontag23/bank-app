@@ -1,6 +1,8 @@
+import {useContext} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 
+import ErrorContext from "../../store/error-context";
 import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
 const storeTransactionCategoryMapping = async (
@@ -15,6 +17,7 @@ const storeTransactionCategoryMapping = async (
 
 const useStoreTransactionCategoryMap = () => {
   const queryClient = useQueryClient();
+  const {addError, removeError} = useContext(ErrorContext);
 
   return useMutation({
     mutationFn: storeTransactionCategoryMapping,
@@ -23,7 +26,16 @@ const useStoreTransactionCategoryMap = () => {
       queryClient.invalidateQueries({
         queryKey: ["transactionCategoryMapping"]
       });
-    }
+    },
+    onError: error =>
+      addError({
+        id: "useStoreTransactionCategoryMap",
+        error: "AsyncStorage - Store transaction category map",
+        errorMessage: `There was a problem storing the transaction category map in AsyncStorage: ${JSON.stringify(
+          error
+        )}`
+      }),
+    onSuccess: () => removeError("useStoreTransactionCategoryMap")
   });
 };
 

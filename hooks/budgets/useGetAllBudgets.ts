@@ -1,6 +1,8 @@
+import {useContext} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useQuery} from "@tanstack/react-query";
 
+import ErrorContext from "../../store/error-context";
 import {Budget} from "../../types/budget";
 
 const getAllBudgets = async () => {
@@ -21,10 +23,22 @@ const getAllBudgets = async () => {
   );
 };
 
-const useGetAllBudgets = () =>
-  useQuery({
+const useGetAllBudgets = () => {
+  const {addError, removeError} = useContext(ErrorContext);
+
+  return useQuery({
     queryKey: ["budgets"],
-    queryFn: getAllBudgets
+    queryFn: getAllBudgets,
+    onError: error =>
+      addError({
+        id: "useGetAllBudgets",
+        error: "AsyncStorage - Get All Budgets",
+        errorMessage: `There was a problem getting all budgets from AsyncStorage: ${JSON.stringify(
+          error
+        )}`
+      }),
+    onSuccess: () => removeError("useGetAllBudgets")
   });
+};
 
 export default useGetAllBudgets;

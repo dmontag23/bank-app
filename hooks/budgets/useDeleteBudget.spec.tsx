@@ -1,24 +1,24 @@
+import React, {ReactNode} from "react";
+import {
+  createQueryClient,
+  renderHook,
+  waitFor
+} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useDeleteBudget from "./useDeleteBudget";
 
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM
 } from "../../tests/mocks/data/budgets";
-import {
-  TanstackQueryTestWrapper,
-  testQueryClient
-} from "../../tests/mocks/utils";
 import {Budget} from "../../types/budget";
 
 describe("useDeleteBudget", () => {
   test("handles a budget with ID not in storage", async () => {
-    const {result} = renderHook(() => useDeleteBudget(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useDeleteBudget());
     result.current.mutate("id-not-in-storage");
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -28,13 +28,12 @@ describe("useDeleteBudget", () => {
   });
 
   test("deletes a budget", async () => {
+    const queryClient = createQueryClient();
+
     // put some test data in the cache
     const previouslyCachedBudget = BUDGET_WITH_NO_ITEMS;
     const queryKey = ["budgets"];
-    testQueryClient.setQueryData<Budget>(
-      queryKey,
-      () => previouslyCachedBudget
-    );
+    queryClient.setQueryData<Budget>(queryKey, () => previouslyCachedBudget);
 
     // put test data in Async storage
     const testBudgetId = `budget-${BUDGET_WITH_ONE_ITEM.id}`;
@@ -43,8 +42,19 @@ describe("useDeleteBudget", () => {
       JSON.stringify(BUDGET_WITH_ONE_ITEM)
     );
 
+    // setup mocks for error provider
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(() => useDeleteBudget(), {
-      wrapper: TanstackQueryTestWrapper
+      queryClient,
+      customWrapper
     });
     result.current.mutate(BUDGET_WITH_ONE_ITEM.id);
 
@@ -53,10 +63,15 @@ describe("useDeleteBudget", () => {
     expect(AsyncStorage.removeItem).toBeCalledTimes(1);
     expect(AsyncStorage.removeItem).toBeCalledWith(testBudgetId);
     expect(await AsyncStorage.getItem(testBudgetId)).toBeNull();
-    expect(testQueryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useDeleteBudget");
   });
 
   test("errors on failed storage call", async () => {
+    const queryClient = createQueryClient();
+
     // setup mock for async storage
     const mockAsyncStorageStoreBudget =
       AsyncStorage.removeItem as jest.MockedFunction<
@@ -69,21 +84,35 @@ describe("useDeleteBudget", () => {
     // put some test data in the cache
     const previouslyCachedBudget = BUDGET_WITH_NO_ITEMS;
     const queryKey = ["budgets"];
-    testQueryClient.setQueryData<Budget>(
-      queryKey,
-      () => previouslyCachedBudget
+    queryClient.setQueryData<Budget>(queryKey, () => previouslyCachedBudget);
+
+    // setup mocks for error provider
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
     );
 
     const {result} = renderHook(() => useDeleteBudget(), {
-      wrapper: TanstackQueryTestWrapper
+      queryClient,
+      customWrapper
     });
     result.current.mutate("dummy-id");
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");
-    expect(testQueryClient.getQueryData(queryKey)).toEqual(
-      previouslyCachedBudget
-    );
-    expect(testQueryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryData(queryKey)).toEqual(previouslyCachedBudget);
+    expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useDeleteBudget",
+      error: "AsyncStorage - Delete Budget",
+      errorMessage:
+        'There was a problem deleting the budget in AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });

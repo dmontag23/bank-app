@@ -1,21 +1,20 @@
+import React, {ReactNode} from "react";
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetAllBudgets from "./useGetAllBudgets";
 
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import {
   BUDGET_NO_NAME_OR_ITEMS,
   BUDGET_WITH_NO_ITEMS
 } from "../../tests/mocks/data/budgets";
-import {TanstackQueryTestWrapper} from "../../tests/mocks/utils";
 import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetAllBudgets", () => {
   test("returns an empty list if there are no stored items", async () => {
-    const {result} = renderHook(() => useGetAllBudgets(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetAllBudgets());
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toEqual([]);
@@ -25,9 +24,7 @@ describe("useGetAllBudgets", () => {
     // setup AsyncStorage with mock data
     await AsyncStorage.setItem("id-2", TransactionCategory.BILLS);
 
-    const {result} = renderHook(() => useGetAllBudgets(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetAllBudgets());
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toEqual([]);
@@ -46,15 +43,26 @@ describe("useGetAllBudgets", () => {
       ]
     ]);
 
-    const {result} = renderHook(() => useGetAllBudgets(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useGetAllBudgets(), {customWrapper});
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toEqual([
       BUDGET_WITH_NO_ITEMS,
       BUDGET_NO_NAME_OR_ITEMS
     ]);
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useGetAllBudgets");
   });
 
   test("returns error on failed call to getAllKeys", async () => {
@@ -67,9 +75,17 @@ describe("useGetAllBudgets", () => {
       Promise.reject("Cannot connect to async storage - get all keys")
     );
 
-    const {result} = renderHook(() => useGetAllBudgets(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useGetAllBudgets(), {customWrapper});
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     await waitFor(() =>
@@ -77,6 +93,14 @@ describe("useGetAllBudgets", () => {
         "Cannot connect to async storage - get all keys"
       )
     );
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useGetAllBudgets",
+      error: "AsyncStorage - Get All Budgets",
+      errorMessage:
+        'There was a problem getting all budgets from AsyncStorage: "Cannot connect to async storage - get all keys"'
+    });
   });
 
   test("returns error on failed call to multiGet", async () => {
@@ -89,9 +113,17 @@ describe("useGetAllBudgets", () => {
       Promise.reject("Cannot connect to async storage - multi get")
     );
 
-    const {result} = renderHook(() => useGetAllBudgets(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useGetAllBudgets(), {customWrapper});
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     await waitFor(() =>
@@ -99,5 +131,13 @@ describe("useGetAllBudgets", () => {
         "Cannot connect to async storage - multi get"
       )
     );
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useGetAllBudgets",
+      error: "AsyncStorage - Get All Budgets",
+      errorMessage:
+        'There was a problem getting all budgets from AsyncStorage: "Cannot connect to async storage - multi get"'
+    });
   });
 });

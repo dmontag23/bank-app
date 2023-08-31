@@ -1,20 +1,14 @@
 import React from "react";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor
-} from "@testing-library/react-native";
+import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../axiosConfig";
+import {trueLayerDataApi} from "../../api/axiosConfig";
 import LoggedInScreens from "../../components/LoggedInScreens";
-import {TruelayerAuthContextProvider} from "../../store/truelayer-auth-context";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
-import {ComponentTestWrapper} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
@@ -30,10 +24,9 @@ describe("Logged in screen views", () => {
     ).mockImplementation(async () => []);
 
     render(
-      <TruelayerAuthContextProvider>
+      <NavigationContainer>
         <LoggedInScreens />
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      </NavigationContainer>
     );
 
     // check the budgets scene is rendered by default
@@ -60,7 +53,7 @@ describe("Logged in screen views", () => {
     expect(settingsButton).toBeVisible();
     // TODO: investigate why fireEvent.press does not work here
     fireEvent(settingsButton, "click");
-    expect(screen.getByText("All settings")).toBeVisible();
+    expect(screen.getAllByText("Settings").length).toBe(3);
 
     // navigate back to the budgets scene
     const budgetsButton = screen.getByRole("button", {

@@ -1,18 +1,18 @@
 import React from "react";
-import {v4} from "uuid";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
+  act,
   fireEvent,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {v4} from "uuid";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import BudgetDialog from "./BudgetDialog";
 import BudgetForm from "./form/BudgetForm";
 
 import useStoreBudget from "../../hooks/budgets/useStoreBudget";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Budget, BudgetInput} from "../../types/budget";
 
 jest.mock("uuid");
@@ -44,10 +44,7 @@ describe("BudgetDialog component", () => {
         isVisible={false}
         hide={() => {}}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(screen.queryByText("New Budget")).toBeNull();
@@ -67,10 +64,7 @@ describe("BudgetDialog component", () => {
         isVisible={true}
         hide={() => {}}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     // test all dialog elements exist
@@ -106,10 +100,7 @@ describe("BudgetDialog component", () => {
         isVisible={true}
         hide={mockHideFn}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     const cancelButton = screen.getByText("Cancel");
@@ -145,10 +136,7 @@ describe("BudgetDialog component", () => {
         isVisible={true}
         hide={mockHideFn}
         setSelectedBudget={mockSetSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     // setup non-default budget
@@ -160,7 +148,7 @@ describe("BudgetDialog component", () => {
       ...DEFAULT_BUDGET,
       items: [{id: "item-1", name: "Item 1", cap: "30", categories: []}]
     };
-    control._reset(newBudget);
+    act(() => control._reset(newBudget));
 
     const createButton = screen.getByText("Create");
     expect(createButton).toBeVisible();

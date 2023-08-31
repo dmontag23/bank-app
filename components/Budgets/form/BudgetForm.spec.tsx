@@ -1,17 +1,11 @@
 import React from "react";
 import {useForm} from "react-hook-form";
+import {fireEvent, render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {
-  fireEvent,
-  render,
-  renderHook,
-  screen
-} from "@testing-library/react-native";
 
 import BudgetForm from "./BudgetForm";
 import BudgetItemForm from "./BudgetItemForm";
 
-import {ComponentTestWrapper} from "../../../tests/mocks/utils";
 import {BudgetInput} from "../../../types/budget";
 
 jest.mock("./BudgetItemForm");
@@ -32,9 +26,7 @@ describe("BudgetForm component", () => {
       useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(screen.getByLabelText("Name")).toBeVisible();
 
@@ -63,9 +55,7 @@ describe("BudgetForm component", () => {
       })
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(screen.getByDisplayValue("Test budget")).toBeVisible();
     expect(result.current.getValues("name")).toEqual("Test budget");
@@ -80,9 +70,7 @@ describe("BudgetForm component", () => {
       useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(result.current.getValues("window.start")).toEqual(
       EMPTY_BUDGET.window.start
@@ -108,9 +96,7 @@ describe("BudgetForm component", () => {
       useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(result.current.getValues("window.end")).toEqual(
       EMPTY_BUDGET.window.end
@@ -134,9 +120,7 @@ describe("BudgetForm component", () => {
       useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(result.current.getValues("window.start")).toEqual(
       EMPTY_BUDGET.window.start
@@ -154,9 +138,7 @@ describe("BudgetForm component", () => {
       useForm<BudgetInput>({defaultValues: EMPTY_BUDGET})
     );
 
-    render(<BudgetForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetForm control={result.current.control} />);
 
     expect(result.current.getValues("window.end")).toEqual(
       EMPTY_BUDGET.window.end

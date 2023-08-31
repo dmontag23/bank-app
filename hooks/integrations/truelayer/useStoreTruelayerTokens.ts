@@ -1,5 +1,8 @@
+import {useContext} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+
+import ErrorContext from "../../../store/error-context";
 
 const storeTruelayerTokens = async (tokens: {
   authToken: string;
@@ -15,6 +18,7 @@ const storeTruelayerTokens = async (tokens: {
 
 const useStoreTruelayerTokens = () => {
   const queryClient = useQueryClient();
+  const {addError, removeError} = useContext(ErrorContext);
 
   return useMutation({
     mutationFn: storeTruelayerTokens,
@@ -23,7 +27,16 @@ const useStoreTruelayerTokens = () => {
       queryClient.invalidateQueries({
         queryKey: ["truelayerTokens"]
       });
-    }
+    },
+    onError: error =>
+      addError({
+        id: "useStoreTruelayerTokens",
+        error: "AsyncStorage - Store tokens",
+        errorMessage: `There was a problem storing the Truelayer auth and refresh tokens in AsyncStorage: ${JSON.stringify(
+          error
+        )}`
+      }),
+    onSuccess: () => removeError("useStoreTruelayerTokens")
   });
 };
 

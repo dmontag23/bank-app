@@ -1,3 +1,12 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json"
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  // added the lines below to use absolute imports from the root directory
+  // e.g. to import all the custom render, renderHook, etc functions from
+  // the react native testing library
+  // see https://testing-library.com/docs/react-testing-library/setup/#configuring-jest-with-test-utils
+  "compilerOptions": {
+    "paths": {
+      "testing-library/extension": ["./tests/utils"]
+    }
+  }
 }

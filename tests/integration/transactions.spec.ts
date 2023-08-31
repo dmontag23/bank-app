@@ -1,8 +1,8 @@
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
-import {trueLayerDataApi} from "../../axiosConfig";
+import {trueLayerDataApi} from "../../api/axiosConfig";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
 import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
@@ -10,9 +10,8 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../mocks/trueLayer/dataAPI/data/cardData";
-import {TanstackQueryTestWrapper} from "../mocks/utils";
 
-jest.mock("../../axiosConfig");
+jest.mock("../../api/axiosConfig");
 
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer transactions exist", async () => {
@@ -23,9 +22,7 @@ describe("useTransactions transaction flow", () => {
       >
     ).mockImplementation(async () => []);
 
-    const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useTransactions("dummy"));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
     expect(await AsyncStorage.getAllKeys()).toEqual([]);
@@ -42,9 +39,7 @@ describe("useTransactions transaction flow", () => {
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ]);
 
-    const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useTransactions("dummy"));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {
@@ -90,9 +85,7 @@ describe("useTransactions transaction flow", () => {
       TransactionCategory.SAVINGS
     );
 
-    const {result} = renderHook(() => useTransactions("dummy"), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useTransactions("dummy"));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {

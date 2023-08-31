@@ -1,22 +1,19 @@
 import React from "react";
+import {act, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {act, render, screen} from "@testing-library/react-native";
 
 import Budget from "./Budget";
 import BudgetHeader from "./BudgetHeader";
-import BudgetsScene from "./BudgetsScene";
+import BudgetsScreen from "./BudgetsScreen";
 
 import {BUDGET_WITH_ONE_ITEM} from "../../tests/mocks/data/budgets";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 
 jest.mock("./Budget");
 jest.mock("./BudgetHeader");
 
-describe("BudgetScene component", () => {
+describe("BudgetsScreen component", () => {
   test("renders a screen without a selected budget", () => {
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetsScreen />);
 
     expect(BudgetHeader).toBeCalledTimes(1);
     expect(BudgetHeader).toBeCalledWith(
@@ -31,9 +28,7 @@ describe("BudgetScene component", () => {
   });
 
   test("can select a new budget", () => {
-    render(<BudgetsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetsScreen />);
 
     expect(BudgetHeader).toBeCalledTimes(1);
     expect(BudgetHeader).toBeCalledWith(

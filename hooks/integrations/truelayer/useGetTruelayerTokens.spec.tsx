@@ -1,10 +1,11 @@
+import React, {ReactNode} from "react";
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTruelayerTokens from "./useGetTruelayerTokens";
 
-import {TanstackQueryTestWrapper} from "../../../tests/mocks/utils";
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 
 describe("useGetTruelayerTokens", () => {
   test("returns correct auth token with no refresh token", async () => {
@@ -12,9 +13,7 @@ describe("useGetTruelayerTokens", () => {
     const dummyAuthToken = "auth-token";
     await AsyncStorage.setItem("truelayer-auth-token", dummyAuthToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -29,9 +28,7 @@ describe("useGetTruelayerTokens", () => {
     const dummyRefreshToken = "refresh-token";
     await AsyncStorage.setItem("truelayer-refresh-token", dummyRefreshToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useGetTruelayerTokens());
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -48,9 +45,17 @@ describe("useGetTruelayerTokens", () => {
     await AsyncStorage.setItem("truelayer-auth-token", dummyAuthToken);
     await AsyncStorage.setItem("truelayer-refresh-token", dummyRefreshToken);
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useGetTruelayerTokens(), {customWrapper});
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({
@@ -58,6 +63,9 @@ describe("useGetTruelayerTokens", () => {
       refreshToken: dummyRefreshToken
     });
     expect(result.current.error).toBeNull();
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useGetTruelayerTokens");
   });
 
   test("returns error on failed call to storage", async () => {
@@ -68,11 +76,27 @@ describe("useGetTruelayerTokens", () => {
       Promise.reject("Cannot connect to async storage")
     );
 
-    const {result} = renderHook(() => useGetTruelayerTokens(), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useGetTruelayerTokens(), {customWrapper});
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useGetTruelayerTokens",
+      error: "AsyncStorage - Get tokens",
+      errorMessage:
+        'There was a problem getting the Truelayer auth and refresh tokens from AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });

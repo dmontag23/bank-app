@@ -1,5 +1,5 @@
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
@@ -22,6 +22,7 @@ jest.mock("./useStoreTransactionCategoryMap");
 describe("useTransactions", () => {
   test("returns a loading status if loading truelayer transactions", async () => {
     // setup mocks
+    const mockRefetch = jest.fn();
     const mockUseTrueLayerTransactionsFromAcct =
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
@@ -30,7 +31,8 @@ describe("useTransactions", () => {
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
-      data: undefined
+      data: undefined,
+      refetch: mockRefetch
     }));
     const mockUseGetTransactionCategoryMap =
       // TODO: any should probably not be used as a type here, but since a
@@ -42,6 +44,7 @@ describe("useTransactions", () => {
       isSuccess: false,
       data: undefined
     }));
+
     const mockUseStoreTransactionCategoryMap =
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
@@ -57,6 +60,7 @@ describe("useTransactions", () => {
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
+    expect(result.current.refetch).toBe(mockRefetch);
     expect(result.current.transactions).toEqual([]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");

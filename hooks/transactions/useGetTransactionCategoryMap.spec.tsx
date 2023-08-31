@@ -1,19 +1,17 @@
+import React, {ReactNode} from "react";
+import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {renderHook, waitFor} from "@testing-library/react-native";
 
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
-import {TanstackQueryTestWrapper} from "../../tests/mocks/utils";
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: []}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: []})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -26,11 +24,19 @@ describe("useGetTransactionCategoryMap", () => {
     // setup AsyncStorage with mock data
     await AsyncStorage.setItem("id-2", TransactionCategory.BILLS);
 
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(
       () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -40,14 +46,14 @@ describe("useGetTransactionCategoryMap", () => {
     });
     expect(AsyncStorage.multiGet).toBeCalledTimes(1);
     expect(AsyncStorage.multiGet).toBeCalledWith(["id-1", "id-2"]);
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useGetTransactionCategoryMap");
   });
 
   test("does not fetch from storage when disabled", async () => {
-    const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: [], enabled: false}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+    const {result} = renderHook(() =>
+      useGetTransactionCategoryMap({transactionIds: [], enabled: false})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -65,14 +71,30 @@ describe("useGetTransactionCategoryMap", () => {
       Promise.reject("Cannot connect to async storage")
     );
 
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(
       () => useGetTransactionCategoryMap({transactionIds: []}),
-      {
-        wrapper: TanstackQueryTestWrapper
-      }
+      {customWrapper}
     );
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useGetTransactionCategoryMap",
+      error: "AsyncStorage - Get transaction category map",
+      errorMessage:
+        'There was a problem getting the transaction category map from AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });

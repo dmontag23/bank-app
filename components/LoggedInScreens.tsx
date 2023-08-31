@@ -1,12 +1,12 @@
-import React from "react";
-import {View} from "react-native";
-import {Text} from "react-native-paper";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import React, {useContext} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
-import BudgetsScene from "./Budgets/BudgetsScene";
-import TransactionsScene from "./Transactions/TransactionsScene";
+import BudgetsScreen from "./Budgets/BudgetsScreen";
+import SettingsScreen from "./Settings/SettingsScreen";
+import TransactionsScreen from "./Transactions/TransactionsScreen";
+
+import ErrorContext from "../store/error-context";
 
 const Tab = createMaterialBottomTabNavigator();
 const ICON_SIZE = 24;
@@ -32,42 +32,38 @@ const settingsIcon = (focused: boolean) => (
   />
 );
 
-const Settings = () => {
-  const insets = useSafeAreaInsets();
+const LoggedInScreens = () => {
+  const {errors} = useContext(ErrorContext);
+  const tabBarBadgeObject = errors.length ? {tabBarBadge: errors.length} : {};
   return (
-    <View style={{paddingTop: insets.top}}>
-      <Text>All settings</Text>
-    </View>
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Budgets"
+        component={BudgetsScreen}
+        options={{
+          tabBarIcon: ({focused}) => budgetsIcon(focused),
+          tabBarTestID: "budgetsBottomNavButton"
+        }}
+      />
+      <Tab.Screen
+        name="Transactions"
+        component={TransactionsScreen}
+        options={{
+          tabBarIcon: ({focused}) => transactionsIcon(focused),
+          tabBarTestID: "transactionsBottomNavButton"
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({focused}) => settingsIcon(focused),
+          tabBarTestID: "settingsBottomNavButton",
+          ...tabBarBadgeObject
+        }}
+      />
+    </Tab.Navigator>
   );
 };
-
-const LoggedInScreens = () => (
-  <Tab.Navigator>
-    <Tab.Screen
-      name="Budgets"
-      component={BudgetsScene}
-      options={{
-        tabBarIcon: ({focused}) => budgetsIcon(focused),
-        tabBarTestID: "budgetsBottomNavButton"
-      }}
-    />
-    <Tab.Screen
-      name="Transactions"
-      component={TransactionsScene}
-      options={{
-        tabBarIcon: ({focused}) => transactionsIcon(focused),
-        tabBarTestID: "transactionsBottomNavButton"
-      }}
-    />
-    <Tab.Screen
-      name="Settings"
-      component={Settings}
-      options={{
-        tabBarIcon: ({focused}) => settingsIcon(focused),
-        tabBarTestID: "settingsBottomNavButton"
-      }}
-    />
-  </Tab.Navigator>
-);
 
 export default LoggedInScreens;

@@ -1,17 +1,11 @@
 import React from "react";
 import {useForm} from "react-hook-form";
+import {fireEvent, render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {
-  fireEvent,
-  render,
-  renderHook,
-  screen
-} from "@testing-library/react-native";
 
 import BudgetItemForm from "./BudgetItemForm";
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
-import {ComponentTestWrapper} from "../../../tests/mocks/utils";
 import {BudgetInput, BudgetItemInput} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
 import ExpandableAccordion from "../../ui/ExpandableAccordion";
@@ -42,14 +36,13 @@ describe("BudgetItemForm component", () => {
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_ONE_EMPTY_ITEM})
     );
 
-    render(<BudgetItemForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemForm control={result.current.control} />);
 
     expect(ExpandableAccordion).toBeCalledTimes(1);
     expect(ExpandableAccordion).toBeCalledWith(
       expect.objectContaining({
-        title: "Budget Item"
+        title: "Budget Item",
+        isInitiallyExpanded: true
       }),
       {}
     );
@@ -62,14 +55,13 @@ describe("BudgetItemForm component", () => {
       })
     );
 
-    render(<BudgetItemForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemForm control={result.current.control} />);
 
     expect(ExpandableAccordion).toBeCalledTimes(1);
     expect(ExpandableAccordion).toBeCalledWith(
       expect.objectContaining({
-        title: "Item 1"
+        title: "Item 1",
+        isInitiallyExpanded: true
       }),
       {}
     );
@@ -98,9 +90,7 @@ describe("BudgetItemForm component", () => {
       useForm<BudgetInput>({defaultValues: budget})
     );
 
-    render(<BudgetItemForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemForm control={result.current.control} />);
 
     expect(ExpandableAccordion).toBeCalledTimes(3);
     expect(ExpandableAccordion).toBeCalledWith(
@@ -112,9 +102,7 @@ describe("BudgetItemForm component", () => {
     const BudgetItemFormFieldsComponent = (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
     ).mock.calls[1][0].children as JSX.Element;
-    render(BudgetItemFormFieldsComponent, {
-      wrapper: ComponentTestWrapper
-    });
+    render(BudgetItemFormFieldsComponent);
 
     expect(BudgetItemFormFields).toBeCalledTimes(1);
     expect(BudgetItemFormFields).toBeCalledWith(
@@ -135,9 +123,7 @@ describe("BudgetItemForm component", () => {
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_ONE_EMPTY_ITEM})
     );
 
-    render(<BudgetItemForm control={result.current.control} />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<BudgetItemForm control={result.current.control} />);
 
     expect(result.current.getValues("items")).toHaveLength(1);
     fireEvent.press(screen.getByText("Add item"));

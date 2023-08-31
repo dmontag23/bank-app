@@ -1,13 +1,13 @@
 import React from "react";
 import {GestureResponderEvent} from "react-native";
-import {describe, expect, jest, test} from "@jest/globals";
 import {
   act,
   fireEvent,
   render,
   screen,
   waitFor
-} from "@testing-library/react-native";
+} from "testing-library/extension";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import BudgetMenu from "./BudgetMenu";
 
@@ -17,7 +17,6 @@ import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM
 } from "../../tests/mocks/data/budgets";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Budget} from "../../types/budget";
 
 jest.mock("../../hooks/budgets/useDeleteBudget");
@@ -41,10 +40,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -68,10 +64,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -95,10 +88,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={() => {}}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -119,12 +109,13 @@ describe("BudgetMenu component", () => {
   });
 
   test("correctly selects a budget", async () => {
-    // TODO: any should probably not be used as a type here, but since a
-    // query from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
     const renderMenuIcon =
       jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
     const setSelectedBudget = jest.fn();
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
       data: [BUDGET_WITH_NO_ITEMS, BUDGET_WITH_ONE_ITEM]
     }));
@@ -136,10 +127,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -180,10 +168,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);
@@ -227,10 +212,7 @@ describe("BudgetMenu component", () => {
       <BudgetMenu
         renderMenuIcon={renderMenuIcon}
         setSelectedBudget={setSelectedBudget}
-      />,
-      {
-        wrapper: ComponentTestWrapper
-      }
+      />
     );
 
     expect(renderMenuIcon).toBeCalledTimes(1);

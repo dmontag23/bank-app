@@ -1,25 +1,17 @@
 import React, {useContext} from "react";
 import {Text} from "react-native-paper";
+import {render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, renderHook, screen} from "@testing-library/react-native";
 
-import TruelayerAuthContext, {
-  TruelayerAuthContextProvider
-} from "./truelayer-auth-context";
+import TruelayerAuthContext from "./truelayer-auth-context";
 
 import useGetTruelayerTokens from "../hooks/integrations/truelayer/useGetTruelayerTokens";
-import {
-  ComponentTestWrapper,
-  TanstackQueryTestWrapper
-} from "../tests/mocks/utils";
 
 jest.mock("../hooks/integrations/truelayer/useGetTruelayerTokens");
 
 describe("TruelayerAuthContext", () => {
   test("defaults values correctly", () => {
-    const {result} = renderHook(() => useContext(TruelayerAuthContext), {
-      wrapper: TanstackQueryTestWrapper
-    });
+    const {result} = renderHook(() => useContext(TruelayerAuthContext));
 
     expect(result.current.isLoading).toBe(true);
     expect(result.current.authToken).toBe("");
@@ -35,12 +27,9 @@ describe("TruelayerAuthContext", () => {
     );
 
     render(
-      <TruelayerAuthContextProvider>
-        <TruelayerAuthContext.Consumer>
-          {values => <Text>{JSON.stringify(values)}</Text>}
-        </TruelayerAuthContext.Consumer>
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      <TruelayerAuthContext.Consumer>
+        {values => <Text>{JSON.stringify(values)}</Text>}
+      </TruelayerAuthContext.Consumer>
     );
 
     const expectedResult = {
@@ -63,12 +52,9 @@ describe("TruelayerAuthContext", () => {
     );
 
     render(
-      <TruelayerAuthContextProvider>
-        <TruelayerAuthContext.Consumer>
-          {values => <Text>{JSON.stringify(values)}</Text>}
-        </TruelayerAuthContext.Consumer>
-      </TruelayerAuthContextProvider>,
-      {wrapper: ComponentTestWrapper}
+      <TruelayerAuthContext.Consumer>
+        {values => <Text>{JSON.stringify(values)}</Text>}
+      </TruelayerAuthContext.Consumer>
     );
 
     const expectedResult = {

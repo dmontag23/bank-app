@@ -1,23 +1,25 @@
 import React from "react";
+import {render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
-import {render, screen} from "@testing-library/react-native";
 
 import TransactionList from "./TransactionList";
-import TransactionsScene from "./TransactionsScene";
+import TransactionsScreen from "./TransactionsScreen";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
+import useRefetchOnFocus from "../../hooks/utils/useRefetchOnFocus";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {ComponentTestWrapper} from "../../tests/mocks/utils";
 import {Transaction, TransactionCategory} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 jest.mock("./TransactionList");
 jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useTransactions");
+jest.mock("../../hooks/utils/useRefetchOnFocus");
 
-describe("TransactionsScene component", () => {
+describe("TransactionsScreen component", () => {
   test("renders a loading spinner when loading transactions", () => {
     // setup mocks
+    const mockRefetch = jest.fn();
     const mockUseTransactions =
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
@@ -25,14 +27,16 @@ describe("TransactionsScene component", () => {
       useTransactions as jest.MockedFunction<any>;
     mockUseTransactions.mockImplementation(() => ({
       isLoading: true,
-      transactions: []
+      transactions: [],
+      refetch: mockRefetch
     }));
 
-    render(<TransactionsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     expect(LoadingSpinner).toBeCalledTimes(1);
+    expect(LoadingSpinner).toBeCalledWith({}, {});
+    expect(useRefetchOnFocus).toBeCalledTimes(1);
+    expect(useRefetchOnFocus).toBeCalledWith(mockRefetch);
   });
 
   test("renders transactions after loading", () => {
@@ -49,6 +53,7 @@ describe("TransactionsScene component", () => {
     ];
 
     // setup mocks
+    const mockRefetch = jest.fn();
     const mockUseTransactions =
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
@@ -56,14 +61,15 @@ describe("TransactionsScene component", () => {
       useTransactions as jest.MockedFunction<any>;
     mockUseTransactions.mockImplementation(() => ({
       isLoading: false,
-      transactions: testTransactions
+      transactions: testTransactions,
+      refetch: mockRefetch
     }));
 
-    render(<TransactionsScene />, {
-      wrapper: ComponentTestWrapper
-    });
+    render(<TransactionsScreen />);
 
     expect(screen.getByText("Transactions")).toBeVisible();
+    expect(useRefetchOnFocus).toBeCalledTimes(1);
+    expect(useRefetchOnFocus).toBeCalledWith(mockRefetch);
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
       {transactions: testTransactions},
