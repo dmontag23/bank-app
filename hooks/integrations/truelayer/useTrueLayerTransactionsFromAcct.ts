@@ -17,8 +17,9 @@ const useTrueLayerTransactionsFromAcct = (acctId: string) => {
   return useQuery<CardTransaction[], IntegrationErrorResponse>({
     queryKey: ["trueLayerTransactions", acctId],
     queryFn: () => getTransactions(acctId),
-    onError: error => addError({...error, id: "trueLayerTransactions"}),
-    onSuccess: () => removeError("trueLayerTransactions")
+    onError: error =>
+      addError({...error, id: "useTrueLayerTransactionsFromAcct"}),
+    onSuccess: () => removeError("useTrueLayerTransactionsFromAcct")
   });
 };
 

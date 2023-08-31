@@ -1,3 +1,4 @@
+import React, {ReactNode} from "react";
 import {
   createQueryClient,
   renderHook,
@@ -8,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import useStoreBudget from "./useStoreBudget";
 
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM
@@ -23,7 +25,20 @@ describe("useStoreBudget", () => {
     const queryKey = ["budgets"];
     queryClient.setQueryData<Budget>(queryKey, () => previouslyCachedBudget);
 
-    const {result} = renderHook(() => useStoreBudget(), {queryClient});
+    // setup mocks for error provider
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useStoreBudget(), {
+      queryClient,
+      customWrapper
+    });
     result.current.mutate(BUDGET_WITH_ONE_ITEM);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -37,6 +52,9 @@ describe("useStoreBudget", () => {
       await AsyncStorage.getItem(`budget-${BUDGET_WITH_ONE_ITEM.id}`)
     ).toEqual(JSON.stringify(BUDGET_WITH_ONE_ITEM));
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useStoreBudget");
   });
 
   test("errors on failed storage call", async () => {
@@ -54,12 +72,33 @@ describe("useStoreBudget", () => {
     const queryKey = ["budgets"];
     queryClient.setQueryData<Budget>(queryKey, () => previouslyCachedBudget);
 
-    const {result} = renderHook(() => useStoreBudget(), {queryClient});
+    // setup mocks for error provider
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useStoreBudget(), {
+      queryClient,
+      customWrapper
+    });
     result.current.mutate(BUDGET_WITH_ONE_ITEM);
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");
     expect(queryClient.getQueryData(queryKey)).toEqual(previouslyCachedBudget);
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useStoreBudget",
+      error: "AsyncStorage - Store Budget",
+      errorMessage:
+        'There was a problem storing the budget in AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });

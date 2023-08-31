@@ -110,8 +110,9 @@ describe("useDeleteBudget", () => {
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
       id: "useDeleteBudget",
-      error: "There was a problem storing the budget in AsyncStorage",
-      errorMessage: '"Cannot connect to async storage"'
+      error: "AsyncStorage - Delete Budget",
+      errorMessage:
+        'There was a problem deleting the budget in AsyncStorage "Cannot connect to async storage"'
     });
   });
 });

@@ -21,8 +21,10 @@ const useDeleteBudget = () => {
     onError: error =>
       addError({
         id: "useDeleteBudget",
-        error: "There was a problem storing the budget in AsyncStorage",
-        errorMessage: JSON.stringify(error)
+        error: "AsyncStorage - Delete Budget",
+        errorMessage: `There was a problem deleting the budget in AsyncStorage ${JSON.stringify(
+          error
+        )}`
       }),
     onSuccess: () => removeError("useDeleteBudget")
   });

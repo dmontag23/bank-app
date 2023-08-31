@@ -48,7 +48,7 @@ describe("useTrueLayerTransactions", () => {
     expect(result.current.error).toBeNull();
 
     expect(mockRemoveError).toBeCalledTimes(1);
-    expect(mockRemoveError).toBeCalledWith("trueLayerTransactions");
+    expect(mockRemoveError).toBeCalledWith("useTrueLayerTransactionsFromAcct");
   });
 
   test("returns an error message", async () => {
@@ -80,7 +80,7 @@ describe("useTrueLayerTransactions", () => {
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
       error: "error",
-      id: "trueLayerTransactions"
+      id: "useTrueLayerTransactionsFromAcct"
     });
   });
 });
