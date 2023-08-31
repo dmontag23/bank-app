@@ -10,6 +10,7 @@ const deleteBudget = async (budgetId: string) =>
 const useDeleteBudget = () => {
   const queryClient = useQueryClient();
   const {addError, removeError} = useContext(ErrorContext);
+
   return useMutation({
     mutationFn: deleteBudget,
     // Always refetch all budgets after success or error
@@ -22,7 +23,7 @@ const useDeleteBudget = () => {
       addError({
         id: "useDeleteBudget",
         error: "AsyncStorage - Delete Budget",
-        errorMessage: `There was a problem deleting the budget in AsyncStorage ${JSON.stringify(
+        errorMessage: `There was a problem deleting the budget in AsyncStorage: ${JSON.stringify(
           error
         )}`
       }),

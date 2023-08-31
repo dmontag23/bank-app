@@ -1,7 +1,10 @@
+import {useContext} from "react";
 import {useMutation} from "@tanstack/react-query";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
 import config from "../../../config.json";
+import ErrorContext from "../../../store/error-context";
+import {IntegrationErrorResponse} from "../../../types/errors";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -20,9 +23,18 @@ const exchangeCodeForAccessToken = async (code: string) =>
     code
   });
 
-const usePostTruelayerToken = () =>
-  useMutation({
-    mutationFn: exchangeCodeForAccessToken
+const usePostTruelayerToken = () => {
+  const {addError, removeError} = useContext(ErrorContext);
+
+  return useMutation<
+    ConnectTokenPostResponse,
+    IntegrationErrorResponse,
+    string
+  >({
+    mutationFn: exchangeCodeForAccessToken,
+    onError: error => addError({...error, id: "usePostTruelayerToken"}),
+    onSuccess: () => removeError("usePostTruelayerToken")
   });
+};
 
 export default usePostTruelayerToken;

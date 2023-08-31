@@ -112,7 +112,7 @@ describe("useDeleteBudget", () => {
       id: "useDeleteBudget",
       error: "AsyncStorage - Delete Budget",
       errorMessage:
-        'There was a problem deleting the budget in AsyncStorage "Cannot connect to async storage"'
+        'There was a problem deleting the budget in AsyncStorage: "Cannot connect to async storage"'
     });
   });
 });

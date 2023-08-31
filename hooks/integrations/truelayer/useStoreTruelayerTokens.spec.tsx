@@ -1,3 +1,4 @@
+import React, {ReactNode} from "react";
 import {
   createQueryClient,
   renderHook,
@@ -7,6 +8,8 @@ import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import useStoreTruelayerTokens from "./useStoreTruelayerTokens";
+
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 
 describe("useStoreTruelayerTokens", () => {
   test("stores token correctly", async () => {
@@ -23,7 +26,21 @@ describe("useStoreTruelayerTokens", () => {
       () => previouslyCachedAuthAndRefreshToken
     );
 
-    const {result} = renderHook(() => useStoreTruelayerTokens(), {queryClient});
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useStoreTruelayerTokens(), {
+      queryClient,
+      customWrapper
+    });
+
     const newTokens = {
       authToken: "auth-token-2",
       refreshToken: "refresh-token-2"
@@ -44,6 +61,9 @@ describe("useStoreTruelayerTokens", () => {
       newTokens.refreshToken
     );
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useStoreTruelayerTokens");
   });
 
   test("errors on failed storage call", async () => {
@@ -67,7 +87,20 @@ describe("useStoreTruelayerTokens", () => {
       () => previouslyCachedAuthAndRefreshToken
     );
 
-    const {result} = renderHook(() => useStoreTruelayerTokens(), {queryClient});
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useStoreTruelayerTokens(), {
+      queryClient,
+      customWrapper
+    });
     result.current.mutate({authToken: "", refreshToken: ""});
 
     await waitFor(() => expect(result.current.isError).toBe(true));
@@ -76,5 +109,13 @@ describe("useStoreTruelayerTokens", () => {
       previouslyCachedAuthAndRefreshToken
     );
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useStoreTruelayerTokens",
+      error: "AsyncStorage - Store tokens",
+      errorMessage:
+        'There was a problem storing the Truelayer auth and refresh tokens in AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });

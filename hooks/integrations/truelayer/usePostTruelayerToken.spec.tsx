@@ -1,3 +1,4 @@
+import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
@@ -5,6 +6,7 @@ import usePostTruelayerToken from "./usePostTruelayerToken";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
 import config from "../../../config.json";
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -32,7 +34,17 @@ describe("usePostTruelayerToken", () => {
       >
     ).mockImplementation(async () => mockResponseData);
 
-    const {result} = renderHook(() => usePostTruelayerToken());
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => usePostTruelayerToken(), {customWrapper});
     result.current.mutate("dummy-code");
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -46,6 +58,9 @@ describe("usePostTruelayerToken", () => {
       code: "dummy-code"
     });
     expect(result.current.error).toBeNull();
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("usePostTruelayerToken");
   });
 
   test("returns an error message on a 400 status code response", async () => {
@@ -61,7 +76,17 @@ describe("usePostTruelayerToken", () => {
       >
     ).mockImplementation(async () => Promise.reject(error));
 
-    const {result} = renderHook(() => usePostTruelayerToken());
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => usePostTruelayerToken(), {customWrapper});
     result.current.mutate("error-code");
 
     await waitFor(() => expect(result.current.isError).toBe(true));
@@ -75,5 +100,11 @@ describe("usePostTruelayerToken", () => {
     });
     expect(result.current.data).toBeUndefined();
     expect(result.current.error).toEqual(error);
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "usePostTruelayerToken",
+      error: "invalid_grant"
+    });
   });
 });

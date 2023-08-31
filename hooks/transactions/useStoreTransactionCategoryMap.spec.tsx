@@ -1,3 +1,4 @@
+import React, {ReactNode} from "react";
 import {
   createQueryClient,
   renderHook,
@@ -8,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
+import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import {
   TransactionCategory,
   TransactionIDToCategoryMapping
@@ -15,12 +17,27 @@ import {
 
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
-    const {result} = renderHook(() => useStoreTransactionCategoryMap());
+    // setup error context mocks
+    const mockRemoveError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, removeError: mockRemoveError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
+    const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
+      customWrapper
+    });
     result.current.mutate({});
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({});
     expect(AsyncStorage.multiSet).not.toBeCalled();
+
+    expect(mockRemoveError).toBeCalledTimes(1);
+    expect(mockRemoveError).toBeCalledWith("useStoreTransactionCategoryMap");
   });
 
   test("stores transaction map correctly", async () => {
@@ -89,8 +106,19 @@ describe("useStoreTransactionCategoryMap", () => {
       "id-2": TransactionCategory.SAVINGS
     };
 
+    // setup error context mocks
+    const mockAddError = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ErrorContext.Provider
+        value={{...defaultErrorContext, addError: mockAddError}}>
+        {children}
+      </ErrorContext.Provider>
+    );
+
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
-      queryClient
+      queryClient,
+      customWrapper
     });
     result.current.mutate(testData);
 
@@ -100,5 +128,13 @@ describe("useStoreTransactionCategoryMap", () => {
       previouslyCachedTransactions
     );
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
+
+    expect(mockAddError).toBeCalledTimes(1);
+    expect(mockAddError).toBeCalledWith({
+      id: "useStoreTransactionCategoryMap",
+      error: "AsyncStorage - Store transaction category map",
+      errorMessage:
+        'There was a problem storing the transaction category map in AsyncStorage: "Cannot connect to async storage"'
+    });
   });
 });
