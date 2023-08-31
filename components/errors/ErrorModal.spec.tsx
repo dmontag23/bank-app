@@ -1,5 +1,5 @@
 import React from "react";
-import {fireEvent, render, screen} from "testing-library/extension";
+import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import ErrorItem from "./ErrorItem";
@@ -98,6 +98,30 @@ describe("ErrorModal component", () => {
     fireEvent.press(closeButton);
 
     expect(mockHideModal).toBeCalledTimes(1);
+    expect(mockHideModal).toBeCalledWith();
+  });
+
+  test("can close modal by clicking on background", async () => {
+    const mockHideModal = jest.fn();
+    render(
+      <ErrorContext.Provider
+        value={{
+          ...defaultErrorContextValue,
+          errorModal: {
+            ...defaultErrorContextValue.errorModal,
+            hideModal: mockHideModal
+          }
+        }}>
+        <ErrorModal />
+      </ErrorContext.Provider>
+    );
+
+    const background = screen.getByTestId("modal-backdrop");
+    expect(background).toBeVisible();
+
+    fireEvent.press(background);
+
+    await waitFor(() => expect(mockHideModal).toBeCalledTimes(1));
     expect(mockHideModal).toBeCalledWith();
   });
 });

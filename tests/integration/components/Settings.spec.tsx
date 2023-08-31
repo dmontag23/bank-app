@@ -28,4 +28,6 @@ describe("Settings Screen", () => {
 
     await waitFor(() => expect(screen.getByText("Errors")).toBeVisible());
   });
+
+  // TODO: Come back and add a test for the error badge
 });
