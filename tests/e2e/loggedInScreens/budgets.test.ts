@@ -195,7 +195,7 @@ describe("Budget page", () => {
           categories: [TransactionCategory.EATING_OUT]
         }
       ],
-      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+      window: {start: new Date("2013-01-01"), end: new Date("2023-03-01")}
     };
 
     await createBudget(budget);
@@ -310,7 +310,7 @@ describe("Budget page", () => {
           categories: [TransactionCategory.SAVINGS]
         }
       ],
-      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+      window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
     };
 
     await createBudget(firstBudget);
@@ -354,5 +354,27 @@ describe("Budget page", () => {
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(element(by.text(TransactionCategory.SAVINGS))).toBeVisible();
+  });
+
+  it("filters transactions by the time window", async () => {
+    const firstBudget: Budget = {
+      id: "first-budget",
+      name: "First budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Everything",
+          cap: 30000,
+          categories: Object.values(TransactionCategory)
+        }
+      ],
+      window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
+    };
+
+    await createBudget(firstBudget);
+
+    // check the transaction exists for the bills budget item
+    await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
+    await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).not.toExist();
   });
 });

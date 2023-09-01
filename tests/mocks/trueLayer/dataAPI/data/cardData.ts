@@ -4,7 +4,7 @@ export const TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
   transaction_id: "a15d8156569ba848d84c07c34d291bca",
   normalised_provider_transaction_id: "txn-ajdifh38fheu5hgue",
   provider_transaction_id: "9882ks-00js",
-  timestamp: "2023-02-27T23:06:00+00:00",
+  timestamp: "2023-02-27T23:06:00Z",
   description: "PAY OFF CREDIT CARD BILL",
   amount: 192.52,
   currency: "GBP",
@@ -37,7 +37,7 @@ export const TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
 export const TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
   {
     transaction_id: "1234094-shocking-chipotle",
-    timestamp: "2013-02-24T:14:00-07:00",
+    timestamp: "2013-02-24T14:00:00Z",
     description: "CHIPOTLE AIRPORT BLVD",
     amount: 36.71,
     currency: "USD",
@@ -49,7 +49,7 @@ export const TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransacti
 export const TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
   {
     transaction_id: "1234000-chai-pot",
-    timestamp: "2023-03-23T:14:00-07:00",
+    timestamp: "2023-03-23T14:00:00Z",
     description: "CHAI POT YUM",
     amount: 3.3,
     currency: "GBP",
@@ -61,7 +61,7 @@ export const TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS: CardTra
 export const TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS: CardTransaction =
   {
     transaction_id: "0402944-dem-clothes",
-    timestamp: "2023-03-01T:00:00-00:00",
+    timestamp: "2023-03-01T00:00:00Z",
     description: "ZARA",
     amount: 132,
     currency: "GBP",
