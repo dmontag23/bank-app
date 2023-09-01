@@ -51,6 +51,60 @@ describe("useTrueLayerTransactions", () => {
     expect(mockRemoveError).toBeCalledWith("useTrueLayerTransactionsFromAcct");
   });
 
+  test("uses past dates for transactions query", async () => {
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
+
+    const {result} = renderHook(() =>
+      useTrueLayerTransactionsFromAcct("dummy", {
+        from: new Date("01-01-2022"),
+        to: new Date("01-01-2023")
+      })
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual([]);
+    expect(result.current.error).toBeNull();
+
+    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      `v1/cards/dummy/transactions?from=${new Date(
+        "01-01-2022"
+      ).toISOString()}&to=${new Date("01-01-2023").toISOString()}`
+    );
+  });
+
+  test("uses future dates for transactions query", async () => {
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<CardTransaction[]>
+      >
+    ).mockImplementation(async () => []);
+
+    // the time element of this test could be precarious because
+    // new Date() is also called in the hook in order to get the current time
+    // if this test becomes flaky check how to manage this
+    const now = new Date();
+    const future = new Date(now.toISOString());
+    future.setDate(future.getDate() + 1);
+
+    const {result} = renderHook(() =>
+      useTrueLayerTransactionsFromAcct("dummy", {from: now, to: future})
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual([]);
+    expect(result.current.error).toBeNull();
+
+    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      `v1/cards/dummy/transactions?from=${now.toISOString()}&to=${now.toISOString()}`
+    );
+  });
+
   test("returns an error message", async () => {
     const mockError: AppError = {id: "idToOverride", error: "error"};
     (

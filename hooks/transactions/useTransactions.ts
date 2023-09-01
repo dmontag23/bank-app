@@ -56,13 +56,21 @@ const assignCategoriesToTransactions = (
     }
   );
 
-const useTransactions = (acctId: string) => {
+type UseTransactionsDateRangeProp = {
+  from: Date;
+  to: Date;
+};
+
+const useTransactions = (
+  acctId: string,
+  dateRange?: UseTransactionsDateRangeProp
+) => {
   const {
     isLoading: isTrueLayerTransactionsLoading,
     isSuccess: isTrueLayerTransactionsSuccess,
     data: trueLayerTransactions,
     refetch
-  } = useTrueLayerTransactionsFromAcct(acctId);
+  } = useTrueLayerTransactionsFromAcct(acctId, dateRange);
 
   // TODO: This id is being generated in multiple places (3).
   // It would be good if it was centralized in a single place.

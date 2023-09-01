@@ -139,6 +139,14 @@ describe("Budgets", () => {
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
     expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
+
+    // check the transactions are filtered by the correct date
+    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
+        "01-01-2023"
+      ).toISOString()}&to=${new Date("01-02-2023").toISOString()}`
+    );
   });
 
   test("switches between budget items", async () => {

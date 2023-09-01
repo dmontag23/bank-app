@@ -297,7 +297,7 @@ describe("Budget screen", () => {
 
     // set the budget end date
     const endDate = new Date("2023-04-01");
-    const endDateField = screen.getByLabelText("Start date");
+    const endDateField = screen.getByLabelText("End date");
     expect(endDateField).toBeVisible();
     fireEvent(
       endDateField,
@@ -368,6 +368,14 @@ describe("Budget screen", () => {
     expect(createButton).toBeVisible();
     fireEvent.press(createButton);
     await waitFor(() => expect(newBudgetTitle).not.toBeOnTheScreen());
+
+    // check the truelayer api is called with the correct date query range
+    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
+        "2023-03-01"
+      ).toISOString()}&to=${new Date("2023-04-01").toISOString()}`
+    );
 
     // check all first budget items are okay
     expect(screen.getByText("Gifts for Cardi B")).toBeVisible();

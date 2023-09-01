@@ -54,6 +54,11 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
+    expect(useTransactions).toBeCalledTimes(1);
+    expect(useTransactions).toBeCalledWith("2cbf9b6063102763ccbe3ea62f1b3e72", {
+      from: emptyBudget.window.start,
+      to: emptyBudget.window.end
+    });
     expect(LoadingSpinner).toBeCalledTimes(1);
     expect(LoadingSpinner).toBeCalledWith({}, {});
   });
@@ -73,6 +78,11 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
+    expect(useTransactions).toBeCalledTimes(1);
+    expect(useTransactions).toBeCalledWith("2cbf9b6063102763ccbe3ea62f1b3e72", {
+      from: emptyBudget.window.start,
+      to: emptyBudget.window.end
+    });
     expect(
       screen.getByText("There are no items in this budget.")
     ).toBeVisible();
@@ -102,6 +112,11 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
+    expect(useTransactions).toBeCalledTimes(1);
+    expect(useTransactions).toBeCalledWith("2cbf9b6063102763ccbe3ea62f1b3e72", {
+      from: emptyBudget.window.start,
+      to: emptyBudget.window.end
+    });
     expect(BudgetItem).toBeCalledTimes(1);
     expect(BudgetItem).toBeCalledWith(
       {
@@ -152,6 +167,11 @@ describe("Budget component", () => {
     );
 
     await waitFor(() => expect(BudgetItem).toBeCalledTimes(1));
+    expect(useTransactions).toBeCalledTimes(1);
+    expect(useTransactions).toBeCalledWith("2cbf9b6063102763ccbe3ea62f1b3e72", {
+      from: emptyBudget.window.start,
+      to: emptyBudget.window.end
+    });
     expect(BudgetItem).toBeCalledWith(
       {
         item: {
@@ -204,6 +224,11 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
+    expect(useTransactions).toBeCalledTimes(1);
+    expect(useTransactions).toBeCalledWith("2cbf9b6063102763ccbe3ea62f1b3e72", {
+      from: emptyBudget.window.start,
+      to: emptyBudget.window.end
+    });
     expect(BudgetItem).toBeCalledTimes(1);
     expect(BudgetItem).toBeCalledWith(
       {

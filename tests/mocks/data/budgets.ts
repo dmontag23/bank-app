@@ -33,7 +33,7 @@ export const BUDGET_WITH_ONE_ITEM: Budget = {
   id: "3",
   name: "Bills",
   items: [BUDGET_ITEM_BILLS],
-  window: {start: new Date(), end: new Date()}
+  window: {start: new Date("01-01-2023"), end: new Date("01-02-2023")}
 };
 
 export const BUDGET_WITH_TWO_ITEMS: Budget = {

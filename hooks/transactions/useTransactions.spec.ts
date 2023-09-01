@@ -20,6 +20,52 @@ jest.mock("./useGetTransactionCategoryMap");
 jest.mock("./useStoreTransactionCategoryMap");
 
 describe("useTransactions", () => {
+  test("can pass in date range", async () => {
+    const mockUseTrueLayerTransactionsFromAcct =
+      // TODO: any should probably not be used as a type here, but since a
+      // query from tanstack query returns a whole bunch of non-optional things,
+      // it's quicker than returning all those things for now
+      useTrueLayerTransactionsFromAcct as jest.MockedFunction<any>;
+    mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
+      isLoading: true,
+      isSuccess: false,
+      data: undefined
+    }));
+
+    const mockUseGetTransactionCategoryMap =
+      // TODO: any should probably not be used as a type here, but since a
+      // query from tanstack query returns a whole bunch of non-optional things,
+      // it's quicker than returning all those things for now
+      useGetTransactionCategoryMap as jest.MockedFunction<any>;
+    mockUseGetTransactionCategoryMap.mockImplementation(() => ({
+      isLoading: true,
+      isSuccess: false,
+      data: undefined
+    }));
+
+    const mockUseStoreTransactionCategoryMap =
+      // TODO: any should probably not be used as a type here, but since a
+      // query from tanstack query returns a whole bunch of non-optional things,
+      // it's quicker than returning all those things for now
+      useStoreTransactionCategoryMap as jest.MockedFunction<any>;
+    mockUseStoreTransactionCategoryMap.mockImplementation(() => ({
+      mutate: jest.fn()
+    }));
+
+    renderHook(() =>
+      useTransactions("dummy", {
+        from: new Date("01-01-2022"),
+        to: new Date("01-01-2023")
+      })
+    );
+
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", {
+      from: new Date("01-01-2022"),
+      to: new Date("01-01-2023")
+    });
+  });
+
   test("returns a loading status if loading truelayer transactions", async () => {
     // setup mocks
     const mockRefetch = jest.fn();
@@ -63,7 +109,7 @@ describe("useTransactions", () => {
     expect(result.current.refetch).toBe(mockRefetch);
     expect(result.current.transactions).toEqual([]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
@@ -115,7 +161,7 @@ describe("useTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(true));
     expect(result.current.transactions).toEqual([]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["truelayer-1234094-shocking-chipotle"],
@@ -167,7 +213,7 @@ describe("useTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
@@ -233,7 +279,7 @@ describe("useTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([EATING_OUT_CARD_TRANSACTION]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["truelayer-1234094-shocking-chipotle"],
@@ -304,7 +350,7 @@ describe("useTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([EATING_OUT_CARD_TRANSACTION]);
     expect(useTrueLayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy");
+    expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["truelayer-1234094-shocking-chipotle"],

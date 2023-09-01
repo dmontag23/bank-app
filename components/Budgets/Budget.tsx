@@ -58,7 +58,11 @@ const Budget = ({budget}: BudgetProps) => {
 
   // TODO: use a dynamic account number here!
   const {isLoading, transactions} = useTransactions(
-    "2cbf9b6063102763ccbe3ea62f1b3e72"
+    "2cbf9b6063102763ccbe3ea62f1b3e72",
+    {
+      from: budget.window.start,
+      to: budget.window.end
+    }
   );
 
   const budgetItemsWithTransactions = useMemo(
