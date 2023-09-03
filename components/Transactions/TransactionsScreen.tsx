@@ -6,7 +6,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import TransactionList from "./TransactionList";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
-import useRefetchOnFocus from "../../hooks/utils/useRefetchOnFocus";
+import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScreen = () => {
@@ -15,7 +15,7 @@ const TransactionsScreen = () => {
     "2cbf9b6063102763ccbe3ea62f1b3e72"
   );
 
-  useRefetchOnFocus(refetch);
+  useOnFocus(refetch);
 
   const insets = useSafeAreaInsets();
   return (

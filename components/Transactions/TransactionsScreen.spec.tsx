@@ -6,7 +6,7 @@ import TransactionList from "./TransactionList";
 import TransactionsScreen from "./TransactionsScreen";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
-import useRefetchOnFocus from "../../hooks/utils/useRefetchOnFocus";
+import useOnFocus from "../../hooks/utils/useOnFocus";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {Transaction, TransactionCategory} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -35,8 +35,8 @@ describe("TransactionsScreen component", () => {
 
     expect(LoadingSpinner).toBeCalledTimes(1);
     expect(LoadingSpinner).toBeCalledWith({}, {});
-    expect(useRefetchOnFocus).toBeCalledTimes(1);
-    expect(useRefetchOnFocus).toBeCalledWith(mockRefetch);
+    expect(useOnFocus).toBeCalledTimes(1);
+    expect(useOnFocus).toBeCalledWith(mockRefetch);
   });
 
   test("renders transactions after loading", () => {
@@ -68,8 +68,8 @@ describe("TransactionsScreen component", () => {
     render(<TransactionsScreen />);
 
     expect(screen.getByText("Transactions")).toBeVisible();
-    expect(useRefetchOnFocus).toBeCalledTimes(1);
-    expect(useRefetchOnFocus).toBeCalledWith(mockRefetch);
+    expect(useOnFocus).toBeCalledTimes(1);
+    expect(useOnFocus).toBeCalledWith(mockRefetch);
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
       {transactions: testTransactions},
