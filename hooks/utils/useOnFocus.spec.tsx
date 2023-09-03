@@ -7,18 +7,18 @@ import {
   StackNavigationProp
 } from "@react-navigation/stack";
 
-import useRefetchOnFocus from "./useRefetchOnFocus";
+import useOnFocus from "./useOnFocus";
 
-describe("useRefetchOnFocus", () => {
+describe("useOnFocus", () => {
   test("defaults to a no-op function", async () => {
     const customWrapper = (children: ReactNode) => (
       <NavigationContainer>{children}</NavigationContainer>
     );
 
-    renderHook(() => useRefetchOnFocus(), {customWrapper});
+    renderHook(() => useOnFocus(), {customWrapper});
   });
 
-  test("re-fetches whenever screen is re-focused", async () => {
+  test("executes callback whenever screen is re-focused", async () => {
     const mockRefetch = jest.fn();
     const MockStackNavigator = createStackNavigator();
 
@@ -30,7 +30,7 @@ describe("useRefetchOnFocus", () => {
           </MockStackNavigator.Screen>
           <MockStackNavigator.Screen name="ScreenToFocus">
             {() => {
-              useRefetchOnFocus(mockRefetch);
+              useOnFocus(mockRefetch);
               return <></>;
             }}
           </MockStackNavigator.Screen>
