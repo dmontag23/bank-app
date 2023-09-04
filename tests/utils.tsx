@@ -89,7 +89,7 @@ export {customRender as render};
 // override renderHook method
 export {customRenderHook as renderHook};
 
-export const navigationObject = {
+const baseNavigationObject = {
   addListener: expect.any(Function),
   canGoBack: expect.any(Function),
   dispatch: expect.any(Function),
@@ -98,10 +98,22 @@ export const navigationObject = {
   getState: expect.any(Function),
   goBack: expect.any(Function),
   isFocused: expect.any(Function),
-  jumpTo: expect.any(Function),
   navigate: expect.any(Function),
   removeListener: expect.any(Function),
   reset: expect.any(Function),
   setOptions: expect.any(Function),
   setParams: expect.any(Function)
+};
+
+export const tabNavigationObject = {
+  ...baseNavigationObject,
+  jumpTo: expect.any(Function)
+};
+
+export const stackNavigationObject = {
+  ...baseNavigationObject,
+  pop: expect.any(Function),
+  popToTop: expect.any(Function),
+  push: expect.any(Function),
+  replace: expect.any(Function)
 };

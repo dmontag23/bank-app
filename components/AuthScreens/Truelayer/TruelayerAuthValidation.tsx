@@ -5,7 +5,7 @@ import type {StackScreenProps} from "@react-navigation/stack";
 
 import usePostTruelayerToken from "../../../hooks/integrations/truelayer/usePostTruelayerToken";
 import useStoreTruelayerTokens from "../../../hooks/integrations/truelayer/useStoreTruelayerTokens";
-import {TruelayerAuthStackParamList} from "../../../types/screens";
+import {RootStackParamList} from "../../../types/screens";
 import {
   isAuthAPIErrorResponse,
   isAuthRedirectSuccess
@@ -16,13 +16,11 @@ import CenteredLoadingSpinner from "../../ui/CenteredLoadingSpinner";
 const TruelayerAuthValidation = ({
   navigation,
   route
-}: StackScreenProps<
-  TruelayerAuthStackParamList,
-  "TruelayerAuthValidation"
->) => {
+}: StackScreenProps<RootStackParamList, "TruelayerAuthValidation">) => {
   const {
     mutate: exchangeCodeForAuthTokens,
     isLoading: isPostLoading,
+    isIdle: isPostIdle,
     isSuccess: isPostSuccess,
     data: postResponse
   } = usePostTruelayerToken();
@@ -30,6 +28,7 @@ const TruelayerAuthValidation = ({
   const {
     mutate: storeTruelayerTokens,
     isLoading: isStoreTokensLoading,
+    isIdle: isStoreTokensIdle,
     isSuccess: isStoreTokensSuccess
   } = useStoreTruelayerTokens();
 
@@ -48,14 +47,18 @@ const TruelayerAuthValidation = ({
       });
   }, [postResponse, isPostSuccess, storeTruelayerTokens]);
 
-  // TODO: This won't work perfectly now as there's going to be a
-  // slight jump before the useEffect hooks run. Should probably handle
-  // this with a global loading state (maybe?). Maybe a global error state
-  // until all hooks resolve and then set that to false?
+  useEffect(() => {
+    if (isPostSuccess && isStoreTokensSuccess) navigation.replace("AppViews");
+  }, [isPostSuccess, isStoreTokensSuccess, navigation]);
+
+  // the (<isIdle> && <success>) conditions here are to ensure
+  // the error components still display if there are errors before the
+  // mutation calls
   if (
+    (isPostIdle && isAuthRedirectSuccess(truelayerResponse)) ||
     isPostLoading ||
-    isStoreTokensLoading ||
-    (isPostSuccess && isStoreTokensSuccess)
+    (isStoreTokensIdle && isPostSuccess) ||
+    isStoreTokensLoading
   )
     return <CenteredLoadingSpinner />;
 
@@ -74,9 +77,7 @@ const TruelayerAuthValidation = ({
         onPress={() => navigation.replace("TruelayerWebAuth")}>
         Try again
       </Button>
-      <Button
-        mode="elevated"
-        onPress={() => navigation.replace("ThirdPartyConnections")}>
+      <Button mode="elevated" onPress={() => navigation.replace("AppViews")}>
         Return to home screen
       </Button>
     </SafeAreaView>

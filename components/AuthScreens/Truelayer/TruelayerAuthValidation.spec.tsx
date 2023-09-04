@@ -8,7 +8,7 @@ import TruelayerAuthValidation from "./TruelayerAuthValidation";
 
 import usePostTruelayerToken from "../../../hooks/integrations/truelayer/usePostTruelayerToken";
 import useStoreTruelayerTokens from "../../../hooks/integrations/truelayer/useStoreTruelayerTokens";
-import {TruelayerAuthStackParamList} from "../../../types/screens";
+import {RootStackParamList} from "../../../types/screens";
 import CenteredLoadingSpinner from "../../ui/CenteredLoadingSpinner";
 
 jest.mock("../../../hooks/integrations/truelayer/usePostTruelayerToken");
@@ -16,6 +16,60 @@ jest.mock("../../../hooks/integrations/truelayer/useStoreTruelayerTokens");
 jest.mock("../../ui/CenteredLoadingSpinner");
 
 describe("TruelayerAuthValidation component", () => {
+  test("renders loading spinner before running any mutations", () => {
+    // setup mocks
+    const mockExchangeCodeForAuthTokens = jest.fn();
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (usePostTruelayerToken as jest.MockedFunction<any>).mockImplementation(
+      () => ({
+        mutate: mockExchangeCodeForAuthTokens,
+        isLoading: false,
+        isSuccess: false,
+        isIdle: true,
+        data: undefined
+      })
+    );
+    (useStoreTruelayerTokens as jest.MockedFunction<any>).mockImplementation(
+      () => ({
+        mutate: () => {},
+        isLoading: false,
+        isSuccess: false,
+        isIdle: true
+      })
+    );
+
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
+        >(),
+      {customWrapper}
+    );
+
+    render(
+      <TruelayerAuthValidation
+        route={{
+          key: "",
+          name: "TruelayerAuthValidation",
+          params: {code: "test-code", scope: "accounts"}
+        }}
+        navigation={result.current}
+      />
+    );
+
+    expect(mockExchangeCodeForAuthTokens).toBeCalledTimes(1);
+    expect(mockExchangeCodeForAuthTokens).toBeCalledWith("test-code");
+
+    expect(CenteredLoadingSpinner).toBeCalledTimes(1);
+    expect(CenteredLoadingSpinner).toBeCalledWith({}, {});
+  });
+
   test("renders loading spinner when post to tokens is loading", () => {
     // setup mocks
     const mockExchangeCodeForAuthTokens = jest.fn();
@@ -27,6 +81,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: mockExchangeCodeForAuthTokens,
         isLoading: true,
         isSuccess: false,
+        isIdle: false,
         data: undefined
       })
     );
@@ -34,7 +89,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: () => {},
         isLoading: false,
-        isSuccess: false
+        isSuccess: false,
+        isIdle: true
       })
     );
 
@@ -45,10 +101,66 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
+        >(),
+      {customWrapper}
+    );
+
+    render(
+      <TruelayerAuthValidation
+        route={{
+          key: "",
+          name: "TruelayerAuthValidation",
+          params: {code: "test-code", scope: "accounts"}
+        }}
+        navigation={result.current}
+      />
+    );
+
+    expect(mockExchangeCodeForAuthTokens).toBeCalledTimes(1);
+    expect(mockExchangeCodeForAuthTokens).toBeCalledWith("test-code");
+
+    expect(CenteredLoadingSpinner).toBeCalledTimes(1);
+    expect(CenteredLoadingSpinner).toBeCalledWith({}, {});
+  });
+
+  test("renders loading spinner after post is successful but before store tokens is called", () => {
+    // setup mocks
+    const mockExchangeCodeForAuthTokens = jest.fn();
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (usePostTruelayerToken as jest.MockedFunction<any>).mockImplementation(
+      () => ({
+        mutate: mockExchangeCodeForAuthTokens,
+        isLoading: false,
+        isSuccess: true,
+        isIdle: false,
+        data: {
+          access_token: "",
+          expires_in: 0,
+          token_type: "",
+          scope: ""
+        }
+      })
+    );
+    (useStoreTruelayerTokens as jest.MockedFunction<any>).mockImplementation(
+      () => ({
+        mutate: () => {},
+        isLoading: false,
+        isSuccess: false,
+        isIdle: true
+      })
+    );
+
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
@@ -82,6 +194,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: mockExchangeCodeForAuthTokens,
         isLoading: false,
         isSuccess: true,
+        isIdle: false,
         data: {
           access_token: "",
           expires_in: 0,
@@ -94,7 +207,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: () => {},
         isLoading: true,
-        isSuccess: false
+        isSuccess: false,
+        isIdle: false
       })
     );
 
@@ -105,10 +219,7 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
@@ -141,6 +252,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: () => {},
         isLoading: false,
         isSuccess: false,
+        isIdle: true,
         data: undefined
       })
     );
@@ -148,7 +260,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: () => {},
         isLoading: false,
-        isSuccess: false
+        isSuccess: false,
+        isIdle: true
       })
     );
 
@@ -159,10 +272,7 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
@@ -199,10 +309,10 @@ describe("TruelayerAuthValidation component", () => {
     expect(homeScreenButton).toBeVisible();
     fireEvent.press(homeScreenButton);
     expect(mockReplaceFunction).toBeCalledTimes(2);
-    expect(mockReplaceFunction).toBeCalledWith("ThirdPartyConnections");
+    expect(mockReplaceFunction).toBeCalledWith("AppViews");
   });
 
-  test("renders page on unknown error", () => {
+  test("renders page on unknown error with storing tokens", () => {
     // setup mocks
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
@@ -212,6 +322,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: () => {},
         isLoading: false,
         isSuccess: false,
+        isIdle: false,
         data: undefined
       })
     );
@@ -219,7 +330,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: () => {},
         isLoading: false,
-        isSuccess: false
+        isSuccess: false,
+        isIdle: true
       })
     );
 
@@ -230,10 +342,7 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
@@ -255,7 +364,7 @@ describe("TruelayerAuthValidation component", () => {
     expect(screen.getByText("The error is unknown")).toBeVisible();
   });
 
-  test("renders loading spinner on successful calls to post and store tokens with no refresh token", () => {
+  test("navigates to AppViews screen on successful calls to post and store tokens with no refresh token", () => {
     // setup mocks
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
@@ -265,6 +374,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: () => {},
         isLoading: false,
         isSuccess: true,
+        isIdle: false,
         data: {
           access_token: "test-access-token",
           expires_in: 0,
@@ -278,7 +388,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: mockStoreTruelayerTokens,
         isLoading: false,
-        isSuccess: true
+        isSuccess: true,
+        isIdle: false
       })
     );
 
@@ -289,13 +400,12 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
+
+    const mockReplaceFunction = jest.fn();
 
     render(
       <TruelayerAuthValidation
@@ -304,7 +414,7 @@ describe("TruelayerAuthValidation component", () => {
           name: "TruelayerAuthValidation",
           params: {code: "", scope: "accounts"}
         }}
-        navigation={result.current}
+        navigation={{...result.current, replace: mockReplaceFunction}}
       />
     );
 
@@ -314,8 +424,8 @@ describe("TruelayerAuthValidation component", () => {
       refreshToken: ""
     });
 
-    expect(CenteredLoadingSpinner).toBeCalledTimes(1);
-    expect(CenteredLoadingSpinner).toBeCalledWith({}, {});
+    expect(mockReplaceFunction).toBeCalledTimes(1);
+    expect(mockReplaceFunction).toBeCalledWith("AppViews");
   });
 
   test("makes correct call to store auth and refresh tokens", () => {
@@ -328,6 +438,7 @@ describe("TruelayerAuthValidation component", () => {
         mutate: () => {},
         isLoading: false,
         isSuccess: true,
+        isIdle: false,
         data: {
           access_token: "test-access-token",
           refresh_token: "test-refresh-token",
@@ -342,7 +453,8 @@ describe("TruelayerAuthValidation component", () => {
       () => ({
         mutate: mockStoreTruelayerTokens,
         isLoading: false,
-        isSuccess: true
+        isSuccess: true,
+        isIdle: false
       })
     );
 
@@ -353,10 +465,7 @@ describe("TruelayerAuthValidation component", () => {
     const {result} = renderHook(
       () =>
         useNavigation<
-          StackNavigationProp<
-            TruelayerAuthStackParamList,
-            "TruelayerAuthValidation"
-          >
+          StackNavigationProp<RootStackParamList, "TruelayerAuthValidation">
         >(),
       {customWrapper}
     );
@@ -368,7 +477,7 @@ describe("TruelayerAuthValidation component", () => {
           name: "TruelayerAuthValidation",
           params: {code: "", scope: "accounts"}
         }}
-        navigation={result.current}
+        navigation={{...result.current, replace: jest.fn()}}
       />
     );
 

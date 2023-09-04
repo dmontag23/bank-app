@@ -1,14 +1,25 @@
 import React, {useContext} from "react";
 import {StyleSheet, View} from "react-native";
-import {Badge, List, Surface, Text, useTheme} from "react-native-paper";
+import {
+  Badge,
+  Divider,
+  List,
+  Surface,
+  Text,
+  useTheme
+} from "react-native-paper";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {MaterialBottomTabScreenProps} from "@react-navigation/material-bottom-tabs";
+import {CompositeScreenProps} from "@react-navigation/native";
+import {StackScreenProps} from "@react-navigation/stack";
 
 import ErrorContext from "../../store/error-context";
 import {AppError} from "../../types/errors";
+import {LoggedInTabParamList, RootStackParamList} from "../../types/screens";
 
-const createRightListItems = (errors: AppError[]) => (
+const createRightListIcons = (errors?: AppError[]) => (
   <View style={styles.rightListItems}>
-    {errors.length ? (
+    {errors?.length ? (
       <Badge size={25}>{errors.length.toString()}</Badge>
     ) : (
       <></>
@@ -17,7 +28,12 @@ const createRightListItems = (errors: AppError[]) => (
   </View>
 );
 
-const SettingsScreen = () => {
+const SettingsScreen = ({
+  navigation
+}: CompositeScreenProps<
+  MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+  StackScreenProps<RootStackParamList>
+>) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const {errorModal, errors} = useContext(ErrorContext);
@@ -36,9 +52,17 @@ const SettingsScreen = () => {
           {backgroundColor: theme.colors.secondaryContainer}
         ]}>
         <List.Item
+          title="Reconnect to Truelayer"
+          onPress={() => navigation.replace("TruelayerWebAuth")}
+          right={() => createRightListIcons()}
+          style={styles.item}
+          rippleColor={theme.colors.surfaceVariant}
+        />
+        <Divider />
+        <List.Item
           title="Show Errors"
           onPress={() => errorModal.showModal()}
-          right={() => createRightListItems(errors)}
+          right={() => createRightListIcons(errors)}
           style={styles.item}
           rippleColor={theme.colors.surfaceVariant}
         />

@@ -1,5 +1,10 @@
 import React from "react";
-import {fireEvent, render, screen} from "testing-library/extension";
+import {
+  fireEvent,
+  render,
+  screen,
+  tabNavigationObject
+} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
@@ -28,6 +33,13 @@ describe("LoggedInScreens component", () => {
 
     allButtons.map(button => expect(button).toBeVisible());
     expect(BudgetsScreen).toBeCalledTimes(1);
+    expect(BudgetsScreen).toBeCalledWith(
+      {
+        navigation: tabNavigationObject,
+        route: expect.objectContaining({name: "Budgets", params: undefined})
+      },
+      {}
+    );
   });
 
   test("renders the transactions screen", () => {
@@ -46,6 +58,16 @@ describe("LoggedInScreens component", () => {
     fireEvent(transactionButton, "click");
 
     expect(TransactionsScreen).toBeCalledTimes(1);
+    expect(TransactionsScreen).toBeCalledWith(
+      {
+        navigation: tabNavigationObject,
+        route: expect.objectContaining({
+          name: "Transactions",
+          params: undefined
+        })
+      },
+      {}
+    );
   });
 
   test("renders the settings screen", () => {
@@ -64,6 +86,13 @@ describe("LoggedInScreens component", () => {
     fireEvent(settingsButton, "click");
 
     expect(SettingsScreen).toBeCalledTimes(1);
+    expect(SettingsScreen).toBeCalledWith(
+      {
+        navigation: tabNavigationObject,
+        route: expect.objectContaining({name: "Settings", params: undefined})
+      },
+      {}
+    );
   });
 
   test("checks the badge appears on the settings menu option if there are errors", () => {

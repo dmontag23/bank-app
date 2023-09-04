@@ -1,9 +1,9 @@
 import React from "react";
 import {
   fireEvent,
-  navigationObject,
   render,
   screen,
+  tabNavigationObject,
   waitFor
 } from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
@@ -121,7 +121,7 @@ describe("Budget component", () => {
     expect(BudgetItem).toBeCalledWith(
       {
         item: {...testBudgetItems[0], spent: 0, transactions: []},
-        navigation: navigationObject,
+        navigation: tabNavigationObject,
         route: {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
@@ -179,7 +179,7 @@ describe("Budget component", () => {
           spent: 202.52,
           transactions: [PAY_RENT_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
         },
-        navigation: navigationObject,
+        navigation: tabNavigationObject,
         route: {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
@@ -237,7 +237,7 @@ describe("Budget component", () => {
           spent: 202.52,
           transactions: [PAY_RENT_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
         },
-        navigation: navigationObject,
+        navigation: tabNavigationObject,
         route: {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
@@ -261,7 +261,7 @@ describe("Budget component", () => {
           spent: 36.71,
           transactions: [EATING_OUT_CARD_TRANSACTION]
         },
-        navigation: navigationObject,
+        navigation: tabNavigationObject,
         route: {
           key: expect.stringContaining(testBudgetItems[1].id),
           name: testBudgetItems[1].id,

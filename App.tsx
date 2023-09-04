@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useEffect} from "react";
 import {AppState, AppStateStatus, Platform} from "react-native";
 import {Portal, useTheme} from "react-native-paper";
 import {
@@ -8,13 +8,11 @@ import {
 } from "@react-navigation/native";
 import {focusManager} from "@tanstack/react-query";
 
-import AuthScreens from "./components/AuthScreens/AuthScreens";
 import ErrorModal from "./components/errors/ErrorModal";
-import LoggedInScreens from "./components/LoggedInScreens";
+import RootScreens from "./components/RootScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
 import Toasts from "./components/ui/Toasts";
 import config from "./config.json";
-import TruelayerAuthContext from "./store/truelayer-auth-context";
 
 const App = () => {
   // refetch any queries anytime the user leaves the app and then returns
@@ -30,9 +28,6 @@ const App = () => {
 
   const theme = useTheme();
 
-  const {isLoading, authToken: truelayerAuthToken} =
-    useContext(TruelayerAuthContext);
-
   const linking: LinkingOptions<ParamListBase> = {
     prefixes: [config.uri],
     config: {
@@ -41,8 +36,6 @@ const App = () => {
       }
     }
   };
-
-  if (isLoading) return <CenteredLoadingSpinner />;
 
   return (
     <NavigationContainer
@@ -60,7 +53,7 @@ const App = () => {
         }
       }}>
       <Portal.Host>
-        {truelayerAuthToken ? <LoggedInScreens /> : <AuthScreens />}
+        <RootScreens />
         <Toasts />
         <ErrorModal />
       </Portal.Host>

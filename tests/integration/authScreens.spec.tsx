@@ -7,12 +7,12 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack";
 
 import {trueLayerAuthApi} from "../../api/axiosConfig";
-import AuthScreens from "../../components/AuthScreens/AuthScreens";
 import ThirdPartyConnections from "../../components/AuthScreens/ThirdPartyConnections";
 import TruelayerAuthValidation from "../../components/AuthScreens/Truelayer/TruelayerAuthValidation";
 import TruelayerWebAuth from "../../components/AuthScreens/Truelayer/TruelayerWebAuth";
+import RootScreens from "../../components/RootScreens";
 import config from "../../config.json";
-import {TruelayerAuthStackParamList} from "../../types/screens";
+import {RootStackParamList} from "../../types/screens";
 import {
   AuthRedirectResponse,
   ConnectTokenPostRequest,
@@ -21,11 +21,10 @@ import {
 
 jest.mock("../../api/axiosConfig");
 
-describe("Auth screen views", () => {
+describe("Root screen views - auth flow", () => {
   // creating a mock navigator here because you can only access the
   // Truelayer auth validation screen from a callback
-  const MockStackNavigator =
-    createStackNavigator<TruelayerAuthStackParamList>();
+  const MockStackNavigator = createStackNavigator<RootStackParamList>();
   const renderMockAuthScreens = (
     params: Partial<AuthRedirectResponse> | undefined
   ) => (
@@ -37,7 +36,7 @@ describe("Auth screen views", () => {
           initialParams={params}
         />
         <MockStackNavigator.Screen
-          name="ThirdPartyConnections"
+          name="AppViews"
           component={ThirdPartyConnections}
         />
         <MockStackNavigator.Screen
@@ -48,16 +47,18 @@ describe("Auth screen views", () => {
     </NavigationContainer>
   );
 
-  test("renders the third party connections screen as a default", () => {
+  test("renders the third party connections screen as a default when not logged in", async () => {
     render(
       <NavigationContainer>
-        <AuthScreens />
+        <RootScreens />
       </NavigationContainer>
     );
 
-    expect(
-      screen.getByText("Please connect to the following services")
-    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        screen.getByText("Please connect to the following services")
+      ).toBeVisible()
+    );
     const connectButton = screen.getByText("Connect to Truelayer");
     expect(connectButton).toBeVisible();
 
@@ -75,30 +76,12 @@ describe("Auth screen views", () => {
     );
   });
 
-  test("does not render Truelayer connect button if logged in", async () => {
-    await AsyncStorage.setItem(
-      "truelayer-auth-token",
-      "dummy-truelayer-auth-token"
-    );
-
-    render(
-      <NavigationContainer>
-        <AuthScreens />
-      </NavigationContainer>
-    );
-
-    expect(
-      screen.getByText("Please connect to the following services")
-    ).toBeVisible();
-    await waitFor(() =>
-      expect(screen.queryByText("Connect to Truelayer")).toBeNull()
-    );
-  });
-
-  test("renders Truelayer error page and allows users to try logging in again", () => {
+  test("renders Truelayer error page and allows users to try logging in again", async () => {
     render(renderMockAuthScreens({error: "access_denied"}));
 
-    expect(screen.getByText("An error has occurred")).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText("An error has occurred")).toBeVisible()
+    );
     expect(
       screen.getByText(
         "Truelayer returned the following error code: access_denied"
@@ -141,6 +124,8 @@ describe("Auth screen views", () => {
     expect(screen.getByText("Connect to Truelayer")).toBeVisible();
   });
 
+  // TODO: Maybe find a way to use deep linking here instead of creating a mock
+  // stack navigator
   test("displays error page on failed connect to Truelayer endpoint", async () => {
     (
       trueLayerAuthApi.post as jest.MockedFunction<
@@ -157,11 +142,15 @@ describe("Auth screen views", () => {
       renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"})
     );
 
-    expect(screen.getByText("An error has occurred")).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText("An error has occurred")).toBeVisible()
+    );
     expect(screen.getByText("The error is unknown")).toBeVisible();
   });
 
-  test("stores valid Truelayer tokens and renders loading spinner", async () => {
+  // TODO: Maybe find a way to use deep linking here instead of creating a mock
+  // stack navigator
+  test("stores valid Truelayer tokens and navigates to the home budgets page", async () => {
     const mockAccessToken = "valid-truelayer-access-token";
     const mockRefreshToken = "valid-truelayer-refresh-token";
     (
@@ -183,8 +172,12 @@ describe("Auth screen views", () => {
       renderMockAuthScreens({code: "truelayer-dummy-code", scope: "accounts"})
     );
 
+    // this goes back to the Third Party Auth screen because of how the mock auth
+    // screen function is setup. Normally it should go the the main budgets screen
     await waitFor(() =>
-      expect(screen.getByTestId("loadingSpinner")).toBeVisible()
+      expect(
+        screen.getByText("Please connect to the following services")
+      ).toBeVisible()
     );
     expect(await AsyncStorage.getItem("truelayer-auth-token")).toBe(
       mockAccessToken

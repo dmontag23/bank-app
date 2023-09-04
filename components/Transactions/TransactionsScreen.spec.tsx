@@ -14,7 +14,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 jest.mock("./TransactionList");
 jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useTransactions");
-jest.mock("../../hooks/utils/useRefetchOnFocus");
+jest.mock("../../hooks/utils/useOnFocus");
 
 describe("TransactionsScreen component", () => {
   test("renders a loading spinner when loading transactions", () => {

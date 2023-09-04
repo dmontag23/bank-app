@@ -4,11 +4,11 @@ import {Button, Text} from "react-native-paper";
 import {StackScreenProps} from "@react-navigation/stack";
 
 import TruelayerAuthContext from "../../store/truelayer-auth-context";
-import {TruelayerAuthStackParamList} from "../../types/screens";
+import {RootStackParamList} from "../../types/screens";
 
 const ThirdPartyConnections = ({
   navigation
-}: StackScreenProps<TruelayerAuthStackParamList, "ThirdPartyConnections">) => {
+}: StackScreenProps<RootStackParamList, "AppViews">) => {
   const {authToken: truelayerAuthToken} = useContext(TruelayerAuthContext);
   return (
     <SafeAreaView style={styles.container}>

@@ -7,8 +7,9 @@ import SettingsScreen from "./Settings/SettingsScreen";
 import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 import ErrorContext from "../store/error-context";
+import {LoggedInTabParamList} from "../types/screens";
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator<LoggedInTabParamList>();
 const ICON_SIZE = 24;
 
 const budgetsIcon = (focused: boolean) => (

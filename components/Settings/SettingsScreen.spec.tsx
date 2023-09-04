@@ -1,17 +1,46 @@
-import React from "react";
+import React, {ReactNode} from "react";
 import {MD3LightTheme} from "react-native-paper";
-import {fireEvent, render, screen} from "testing-library/extension";
+import {fireEvent, render, renderHook, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
+import {MaterialBottomTabScreenProps} from "@react-navigation/material-bottom-tabs";
+import {
+  CompositeScreenProps,
+  NavigationContainer,
+  useNavigation
+} from "@react-navigation/native";
+import {StackScreenProps} from "@react-navigation/stack";
 
 import SettingsScreen from "./SettingsScreen";
 
 import ErrorContext from "../../store/error-context";
+import {LoggedInTabParamList, RootStackParamList} from "../../types/screens";
 
 describe("SettingsScreen component", () => {
   test("renders all items without badge", () => {
-    render(<SettingsScreen />);
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          CompositeScreenProps<
+            MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+            StackScreenProps<RootStackParamList>
+          >
+        >(),
+      {customWrapper}
+    );
+
+    render(
+      <SettingsScreen
+        route={{key: "", name: "Settings"}}
+        navigation={result.current.navigation}
+      />
+    );
 
     expect(screen.getByText("Settings")).toBeVisible();
+    expect(screen.getByText("Reconnect to Truelayer")).toBeVisible();
     expect(screen.getByText("Show Errors")).toBeVisible();
     expect(screen.getByTestId("surface")).toHaveStyle({
       backgroundColor: MD3LightTheme.colors.secondaryContainer
@@ -20,6 +49,21 @@ describe("SettingsScreen component", () => {
   });
 
   test("renders error badge", () => {
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          CompositeScreenProps<
+            MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+            StackScreenProps<RootStackParamList>
+          >
+        >(),
+      {customWrapper}
+    );
+
     render(
       <ErrorContext.Provider
         value={{
@@ -35,7 +79,10 @@ describe("SettingsScreen component", () => {
             hideModal: () => {}
           }
         }}>
-        <SettingsScreen />
+        <SettingsScreen
+          route={{key: "", name: "Settings"}}
+          navigation={result.current.navigation}
+        />
       </ErrorContext.Provider>
     );
 
@@ -44,6 +91,21 @@ describe("SettingsScreen component", () => {
   });
 
   test("can open the error modal", () => {
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          CompositeScreenProps<
+            MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+            StackScreenProps<RootStackParamList>
+          >
+        >(),
+      {customWrapper}
+    );
+
     const mockShowModalFn = jest.fn();
 
     render(
@@ -58,7 +120,10 @@ describe("SettingsScreen component", () => {
             hideModal: () => {}
           }
         }}>
-        <SettingsScreen />
+        <SettingsScreen
+          route={{key: "", name: "Settings"}}
+          navigation={result.current.navigation}
+        />
       </ErrorContext.Provider>
     );
 
@@ -69,5 +134,39 @@ describe("SettingsScreen component", () => {
 
     expect(mockShowModalFn).toBeCalledTimes(1);
     expect(mockShowModalFn).toBeCalledWith();
+  });
+
+  test("can navigate to external truelayer auth page", () => {
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          CompositeScreenProps<
+            MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+            StackScreenProps<RootStackParamList>
+          >
+        >(),
+      {customWrapper}
+    );
+
+    const mockReplace = jest.fn();
+
+    render(
+      <SettingsScreen
+        route={{key: "", name: "Settings"}}
+        navigation={{...result.current.navigation, replace: mockReplace}}
+      />
+    );
+
+    const connectToTruelayerButton = screen.getByText("Reconnect to Truelayer");
+    expect(connectToTruelayerButton).toBeVisible();
+
+    fireEvent.press(connectToTruelayerButton);
+
+    expect(mockReplace).toBeCalledTimes(1);
+    expect(mockReplace).toBeCalledWith("TruelayerWebAuth");
   });
 });
