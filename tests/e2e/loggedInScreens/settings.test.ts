@@ -13,7 +13,18 @@ describe("Settings page", () => {
 
   it("should render all elements", async () => {
     await expect(element(by.text("Settings")).atIndex(0)).toBeVisible();
+    await expect(element(by.text("Reconnect to Truelayer"))).toBeVisible();
     await expect(element(by.text("Show Errors"))).toBeVisible();
+  });
+
+  it("should allow the user to reconnect to Truelayer", async () => {
+    const reconnectButton = element(by.text("Reconnect to Truelayer"));
+    await expect(reconnectButton).toBeVisible();
+
+    await reconnectButton.tap();
+    // tapping the button brings up the Truelayer web page
+    // as these tests should be independent of any third party provider
+    // nothing will be asserted on this page
   });
 
   it("should display all app errors", async () => {
