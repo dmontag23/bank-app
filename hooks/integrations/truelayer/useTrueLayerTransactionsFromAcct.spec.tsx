@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useTrueLayerTransactionsFromAcct from "./useTrueLayerTransactionsFromAcct";
+import useTruelayerTransactionsFromAcct from "./useTruelayerTransactionsFromAcct";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
@@ -15,7 +15,7 @@ import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 jest.mock("../../../api/axiosConfig");
 
-describe("useTrueLayerTransactions", () => {
+describe("useTruelayerTransactionsFromAcct", () => {
   test("returns a correct list of card transactions on a 200 status code", async () => {
     (
       trueLayerDataApi.get as jest.MockedFunction<
@@ -36,7 +36,7 @@ describe("useTrueLayerTransactions", () => {
     );
 
     const {result} = renderHook(
-      () => useTrueLayerTransactionsFromAcct("dummy"),
+      () => useTruelayerTransactionsFromAcct("dummy"),
       {customWrapper}
     );
 
@@ -59,7 +59,7 @@ describe("useTrueLayerTransactions", () => {
     ).mockImplementation(async () => []);
 
     const {result} = renderHook(() =>
-      useTrueLayerTransactionsFromAcct("dummy", {
+      useTruelayerTransactionsFromAcct("dummy", {
         from: new Date("01-01-2022"),
         to: new Date("01-01-2023")
       })
@@ -92,7 +92,7 @@ describe("useTrueLayerTransactions", () => {
     future.setDate(future.getDate() + 1);
 
     const {result} = renderHook(() =>
-      useTrueLayerTransactionsFromAcct("dummy", {from: now, to: future})
+      useTruelayerTransactionsFromAcct("dummy", {from: now, to: future})
     );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -123,7 +123,7 @@ describe("useTrueLayerTransactions", () => {
     );
 
     const {result} = renderHook(
-      () => useTrueLayerTransactionsFromAcct("dummy"),
+      () => useTruelayerTransactionsFromAcct("dummy"),
       {customWrapper}
     );
 

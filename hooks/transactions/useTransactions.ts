@@ -12,7 +12,7 @@ import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
 } from "../integrations/truelayer/trueLayerMappings";
-import useTrueLayerTransactionsFromAcct from "../integrations/truelayer/useTrueLayerTransactionsFromAcct";
+import useTruelayerTransactionsFromAcct from "../integrations/truelayer/useTruelayerTransactionsFromAcct";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
 const assignCategoriesToTransactions = (
@@ -70,7 +70,7 @@ const useTransactions = (
     isSuccess: isTrueLayerTransactionsSuccess,
     data: trueLayerTransactions,
     refetch
-  } = useTrueLayerTransactionsFromAcct(acctId, dateRange);
+  } = useTruelayerTransactionsFromAcct(acctId, dateRange);
 
   const trueLayerTransactionIds = (trueLayerTransactions ?? []).map(
     transaction => transaction.transaction_id

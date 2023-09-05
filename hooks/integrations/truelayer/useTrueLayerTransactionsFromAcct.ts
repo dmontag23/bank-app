@@ -34,7 +34,7 @@ const getTransactions = async (
   );
 };
 
-const useTrueLayerTransactionsFromAcct = (
+const useTruelayerTransactionsFromAcct = (
   acctId: string,
   dateRange?: TransactionDateRangeQuery
 ) => {
@@ -49,4 +49,4 @@ const useTrueLayerTransactionsFromAcct = (
   });
 };
 
-export default useTrueLayerTransactionsFromAcct;
+export default useTruelayerTransactionsFromAcct;
