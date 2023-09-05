@@ -12,7 +12,7 @@ import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
 } from "../integrations/truelayer/trueLayerMappings";
-import useGetTruelayerTransactions from "../integrations/truelayer/useTruelayerTransactions";
+import useGetTruelayerTransactions from "../integrations/truelayer/useGetTruelayerTransactions";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
 const assignCategoriesToTransactions = (
