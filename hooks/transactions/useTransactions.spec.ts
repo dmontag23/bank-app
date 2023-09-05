@@ -12,7 +12,7 @@ import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
 } from "../integrations/truelayer/trueLayerMappings";
-import useTruelayerTransactionsFromAcct from "../integrations/truelayer/useTruelayerTransactionsFromAcct";
+import useGetTruelayerTransactions from "../integrations/truelayer/useTruelayerTransactions";
 
 jest.mock("../integrations/truelayer/trueLayerMappings");
 jest.mock("../integrations/truelayer/useTrueLayerTransactionsFromAcct");
@@ -25,7 +25,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
@@ -59,8 +59,8 @@ describe("useTransactions", () => {
       })
     );
 
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", {
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", {
       from: new Date("01-01-2022"),
       to: new Date("01-01-2023")
     });
@@ -73,7 +73,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: true,
       isSuccess: false,
@@ -108,8 +108,8 @@ describe("useTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(true));
     expect(result.current.refetch).toBe(mockRefetch);
     expect(result.current.transactions).toEqual([]);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
@@ -128,7 +128,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
@@ -160,8 +160,8 @@ describe("useTransactions", () => {
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
     expect(result.current.transactions).toEqual([]);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],
@@ -180,7 +180,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
@@ -212,8 +212,8 @@ describe("useTransactions", () => {
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
@@ -232,7 +232,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
@@ -278,8 +278,8 @@ describe("useTransactions", () => {
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([EATING_OUT_CARD_TRANSACTION]);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],
@@ -308,7 +308,7 @@ describe("useTransactions", () => {
       // TODO: any should probably not be used as a type here, but since a
       // query from tanstack query returns a whole bunch of non-optional things,
       // it's quicker than returning all those things for now
-      useTruelayerTransactionsFromAcct as jest.MockedFunction<any>;
+      useGetTruelayerTransactions as jest.MockedFunction<any>;
     mockUseTrueLayerTransactionsFromAcct.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
@@ -347,8 +347,8 @@ describe("useTransactions", () => {
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([EATING_OUT_CARD_TRANSACTION]);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledTimes(1);
-    expect(useTruelayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
+    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerTransactions).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],

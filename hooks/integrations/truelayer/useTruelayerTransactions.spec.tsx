@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useTruelayerTransactionsFromAcct from "./useTruelayerTransactionsFromAcct";
+import useGetTruelayerTransactions from "./useTruelayerTransactions";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
@@ -15,7 +15,7 @@ import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 jest.mock("../../../api/axiosConfig");
 
-describe("useTruelayerTransactionsFromAcct", () => {
+describe("useGetTruelayerTransactions", () => {
   test("returns a correct list of card transactions on a 200 status code", async () => {
     (
       trueLayerDataApi.get as jest.MockedFunction<
@@ -35,10 +35,9 @@ describe("useTruelayerTransactionsFromAcct", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(
-      () => useTruelayerTransactionsFromAcct("dummy"),
-      {customWrapper}
-    );
+    const {result} = renderHook(() => useGetTruelayerTransactions("dummy"), {
+      customWrapper
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([
@@ -59,7 +58,7 @@ describe("useTruelayerTransactionsFromAcct", () => {
     ).mockImplementation(async () => []);
 
     const {result} = renderHook(() =>
-      useTruelayerTransactionsFromAcct("dummy", {
+      useGetTruelayerTransactions("dummy", {
         from: new Date("01-01-2022"),
         to: new Date("01-01-2023")
       })
@@ -92,7 +91,7 @@ describe("useTruelayerTransactionsFromAcct", () => {
     future.setDate(future.getDate() + 1);
 
     const {result} = renderHook(() =>
-      useTruelayerTransactionsFromAcct("dummy", {from: now, to: future})
+      useGetTruelayerTransactions("dummy", {from: now, to: future})
     );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -122,10 +121,9 @@ describe("useTruelayerTransactionsFromAcct", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(
-      () => useTruelayerTransactionsFromAcct("dummy"),
-      {customWrapper}
-    );
+    const {result} = renderHook(() => useGetTruelayerTransactions("dummy"), {
+      customWrapper
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.data).toBeUndefined();
