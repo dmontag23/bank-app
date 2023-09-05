@@ -65,16 +65,18 @@ describe("useStoreTransactionCategoryMap", () => {
     result.current.mutate(testData);
 
     const expectedDataInAsyncStorage = [
-      ["id-1", TransactionCategory.SAVINGS],
-      ["id-2", TransactionCategory.UNKNOWN]
+      ["truelayer-id-1", TransactionCategory.SAVINGS],
+      ["truelayer-id-2", TransactionCategory.UNKNOWN]
     ];
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(testData);
     expect(AsyncStorage.multiSet).toBeCalledTimes(1);
     expect(AsyncStorage.multiSet).toBeCalledWith(expectedDataInAsyncStorage);
-    expect(await AsyncStorage.multiGet(Object.keys(testData))).toEqual(
-      expectedDataInAsyncStorage
-    );
+    expect(
+      await AsyncStorage.multiGet(
+        Object.keys(testData).map(key => `truelayer-${key}`)
+      )
+    ).toEqual(expectedDataInAsyncStorage);
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
   });
 

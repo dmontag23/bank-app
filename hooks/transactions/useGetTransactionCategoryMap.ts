@@ -10,11 +10,13 @@ import {
 
 const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
   (
-    await AsyncStorage.multiGet(transactionIds)
+    await AsyncStorage.multiGet(
+      transactionIds.map(transactionId => `truelayer-${transactionId}`)
+    )
   ).reduce<TransactionIDToCategoryMapping>(
     (mapping, currentTransactionToCategoryKeyValuePair) => ({
       ...mapping,
-      [currentTransactionToCategoryKeyValuePair[0]]:
+      [currentTransactionToCategoryKeyValuePair[0].replace("truelayer-", "")]:
         currentTransactionToCategoryKeyValuePair[1] as TransactionCategory
     }),
     {}

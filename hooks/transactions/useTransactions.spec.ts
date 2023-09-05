@@ -164,7 +164,7 @@ describe("useTransactions", () => {
     expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
-      transactionIds: ["truelayer-1234094-shocking-chipotle"],
+      transactionIds: ["1234094-shocking-chipotle"],
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -282,7 +282,7 @@ describe("useTransactions", () => {
     expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
-      transactionIds: ["truelayer-1234094-shocking-chipotle"],
+      transactionIds: ["1234094-shocking-chipotle"],
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -298,7 +298,7 @@ describe("useTransactions", () => {
     );
     expect(updateStore).toBeCalledTimes(1);
     expect(updateStore).toBeCalledWith({
-      "truelayer-1234094-shocking-chipotle": TransactionCategory.EATING_OUT
+      "1234094-shocking-chipotle": TransactionCategory.EATING_OUT
     });
   });
 
@@ -322,9 +322,7 @@ describe("useTransactions", () => {
     mockUseGetTransactionCategoryMap.mockImplementation(() => ({
       isLoading: false,
       isSuccess: true,
-      data: {
-        "truelayer-1234094-shocking-chipotle": TransactionCategory.EATING_OUT
-      }
+      data: {"1234094-shocking-chipotle": TransactionCategory.EATING_OUT}
     }));
     const mockUseStoreTransactionCategoryMap =
       // TODO: any should probably not be used as a type here, but since a
@@ -353,7 +351,7 @@ describe("useTransactions", () => {
     expect(useTrueLayerTransactionsFromAcct).toBeCalledWith("dummy", undefined);
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
-      transactionIds: ["truelayer-1234094-shocking-chipotle"],
+      transactionIds: ["1234094-shocking-chipotle"],
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);

@@ -9,7 +9,11 @@ const storeTransactionCategoryMapping = async (
   transactionIdToCategoryMapping: TransactionIDToCategoryMapping
 ) => {
   const mappingArray = Object.keys(transactionIdToCategoryMapping).map(
-    id => [id, transactionIdToCategoryMapping[id]] as [string, string]
+    id =>
+      [`truelayer-${id}`, transactionIdToCategoryMapping[id]] as [
+        string,
+        string
+      ]
   );
   if (mappingArray.length) await AsyncStorage.multiSet(mappingArray);
   return transactionIdToCategoryMapping;

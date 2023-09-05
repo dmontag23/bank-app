@@ -14,7 +14,7 @@ export const mapTrueLayerTransactionToInternalTransaction = (
   trueLayerTransaction: CardTransaction,
   category: TransactionCategory
 ): Transaction => ({
-  id: `truelayer-${trueLayerTransaction.transaction_id}`,
+  id: trueLayerTransaction.transaction_id,
   name: trueLayerTransaction.description,
   description: trueLayerTransaction.transaction_classification[0],
   amount: trueLayerTransaction.amount,

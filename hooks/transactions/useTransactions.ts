@@ -24,7 +24,7 @@ const assignCategoriesToTransactions = (
     transactions: Transaction[];
   }>(
     ({unsavedTransactionsToCategoryMap, transactions}, currentTransaction) => {
-      const transactionId = `truelayer-${currentTransaction.transaction_id}`;
+      const transactionId = currentTransaction.transaction_id;
 
       const savedCategory =
         trueLayerTransactionIdToCategoryMap?.[transactionId];
@@ -72,10 +72,8 @@ const useTransactions = (
     refetch
   } = useTrueLayerTransactionsFromAcct(acctId, dateRange);
 
-  // TODO: This id is being generated in multiple places (3).
-  // It would be good if it was centralized in a single place.
   const trueLayerTransactionIds = (trueLayerTransactions ?? []).map(
-    transaction => `truelayer-${transaction.transaction_id}`
+    transaction => transaction.transaction_id
   );
 
   const {
