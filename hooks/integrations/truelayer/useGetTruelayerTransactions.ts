@@ -41,11 +41,10 @@ const useGetTruelayerTransactions = (
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery<CardTransaction[], IntegrationErrorResponse>({
-    queryKey: ["trueLayerTransactions", acctId, dateRange],
+    queryKey: ["truelayerTransactions", acctId, dateRange],
     queryFn: () => getTransactions(acctId, dateRange),
-    onError: error =>
-      addError({...error, id: "useTrueLayerTransactionsFromAcct"}),
-    onSuccess: () => removeError("useTrueLayerTransactionsFromAcct")
+    onError: error => addError({...error, id: "useGetTruelayerTransactions"}),
+    onSuccess: () => removeError("useGetTruelayerTransactions")
   });
 };
 

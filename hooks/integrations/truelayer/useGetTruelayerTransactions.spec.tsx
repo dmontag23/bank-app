@@ -47,7 +47,7 @@ describe("useGetTruelayerTransactions", () => {
     expect(result.current.error).toBeNull();
 
     expect(mockRemoveError).toBeCalledTimes(1);
-    expect(mockRemoveError).toBeCalledWith("useTrueLayerTransactionsFromAcct");
+    expect(mockRemoveError).toBeCalledWith("useGetTruelayerTransactions");
   });
 
   test("uses past dates for transactions query", async () => {
@@ -132,7 +132,7 @@ describe("useGetTruelayerTransactions", () => {
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
       error: "error",
-      id: "useTrueLayerTransactionsFromAcct"
+      id: "useGetTruelayerTransactions"
     });
   });
 });

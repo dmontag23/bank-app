@@ -15,7 +15,7 @@ import {
 import useGetTruelayerTransactions from "../integrations/truelayer/useGetTruelayerTransactions";
 
 jest.mock("../integrations/truelayer/trueLayerMappings");
-jest.mock("../integrations/truelayer/useTrueLayerTransactionsFromAcct");
+jest.mock("../integrations/truelayer/useGetTruelayerTransactions");
 jest.mock("./useGetTransactionCategoryMap");
 jest.mock("./useStoreTransactionCategoryMap");
 
