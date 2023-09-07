@@ -23,6 +23,10 @@ describe("mapTrueLayerCategoryToInternalCategory", () => {
       expectedTransCategory: TransactionCategory.ENTERTAINMENT
     },
     {
+      categoryList: ["Entertainment", "Movies & DVDs"],
+      expectedTransCategory: TransactionCategory.ENTERTAINMENT
+    },
+    {
       categoryList: ["I don't know what this is", "Shopping"],
       expectedTransCategory: TransactionCategory.UNKNOWN
     }

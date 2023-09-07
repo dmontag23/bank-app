@@ -10,6 +10,7 @@ import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+  TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
 
@@ -38,11 +39,16 @@ describe("Transactions", () => {
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
     ];
+    const testPendingTransactions: CardTransaction[] = [
+      TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
+    ];
     (
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<CardTransaction[]>
       >
-    ).mockImplementation(async () => testTransactions);
+    )
+      .mockResolvedValueOnce(testTransactions)
+      .mockResolvedValueOnce(testPendingTransactions);
 
     render(
       <NavigationContainer>
@@ -51,7 +57,7 @@ describe("Transactions", () => {
     );
 
     await waitFor(() => expect(screen.getByText("Transactions")).toBeVisible());
-    testTransactions.map(transaction => {
+    [...testTransactions, ...testPendingTransactions].map(transaction => {
       expect(screen.getByText(transaction.description)).toBeVisible();
     });
   });
@@ -61,9 +67,11 @@ describe("Transactions", () => {
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<CardTransaction[]>
       >
-    ).mockImplementation(async () => [
-      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-    ]);
+    )
+      .mockResolvedValueOnce([
+        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+      ])
+      .mockResolvedValueOnce([]);
 
     const testTransactionId = `truelayer-${TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.transaction_id}`;
     const testTransactionName =

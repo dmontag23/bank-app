@@ -12,7 +12,7 @@ import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
 } from "../integrations/truelayer/trueLayerMappings";
-import useGetTruelayerTransactions from "../integrations/truelayer/useGetTruelayerTransactions";
+import useGetAllTruelayerTransactions from "../integrations/truelayer/useGetAllTruelayerTransactions";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
 const assignCategoriesToTransactions = (
@@ -66,13 +66,13 @@ const useTransactions = (
   dateRange?: UseTransactionsDateRangeProp
 ) => {
   const {
-    isLoading: isTrueLayerTransactionsLoading,
-    isSuccess: isTrueLayerTransactionsSuccess,
-    data: trueLayerTransactions,
+    isLoading: isTruelayerTransactionsLoading,
+    isSuccess: isTruelayerTransactionsSuccess,
+    data: truelayerTransactions,
     refetch
-  } = useGetTruelayerTransactions(acctId, dateRange);
+  } = useGetAllTruelayerTransactions(acctId, dateRange);
 
-  const trueLayerTransactionIds = (trueLayerTransactions ?? []).map(
+  const trueLayerTransactionIds = truelayerTransactions.map(
     transaction => transaction.transaction_id
   );
 
@@ -82,7 +82,7 @@ const useTransactions = (
     data: trueLayerTransactionToCategoryMap
   } = useGetTransactionCategoryMap({
     transactionIds: trueLayerTransactionIds,
-    enabled: !isTrueLayerTransactionsLoading
+    enabled: !isTruelayerTransactionsLoading
   });
 
   const {mutate: storeTransactionCategoryMap} =
@@ -90,16 +90,16 @@ const useTransactions = (
 
   const {unsavedTransactionsToCategoryMap, transactions} = useMemo(
     () =>
-      !isTrueLayerTransactionsSuccess || !isTransactionToCategoryMapSuccess
+      !isTruelayerTransactionsSuccess || !isTransactionToCategoryMapSuccess
         ? {unsavedTransactionsToCategoryMap: {}, transactions: []}
         : assignCategoriesToTransactions(
-            trueLayerTransactions,
+            truelayerTransactions,
             trueLayerTransactionToCategoryMap
           ),
     [
-      trueLayerTransactions,
+      truelayerTransactions,
       trueLayerTransactionToCategoryMap,
-      isTrueLayerTransactionsSuccess,
+      isTruelayerTransactionsSuccess,
       isTransactionToCategoryMapSuccess
     ]
   );
@@ -111,7 +111,7 @@ const useTransactions = (
 
   return {
     isLoading:
-      isTrueLayerTransactionsLoading || isTransactionToCategoryMapLoading,
+      isTruelayerTransactionsLoading || isTransactionToCategoryMapLoading,
     transactions,
     refetch
   };

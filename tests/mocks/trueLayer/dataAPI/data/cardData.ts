@@ -69,3 +69,15 @@ export const TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS: CardTransaction
     transaction_category: "PURCHASE",
     transaction_classification: ["Shopping"]
   };
+
+export const TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS: CardTransaction =
+  {
+    transaction_id: "0402945-oppenheimer-barbie",
+    timestamp: "2023-03-15T00:00:00Z",
+    description: "DOUBLE FEATURE",
+    amount: 15.52,
+    currency: "GBP",
+    transaction_type: "DEBIT",
+    transaction_category: "PURCHASE",
+    transaction_classification: ["Entertainment", "Movies & DVDs"]
+  };

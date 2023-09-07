@@ -7,7 +7,8 @@ export const mapTrueLayerCategoryToInternalCategory = (
   ({
     "Bills and Utilities": TransactionCategory.BILLS,
     "Food & Dining": TransactionCategory.EATING_OUT,
-    Shopping: TransactionCategory.ENTERTAINMENT
+    Shopping: TransactionCategory.ENTERTAINMENT,
+    Entertainment: TransactionCategory.ENTERTAINMENT
   }[trueLayerTransactionCategories[0]] || TransactionCategory.UNKNOWN);
 
 export const mapTrueLayerTransactionToInternalTransaction = (

@@ -14,7 +14,9 @@ import {
   BUDGET_WITH_TWO_ITEMS
 } from "../../mocks/data/budgets";
 import {
+  TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
+  TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS,
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardData";
@@ -246,19 +248,22 @@ describe("Budget screen", () => {
     await waitFor(() => expect(newBudgetTitle).not.toBeOnTheScreen());
   });
 
-  // TODO: Come back and update this test once transactions are filtered by
-  // budget date range
   test("creates a budget", async () => {
     // setup mock transactions
     (
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<CardTransaction[]>
       >
-    ).mockImplementation(async () => [
-      TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
-      TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-      TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
-    ]);
+    )
+      .mockResolvedValueOnce([
+        TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
+        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
+      ])
+      .mockResolvedValueOnce([
+        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+        TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS
+      ]);
 
     render(
       <NavigationContainer>
@@ -369,17 +374,20 @@ describe("Budget screen", () => {
     fireEvent.press(createButton);
     await waitFor(() => expect(newBudgetTitle).not.toBeOnTheScreen());
 
-    // check the truelayer api is called with the correct date query range
-    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    // check the truelayer api is called with the correct endpoints
+    expect(trueLayerDataApi.get).toBeCalledTimes(2);
     expect(trueLayerDataApi.get).toBeCalledWith(
       `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
         "2023-03-01"
       ).toISOString()}&to=${new Date("2023-04-01").toISOString()}`
     );
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      "v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions/pending"
+    );
 
     // check all first budget items are okay
     expect(screen.getByText("Gifts for Cardi B")).toBeVisible();
-    expect(screen.getByText("£4164.91")).toBeVisible();
+    expect(screen.getByText("£4149.39")).toBeVisible();
     expect(screen.getByText("left of £4300.21")).toBeVisible();
     expect(screen.getByText("CHAI POT YUM")).toBeVisible();
     // TODO: Uncomment the line below when you have proper categories displayed
@@ -389,6 +397,10 @@ describe("Budget screen", () => {
     // TODO: Uncomment the line below when you have proper categories displayed
     // expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
     expect(screen.getByText("£132.00")).toBeVisible();
+    expect(screen.getByText("DOUBLE FEATURE")).toBeVisible();
+    // TODO: Uncomment the line below when you have proper categories displayed
+    // expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
+    expect(screen.getByText("£15.52")).toBeVisible();
 
     // check second budget item
     const allTabButtons = screen.getAllByRole("tab");

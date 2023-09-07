@@ -11,9 +11,16 @@ import config from "../../../config.json";
 
 describe("Error", () => {
   test("displays and closes toast", async () => {
+    // ensure that only 1 error is displayed by only
+    // returning an error from 1 endpoint
     nock(config.integrations.trueLayer.sandboxDataUrl)
       // matches any url of the form "v1/cards/<uuid>/transactions"
       .get(/\/v1\/cards\/([0-9a-z]+)\/transactions/)
+      .reply(200, {results: [], status: "Succeeded"});
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z]+)\/transactions\/pending/)
       .reply(400, {error: "invalid_token"});
 
     render(
@@ -37,6 +44,13 @@ describe("Error", () => {
   });
 
   test("can navigate error modal", async () => {
+    // ensure that only 1 error is displayed by only
+    // returning an error from 1 endpoint
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z]+)\/transactions/)
+      .reply(200, {results: [], status: "Succeeded"});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       // matches any url of the form "v1/cards/<uuid>/transactions"
       .get(/\/v1\/cards\/([0-9a-z]+)\/transactions/)

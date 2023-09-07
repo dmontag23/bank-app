@@ -107,10 +107,12 @@ describe("Budgets", () => {
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<CardTransaction[]>
       >
-    ).mockImplementation(async () => [
-      TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-    ]);
+    )
+      .mockResolvedValueOnce([
+        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+      ])
+      .mockResolvedValueOnce([]);
 
     render(
       <NavigationContainer>
@@ -141,11 +143,14 @@ describe("Budgets", () => {
     expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
 
     // check the transactions are filtered by the correct date
-    expect(trueLayerDataApi.get).toBeCalledTimes(1);
+    expect(trueLayerDataApi.get).toBeCalledTimes(2);
     expect(trueLayerDataApi.get).toBeCalledWith(
       `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
         "01-01-2023"
       ).toISOString()}&to=${new Date("01-02-2023").toISOString()}`
+    );
+    expect(trueLayerDataApi.get).toBeCalledWith(
+      "v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions/pending"
     );
   });
 
