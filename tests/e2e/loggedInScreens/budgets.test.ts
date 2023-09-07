@@ -376,5 +376,12 @@ describe("Budget page", () => {
     // check the transaction exists for the bills budget item
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).not.toExist();
+    await expect(element(by.text("CHAI POT YUM"))).not.toExist();
+
+    // navigate to the transactions screen to ensure all transactions are present
+    await element(by.id("transactionsBottomNavButton")).tap();
+    await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
+    await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
+    await expect(element(by.text("CHAI POT YUM"))).toBeVisible();
   });
 });
