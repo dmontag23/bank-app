@@ -48,7 +48,8 @@ describe("TransactionsScreen component", () => {
         name: "Savings transaction",
         description: "This is my second transaction",
         amount: 12.29,
-        category: TransactionCategory.SAVINGS
+        category: TransactionCategory.SAVINGS,
+        timestamp: new Date("2023-01-01")
       }
     ];
 

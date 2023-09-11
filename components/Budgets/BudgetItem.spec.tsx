@@ -21,7 +21,8 @@ describe("BudgetItem component", () => {
       name: "Transaction 1",
       description: "Description",
       amount: 0,
-      category: TransactionCategory.SAVINGS
+      category: TransactionCategory.SAVINGS,
+      timestamp: new Date("2023-01-01")
     }
   ];
   const testItem: BudgetItemWithTransactions = {

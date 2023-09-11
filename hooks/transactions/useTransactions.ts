@@ -62,7 +62,7 @@ type UseTransactionsDateRangeProp = {
 };
 
 const useTransactions = (
-  acctId: string,
+  cardId: string,
   dateRange?: UseTransactionsDateRangeProp
 ) => {
   const {
@@ -70,7 +70,7 @@ const useTransactions = (
     isSuccess: isTruelayerTransactionsSuccess,
     data: truelayerTransactions,
     refetch
-  } = useGetAllTruelayerTransactions(acctId, dateRange);
+  } = useGetAllTruelayerTransactions(cardId, dateRange);
 
   const trueLayerTransactionIds = truelayerTransactions.map(
     transaction => transaction.transaction_id
