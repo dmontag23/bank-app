@@ -58,3 +58,22 @@ export type CardTransaction = {
   running_balance?: RunningBalance;
   meta?: Metadata;
 };
+
+type Provider = {
+  display_name: string;
+  provider_id: string;
+  logo_uri: string;
+};
+
+// TODO: COME BACK AND CHECK THIS!!!!!!
+export type Card = {
+  account_id: string;
+  card_network: string;
+  card_type: string;
+  currency: CardCurrency;
+  display_name: string;
+  partial_card_number: string;
+  name_on_card: string;
+  update_timestamp: string;
+  provider: Provider;
+};
