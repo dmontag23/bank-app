@@ -1,13 +1,12 @@
 import React from "react";
 import {ScrollView} from "react-native";
 import {List} from "react-native-paper";
-import {StyleProp, ViewStyle} from "react-native/types";
 
 import {TransactionCategory} from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
 
-// TODO: Map the categories to different icons
-const ListIcon = (props: {color: string; style: StyleProp<ViewStyle>}) => (
-  <List.Icon {...props} icon="folder" />
+const ListIcon = (category: TransactionCategory) => (
+  <CategoryIcon category={category} />
 );
 
 type CategoryListProps = {
@@ -21,7 +20,11 @@ const CategoryList = ({onItemPress}: CategoryListProps) => (
         key={i}
         // TODO: Properly map these categories to names
         title={category}
-        left={props => ListIcon(props)}
+        left={() =>
+          ListIcon(
+            TransactionCategory[category as keyof typeof TransactionCategory]
+          )
+        }
         onPress={() => {
           onItemPress &&
             onItemPress(

@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {Dialog, List, Portal, Text} from "react-native-paper";
-import {StyleProp, ViewStyle} from "react-native/types";
 
 import CategoryList from "./CategoryList";
 
@@ -10,6 +9,7 @@ import {
   TransactionCategory,
   Transaction as TransactionType
 } from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
 
 // note that, in theory, combining the date and time in toLocaleString is possible, but
 // the implementation of toLocaleString can be different in Node and in
@@ -26,9 +26,8 @@ const createDescriptionString = (transaction: TransactionType) => {
   return `${localeDate} at ${localeTime}  -  ${transaction.category}`;
 };
 
-// TODO: Map categories to different icons
-const ListIcon = (props: {color: string; style: StyleProp<ViewStyle>}) => (
-  <List.Icon {...props} icon="folder" />
+const ListIcon = (category: TransactionCategory) => (
+  <CategoryIcon category={category} />
 );
 
 const RightText = (amount: number) => (
@@ -82,16 +81,21 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
         title={transaction.name}
         // TODO: Show the mapped transaction name here
         description={createDescriptionString(transaction)}
-        left={props => ListIcon(props)}
+        left={() => ListIcon(transaction.category)}
         right={() =>
           RightText(
             Math.round((transaction.amount + Number.EPSILON) * 100) / 100
           )
         }
         onPress={showDialog}
+        style={styles.item}
       />
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  item: {paddingHorizontal: 10}
+});
 
 export default Transaction;

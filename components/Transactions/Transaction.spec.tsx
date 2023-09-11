@@ -17,9 +17,11 @@ import {
   TransactionCategory,
   Transaction as TransactionType
 } from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
 
 jest.mock("./CategoryList");
 jest.mock("../../hooks/transactions/useStoreTransactionCategoryMap");
+jest.mock("../ui/CategoryIcon");
 
 describe("Transaction component", () => {
   const testTransaction: TransactionType = {
@@ -49,6 +51,12 @@ describe("Transaction component", () => {
       screen.getByText(`1 Jan 2023 at 00:00  -  ${testTransaction.category}`)
     ).toBeVisible();
     expect(screen.getByText("£12.70")).toBeVisible();
+
+    expect(CategoryIcon).toBeCalledTimes(1);
+    expect(CategoryIcon).toBeCalledWith(
+      {category: testTransaction.category},
+      {}
+    );
   });
 
   test("sets a new category correctly", async () => {

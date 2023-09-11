@@ -5,14 +5,27 @@ import {describe, expect, jest, test} from "@jest/globals";
 import CategoryList from "./CategoryList";
 
 import {TransactionCategory} from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
+
+jest.mock("../ui/CategoryIcon");
 
 describe("CategoryList component", () => {
   test("renders all categories on the screen without an item press function", () => {
     render(<CategoryList />);
 
-    Object.keys(TransactionCategory).map(category => {
+    const categoryList = Object.keys(TransactionCategory);
+    categoryList.map(category => {
       expect(screen.getByText(category)).toBeVisible();
+      expect(CategoryIcon).toBeCalledWith(
+        {
+          category:
+            TransactionCategory[category as keyof typeof TransactionCategory]
+        },
+        {}
+      );
     });
+
+    expect(CategoryIcon).toBeCalledTimes(categoryList.length);
   });
 
   test("renders correctly with an item press function", () => {
