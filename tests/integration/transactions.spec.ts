@@ -50,14 +50,20 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.BILLS
+        category: TransactionCategory.BILLS,
+        timestamp: new Date(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
+        )
       },
       {
         id: "1234094-shocking-chipotle",
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT
+        category: TransactionCategory.EATING_OUT,
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        )
       }
     ]);
     expect(
@@ -98,14 +104,20 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.SAVINGS
+        category: TransactionCategory.SAVINGS,
+        timestamp: new Date(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
+        )
       },
       {
         id: "1234094-shocking-chipotle",
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT
+        category: TransactionCategory.EATING_OUT,
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        )
       }
     ]);
     expect(
@@ -151,21 +163,30 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.SAVINGS
+        category: TransactionCategory.SAVINGS,
+        timestamp: new Date(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
+        )
       },
       {
         id: "1234094-shocking-chipotle",
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT
+        category: TransactionCategory.EATING_OUT,
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        )
       },
       {
         id: "1234000-chai-pot",
         name: "CHAI POT YUM",
         description: "Food & Dining",
         amount: 3.3,
-        category: TransactionCategory.EATING_OUT
+        category: TransactionCategory.EATING_OUT,
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        )
       }
     ]);
     expect(

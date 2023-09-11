@@ -52,7 +52,10 @@ describe("mapTrueLayerTransactionToInternalTransaction", () => {
       name: "PAY OFF CREDIT CARD BILL",
       description: "Bills and Utilities",
       amount: 192.52,
-      category: TransactionCategory.BILLS
+      category: TransactionCategory.BILLS,
+      timestamp: new Date(
+        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
+      )
     });
   });
 });

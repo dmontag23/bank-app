@@ -200,7 +200,9 @@ describe("Budget screen", () => {
     await waitFor(() =>
       expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible()
     );
-    expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
+    expect(
+      screen.getByText(`1 Jan 2023 at 00:00 - ${TransactionCategory.BILLS}`)
+    ).toBeVisible();
 
     // change the transaction category
     fireEvent.press(screen.getByText("PAY OFF CREDIT CARD BILL"));
@@ -223,7 +225,11 @@ describe("Budget screen", () => {
     // check the next screen contains the transaction
     fireEvent.press(screen.getAllByRole("tab")[1]);
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
-    expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
+    expect(
+      screen.getByText(
+        `1 Jan 2023 at 00:00 - ${TransactionCategory.ENTERTAINMENT}`
+      )
+    ).toBeVisible();
   });
 
   test("cancels the new budget form", async () => {

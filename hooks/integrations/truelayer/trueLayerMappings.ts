@@ -19,5 +19,6 @@ export const mapTrueLayerTransactionToInternalTransaction = (
   name: trueLayerTransaction.description,
   description: trueLayerTransaction.transaction_classification[0],
   amount: trueLayerTransaction.amount,
-  category
+  category,
+  timestamp: new Date(trueLayerTransaction.timestamp)
 });

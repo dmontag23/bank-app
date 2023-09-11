@@ -11,7 +11,8 @@ export const EATING_OUT_CARD_TRANSACTION: Transaction = {
   name: "CHIPOTLE AIRPORT BLVD",
   description: "Food & Dining",
   amount: 36.71,
-  category: TransactionCategory.EATING_OUT
+  category: TransactionCategory.EATING_OUT,
+  timestamp: new Date("2013-02-24T14:00:00Z")
 };
 
 export const PAY_BILL_CARD_TRANSACTION: Transaction = {
@@ -19,7 +20,8 @@ export const PAY_BILL_CARD_TRANSACTION: Transaction = {
   name: "PAY OFF CREDIT CARD BILL",
   description: "Bills and Utilities",
   amount: 192.52,
-  category: TransactionCategory.BILLS
+  category: TransactionCategory.BILLS,
+  timestamp: new Date("2023-01-01T00:00:00Z")
 };
 
 export const PAY_RENT_TRANSACTION: Transaction = {
@@ -27,5 +29,6 @@ export const PAY_RENT_TRANSACTION: Transaction = {
   name: "RENT",
   description: "Bills and Utilities",
   amount: 10,
-  category: TransactionCategory.BILLS
+  category: TransactionCategory.BILLS,
+  timestamp: new Date("2023-03-07T00:00:00Z")
 };

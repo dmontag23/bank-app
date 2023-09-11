@@ -11,6 +11,21 @@ import {
   Transaction as TransactionType
 } from "../../types/transaction";
 
+// note that, in theory, combining the date and time in toLocaleString is possible, but
+// the implementation of toLocaleString can be different in Node and in
+// react, see https://github.com/jestjs/jest/issues/3514
+const createDescriptionString = (transaction: TransactionType) => {
+  const localeDate = transaction.timestamp.toLocaleString("en-UK", {
+    dateStyle: "medium"
+  });
+
+  const localeTime = transaction.timestamp.toLocaleString("en-UK", {
+    timeStyle: "short"
+  });
+
+  return `${localeDate} at ${localeTime}  -  ${transaction.category}`;
+};
+
 // TODO: Map categories to different icons
 const ListIcon = (props: {color: string; style: StyleProp<ViewStyle>}) => (
   <List.Icon {...props} icon="folder" />
@@ -66,7 +81,7 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
       <List.Item
         title={transaction.name}
         // TODO: Show the mapped transaction name here
-        description={transaction.category}
+        description={createDescriptionString(transaction)}
         left={props => ListIcon(props)}
         right={() =>
           RightText(

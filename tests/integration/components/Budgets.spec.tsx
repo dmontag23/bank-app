@@ -140,7 +140,9 @@ describe("Budgets", () => {
     // Transactions
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
-    expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
+    expect(
+      screen.getByText(`1 Jan 2023 at 00:00 - ${TransactionCategory.BILLS}`)
+    ).toBeVisible();
 
     // check the transactions are filtered by the correct date
     expect(trueLayerDataApi.get).toBeCalledTimes(2);

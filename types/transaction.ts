@@ -12,6 +12,7 @@ export type Transaction = {
   description: string;
   amount: number;
   category: TransactionCategory;
+  timestamp: Date;
 };
 
 export type TransactionIDToCategoryMapping = {

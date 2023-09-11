@@ -4,7 +4,7 @@ export const TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
   transaction_id: "a15d8156569ba848d84c07c34d291bca",
   normalised_provider_transaction_id: "txn-ajdifh38fheu5hgue",
   provider_transaction_id: "9882ks-00js",
-  timestamp: "2023-02-27T23:06:00Z",
+  timestamp: "2023-01-01T00:00:00Z",
   description: "PAY OFF CREDIT CARD BILL",
   amount: 192.52,
   currency: "GBP",

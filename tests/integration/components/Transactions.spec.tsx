@@ -86,12 +86,20 @@ describe("Transactions", () => {
     // check that the original transaction category is displayed
     // and nothing is in Async Storage
     await waitFor(() =>
-      expect(screen.getByText(TransactionCategory.EATING_OUT)).toBeVisible()
+      expect(
+        screen.getByText(
+          `24 Feb 2013 at 14:00 - ${TransactionCategory.EATING_OUT}`
+        )
+      ).toBeVisible()
     );
     expect(await AsyncStorage.getAllKeys()).toEqual([testTransactionId]);
 
     // press the transaction to bring up the dialog
-    fireEvent.press(screen.getByText(TransactionCategory.EATING_OUT));
+    fireEvent.press(
+      screen.getByText(
+        `24 Feb 2013 at 14:00 - ${TransactionCategory.EATING_OUT}`
+      )
+    );
     await waitFor(() =>
       expect(screen.getByText("Select a category")).toBeVisible()
     );
@@ -107,7 +115,9 @@ describe("Transactions", () => {
     // Check that the dialog is closed and
     // the transaction has been updated to have the "Savings" category
     await waitFor(() => expect(selectCategoryText).not.toBeOnTheScreen());
-    expect(screen.getByText(TransactionCategory.SAVINGS)).toBeVisible();
+    expect(
+      screen.getByText(`24 Feb 2013 at 14:00 - ${TransactionCategory.SAVINGS}`)
+    ).toBeVisible();
     expect(await AsyncStorage.getItem(testTransactionId)).toEqual(
       TransactionCategory.SAVINGS
     );

@@ -27,7 +27,8 @@ describe("Transaction component", () => {
     name: "Test transaction",
     description: "This is a test transaction",
     amount: 12.7,
-    category: TransactionCategory.ENTERTAINMENT
+    category: TransactionCategory.ENTERTAINMENT,
+    timestamp: new Date("2023-01-01T00:00:00Z")
   };
 
   test("renders a transaction correctly", () => {
@@ -44,7 +45,9 @@ describe("Transaction component", () => {
     render(<Transaction transaction={testTransaction} />);
 
     expect(screen.getByText(testTransaction.name)).toBeVisible();
-    expect(screen.getByText(testTransaction.category)).toBeVisible();
+    expect(
+      screen.getByText(`1 Jan 2023 at 00:00  -  ${testTransaction.category}`)
+    ).toBeVisible();
     expect(screen.getByText("£12.70")).toBeVisible();
   });
 

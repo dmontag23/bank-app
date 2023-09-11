@@ -40,6 +40,8 @@ describe("Transactions page", () => {
     // select a new category from the modal
     await element(by.text("SAVINGS")).tap();
     await expect(modalTitle).not.toBeVisible();
-    await expect(element(by.text(TransactionCategory.SAVINGS))).toBeVisible();
+    await expect(
+      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.SAVINGS}`))
+    ).toBeVisible();
   });
 });

@@ -204,7 +204,9 @@ describe("Budget page", () => {
     await expect(element(by.text("£-42.52"))).toBeVisible();
     await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
-    await expect(element(by.text(TransactionCategory.BILLS))).toBeVisible();
+    await expect(
+      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.BILLS}`))
+    ).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
 
     // swipe to next budget item
@@ -215,7 +217,9 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £500.00"))).toBeVisible();
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
     await expect(
-      element(by.text(TransactionCategory.EATING_OUT))
+      element(
+        by.text(`24 Feb 2013 at 14:00  -  ${TransactionCategory.EATING_OUT}`)
+      )
     ).toBeVisible();
     await expect(element(by.text("£36.71"))).toBeVisible();
   });
@@ -310,7 +314,7 @@ describe("Budget page", () => {
           categories: [TransactionCategory.SAVINGS]
         }
       ],
-      window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
     };
 
     await createBudget(firstBudget);
@@ -322,7 +326,9 @@ describe("Budget page", () => {
     const transaction = element(by.text("PAY OFF CREDIT CARD BILL"));
     await expect(transaction).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
-    await expect(element(by.text(TransactionCategory.BILLS))).toBeVisible();
+    await expect(
+      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.BILLS}`))
+    ).toBeVisible();
 
     // click the transaction
     await transaction.tap();
@@ -353,7 +359,9 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
-    await expect(element(by.text(TransactionCategory.SAVINGS))).toBeVisible();
+    await expect(
+      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.SAVINGS}`))
+    ).toBeVisible();
   });
 
   it("filters transactions by the time window", async () => {
@@ -368,7 +376,7 @@ describe("Budget page", () => {
           categories: Object.values(TransactionCategory)
         }
       ],
-      window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
     };
 
     await createBudget(firstBudget);
