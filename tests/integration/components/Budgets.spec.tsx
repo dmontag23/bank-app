@@ -16,7 +16,7 @@ import {
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../../mocks/trueLayer/dataAPI/data/cardData";
+} from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
 
 jest.mock("../../../api/axiosConfig");
 

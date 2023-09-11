@@ -9,7 +9,7 @@ import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
-} from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
+} from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
 import {AppError} from "../../../types/errors";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 

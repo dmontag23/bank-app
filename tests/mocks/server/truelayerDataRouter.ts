@@ -6,7 +6,7 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../trueLayer/dataAPI/data/cardData";
+} from "../trueLayer/dataAPI/data/cardTransactionData";
 import {ERROR_429_RESPONSE} from "../trueLayer/dataAPI/data/serverResponseData";
 
 const truelayerDataRouter = express.Router();

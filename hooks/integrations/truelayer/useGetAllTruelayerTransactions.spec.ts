@@ -6,7 +6,7 @@ import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransact
 import useGetTruelayerTransactions from "./useGetTruelayerTransactions";
 
 import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../tests/mocks/server/dist/tests/mocks/trueLayer/dataAPI/data/cardData";
-import {TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
 
 jest.mock("./useGetTruelayerPendingTransactions");
 jest.mock("./useGetTruelayerTransactions");
