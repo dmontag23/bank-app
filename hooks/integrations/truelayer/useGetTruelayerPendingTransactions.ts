@@ -15,12 +15,12 @@ type TransactionDateRangeQuery = {
 // pending transactions by a date range, so we have to do that
 // manually here
 const getPendingTransactions = async (
-  acctId: string,
+  cardId: string,
   dateRange?: TransactionDateRangeQuery
 ) =>
   (
     await trueLayerDataApi.get<CardTransaction[]>(
-      `v1/cards/${acctId}/transactions/pending`
+      `v1/cards/${cardId}/transactions/pending`
     )
   ).filter(transaction => {
     if (!dateRange) return true;
@@ -32,14 +32,14 @@ const getPendingTransactions = async (
   });
 
 const useGetTruelayerPendingTransactions = (
-  acctId: string,
+  cardId: string,
   dateRange?: TransactionDateRangeQuery
 ) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery<CardTransaction[], IntegrationErrorResponse>({
-    queryKey: ["truelayerPendingTransactions", acctId, dateRange],
-    queryFn: () => getPendingTransactions(acctId, dateRange),
+    queryKey: ["truelayerPendingTransactions", cardId, dateRange],
+    queryFn: () => getPendingTransactions(cardId, dateRange),
     onError: error =>
       addError({...error, id: "useGetTruelayerPendingTransactions"}),
     onSuccess: () => removeError("useGetTruelayerPendingTransactions")

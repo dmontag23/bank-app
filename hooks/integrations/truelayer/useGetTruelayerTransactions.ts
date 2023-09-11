@@ -12,7 +12,7 @@ type TransactionDateRangeQuery = {
 };
 
 const getTransactions = async (
-  acctId: string,
+  cardId: string,
   dateRange?: TransactionDateRangeQuery
 ) => {
   // the Truelayer API does not accept timestamps in the future
@@ -30,19 +30,19 @@ const getTransactions = async (
     : "";
 
   return await trueLayerDataApi.get<CardTransaction[]>(
-    `v1/cards/${acctId}/transactions${queryParams}`
+    `v1/cards/${cardId}/transactions${queryParams}`
   );
 };
 
 const useGetTruelayerTransactions = (
-  acctId: string,
+  cardId: string,
   dateRange?: TransactionDateRangeQuery
 ) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery<CardTransaction[], IntegrationErrorResponse>({
-    queryKey: ["truelayerTransactions", acctId, dateRange],
-    queryFn: () => getTransactions(acctId, dateRange),
+    queryKey: ["truelayerTransactions", cardId, dateRange],
+    queryFn: () => getTransactions(cardId, dateRange),
     onError: error => addError({...error, id: "useGetTruelayerTransactions"}),
     onSuccess: () => removeError("useGetTruelayerTransactions")
   });

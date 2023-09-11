@@ -9,7 +9,7 @@ type TransactionDateRangeQuery = {
 };
 
 const useGetAllTruelayerTransactions = (
-  acctId: string,
+  cardId: string,
   dateRange?: TransactionDateRangeQuery
 ) => {
   const {
@@ -17,14 +17,14 @@ const useGetAllTruelayerTransactions = (
     isSuccess: isTransactionsSuccess,
     data: transactions,
     refetch: refetchTransactions
-  } = useGetTruelayerTransactions(acctId, dateRange);
+  } = useGetTruelayerTransactions(cardId, dateRange);
 
   const {
     isLoading: isPendingTransactionsLoading,
     isSuccess: isPendingTransactionsSuccess,
     data: pendingTransactions,
     refetch: refetchPendingTransactions
-  } = useGetTruelayerPendingTransactions(acctId, dateRange);
+  } = useGetTruelayerPendingTransactions(cardId, dateRange);
 
   const isSuccess = isTransactionsSuccess && isPendingTransactionsSuccess;
 
