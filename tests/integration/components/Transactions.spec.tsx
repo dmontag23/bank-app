@@ -19,8 +19,7 @@ import {
 describe("Transactions", () => {
   test("renders a loading spinner when loading", () => {
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .delayConnection(5000)
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
@@ -46,22 +45,17 @@ describe("Transactions", () => {
     ];
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
         status: "Succeeded"
-      });
-
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+      })
       // matches any url of the form "v1/cards/<uuid>/transactions"
       .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
       .reply(200, {
         results: testTransactions,
         status: "Succeeded"
-      });
-
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+      })
       // matches any url of the form "v1/cards/<uuid>/transactions/pending"
       .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
       .reply(200, {
@@ -83,22 +77,17 @@ describe("Transactions", () => {
 
   test("sets a new category correctly", async () => {
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
         status: "Succeeded"
-      });
-
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+      })
       // matches any url of the form "v1/cards/<uuid>/transactions"
       .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
       .reply(200, {
         results: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS],
         status: "Succeeded"
-      });
-
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+      })
       // matches any url of the form "v1/cards/<uuid>/transactions/pending"
       .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
       .reply(200, {

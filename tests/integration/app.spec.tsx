@@ -42,10 +42,9 @@ describe("App component", () => {
     );
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(400, {error: "invalid_token"})
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(200, {
         results: [],
         status: "Succeeded"

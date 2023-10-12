@@ -1,21 +1,15 @@
 import React from "react";
 import {Linking} from "react-native";
 import WebView from "react-native-webview";
+import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerAuthApi} from "../../api/axiosConfig";
 import App from "../../App";
 import RootScreens from "../../components/RootScreens";
 import config from "../../config.json";
-import {
-  ConnectTokenPostRequest,
-  ConnectTokenPostResponse
-} from "../../types/trueLayer/authAPI/auth";
-
-jest.mock("../../api/axiosConfig");
 
 // mock the deep linking mechanism in order to be able to test it
 jest.mock("react-native/Libraries/Linking/Linking");
@@ -117,16 +111,9 @@ describe("Root screen views - auth flow", () => {
   });
 
   test("displays error page on failed connect to Truelayer endpoint", async () => {
-    (
-      trueLayerAuthApi.post as jest.MockedFunction<
-        typeof trueLayerAuthApi.post<
-          ConnectTokenPostRequest,
-          ConnectTokenPostResponse
-        >
-      >
-    ).mockImplementation(async () =>
-      Promise.reject("Cannot connect to the truelayer api")
-    );
+    nock(config.integrations.trueLayer.sandboxAuthUrl)
+      .post("/connect/token")
+      .replyWithError("Cannot connect to the truelayer api");
 
     const deepLinkUrl =
       "bankapp://truelayer-callback?code=truelayer-dummy-code&scope=accounts";
@@ -148,20 +135,15 @@ describe("Root screen views - auth flow", () => {
   test("stores valid Truelayer tokens and navigates to the home budgets page", async () => {
     const mockAccessToken = "valid-truelayer-access-token";
     const mockRefreshToken = "valid-truelayer-refresh-token";
-    (
-      trueLayerAuthApi.post as jest.MockedFunction<
-        typeof trueLayerAuthApi.post<
-          ConnectTokenPostRequest,
-          ConnectTokenPostResponse
-        >
-      >
-    ).mockImplementation(async () => ({
-      access_token: mockAccessToken,
-      expires_in: 3600,
-      refresh_token: mockRefreshToken,
-      token_type: "Bearer",
-      scope: "info"
-    }));
+    nock(config.integrations.trueLayer.sandboxAuthUrl)
+      .post("/connect/token")
+      .reply(200, {
+        access_token: mockAccessToken,
+        expires_in: 3600,
+        refresh_token: mockRefreshToken,
+        token_type: "Bearer",
+        scope: "info"
+      });
 
     const deepLinkUrl =
       "bankapp://truelayer-callback?code=truelayer-dummy-code&scope=accounts";
@@ -268,20 +250,15 @@ describe("Root screen views - auth flow", () => {
       ["truelayer-refresh-token", mockRefreshToken]
     ]);
 
-    (
-      trueLayerAuthApi.post as jest.MockedFunction<
-        typeof trueLayerAuthApi.post<
-          ConnectTokenPostRequest,
-          ConnectTokenPostResponse
-        >
-      >
-    ).mockImplementation(async () => ({
-      access_token: "new-access-token",
-      expires_in: 3600,
-      refresh_token: "new-refresh-token",
-      token_type: "Bearer",
-      scope: "info"
-    }));
+    nock(config.integrations.trueLayer.sandboxAuthUrl)
+      .post("/connect/token")
+      .reply(200, {
+        access_token: "new-access-token",
+        expires_in: 3600,
+        refresh_token: "new-refresh-token",
+        token_type: "Bearer",
+        scope: "info"
+      });
 
     const deepLinkUrl =
       "bankapp://truelayer-callback?code=dummy-truelayer-code&scope=accounts";

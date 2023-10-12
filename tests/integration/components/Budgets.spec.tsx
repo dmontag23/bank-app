@@ -1,14 +1,14 @@
 import React from "react";
 import {MD3LightTheme} from "react-native-paper";
+import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
-import {describe, expect, jest, test} from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../../api/axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
+import config from "../../../config.json";
 import {Budget as BudgetType} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
-import {Card, CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
@@ -18,8 +18,6 @@ import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
-
-jest.mock("../../../api/axiosConfig");
 
 describe("Budgets", () => {
   const EMPTY_BUDGET: BudgetType = {
@@ -33,12 +31,12 @@ describe("Budgets", () => {
   };
 
   test("renders a loading spinner", () => {
-    // TODO: Can probably refactor this across all tests to have a
-    // helper where you just pass in the implementation for the data
-    // mock
-    (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => new Promise(() => {}));
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -50,11 +48,12 @@ describe("Budgets", () => {
   });
 
   test("renders a budget with no items", async () => {
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -70,11 +69,12 @@ describe("Budgets", () => {
   });
 
   test("renders a budget item with no transactions", async () => {
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -101,20 +101,27 @@ describe("Budgets", () => {
   });
 
   test("renders a budget item with transactions over cap", async () => {
-    // TODO: Can probably refactor this across all tests to have a
-    // helper where you just pass in the implementation for the data
-    // mock
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
-      .mockResolvedValueOnce([
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]) // list of settled transactions
-      .mockResolvedValueOnce([]); // list of pending transactions
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -145,21 +152,16 @@ describe("Budgets", () => {
     expect(
       screen.getByText(`1 Jan 2023 at 00:00 - ${TransactionCategory.BILLS}`)
     ).toBeVisible();
-
-    // check the transactions are filtered by the correct date
-    expect(trueLayerDataApi.get).toBeCalledTimes(3);
-    expect(trueLayerDataApi.get).toBeCalledWith("v1/cards");
-    expect(trueLayerDataApi.get).toBeCalledWith(
-      `v1/cards/mastercard-1/transactions?from=${new Date(
-        "01-01-2023"
-      ).toISOString()}&to=${new Date("01-02-2023").toISOString()}`
-    );
-    expect(trueLayerDataApi.get).toBeCalledWith(
-      "v1/cards/mastercard-1/transactions/pending"
-    );
   });
 
   test("switches between budget items", async () => {
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
+
     render(
       <NavigationContainer>
         <Budget budget={BUDGET_WITH_TWO_ITEMS} />

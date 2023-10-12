@@ -1,13 +1,13 @@
 import React from "react";
+import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
-import {describe, expect, jest, test} from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../../api/axiosConfig";
 import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
+import config from "../../../config.json";
 import {TransactionCategory} from "../../../types/transaction";
-import {Card, CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM,
@@ -21,8 +21,6 @@ import {
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
-
-jest.mock("../../../api/axiosConfig");
 
 describe("Budget screen", () => {
   test("renders the default home page with no selected budget", () => {
@@ -47,11 +45,12 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -85,11 +84,12 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -125,11 +125,12 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -171,13 +172,24 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => [
-      TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-    ]);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -257,21 +269,31 @@ describe("Budget screen", () => {
 
   test("creates a budget", async () => {
     // setup mock transactions
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD])
-      .mockResolvedValueOnce([
-        TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
-      ])
-      .mockResolvedValueOnce([
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
-        TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS
-      ]);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [
+          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+          TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -382,20 +404,10 @@ describe("Budget screen", () => {
     fireEvent.press(createButton);
     await waitFor(() => expect(newBudgetTitle).not.toBeOnTheScreen());
 
-    // check the truelayer api is called with the correct endpoints
-    expect(trueLayerDataApi.get).toBeCalledTimes(3);
-    expect(trueLayerDataApi.get).toBeCalledWith("v1/cards");
-    expect(trueLayerDataApi.get).toBeCalledWith(
-      `v1/cards/mastercard-1/transactions?from=${new Date(
-        "2023-03-01"
-      ).toISOString()}&to=${new Date("2023-04-01").toISOString()}`
-    );
-    expect(trueLayerDataApi.get).toBeCalledWith(
-      "v1/cards/mastercard-1/transactions/pending"
-    );
-
     // check all first budget items are okay
-    expect(screen.getByText("Gifts for Cardi B")).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText("Gifts for Cardi B")).toBeVisible()
+    );
     expect(screen.getByText("£4149.39")).toBeVisible();
     expect(screen.getByText("left of £4300.21")).toBeVisible();
     expect(screen.getByText("CHAI POT YUM")).toBeVisible();

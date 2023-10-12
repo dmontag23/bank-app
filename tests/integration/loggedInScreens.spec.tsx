@@ -1,14 +1,12 @@
 import React from "react";
+import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
-import {describe, expect, jest, test} from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../api/axiosConfig";
 import LoggedInScreens from "../../components/LoggedInScreens";
-import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
-
-jest.mock("../../api/axiosConfig");
+import config from "../../config.json";
 
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
@@ -17,11 +15,13 @@ describe("Logged in screen views", () => {
       "truelayer-auth-token",
       "dummy-truelayer-auth-token"
     );
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    ).mockImplementation(async () => []);
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards/1/transactions")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>

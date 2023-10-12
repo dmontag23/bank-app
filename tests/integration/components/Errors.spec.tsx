@@ -12,8 +12,7 @@ import config from "../../../config.json";
 describe("Error", () => {
   test("displays and closes toast", async () => {
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(400, {error: "invalid_token"});
 
     render(
@@ -38,8 +37,7 @@ describe("Error", () => {
 
   test("can navigate error modal", async () => {
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards"
-      .get(/\/v1\/cards/)
+      .get("/v1/cards")
       .reply(400, {error: "invalid_token"});
 
     render(

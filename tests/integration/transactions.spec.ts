@@ -1,11 +1,11 @@
+import nock from "nock";
 import {renderHook, waitFor} from "testing-library/extension";
-import {describe, expect, jest, test} from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {trueLayerDataApi} from "../../api/axiosConfig";
+import config from "../../config.json";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
-import {Card, CardTransaction} from "../../types/trueLayer/dataAPI/cards";
 import {TRUELAYER_MASTERCARD} from "../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -13,16 +13,15 @@ import {
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../mocks/trueLayer/dataAPI/data/cardTransactionData";
 
-jest.mock("../../api/axiosConfig");
-
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer cards exist", async () => {
     // setup mocks
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    ).mockResolvedValueOnce([]); // list of cards
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     const {result} = renderHook(() => useTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -32,37 +31,61 @@ describe("useTransactions transaction flow", () => {
 
   test("returns empty values when no truelayer transactions exist", async () => {
     // setup mocks
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
-      .mockResolvedValueOnce([]) // list of settled transactions
-      .mockResolvedValueOnce([]); // list of pending transactions
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     const {result} = renderHook(() => useTransactions());
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false), {
+      timeout: 2000
+    });
     expect(result.current.transactions).toEqual([]);
     expect(await AsyncStorage.getAllKeys()).toEqual([]);
   });
 
   test("stores default category values", async () => {
     // setup mocks
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
-      .mockResolvedValueOnce([
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]) // list of settled transactions
-      .mockResolvedValueOnce([]); // list of pending transactions
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     const {result} = renderHook(() => useTransactions());
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false), {
+      timeout: 2000
+    });
     expect(result.current.transactions).toEqual([
       {
         id: "a15d8156569ba848d84c07c34d291bca",
@@ -98,17 +121,27 @@ describe("useTransactions transaction flow", () => {
 
   test("merges transaction categories from storage", async () => {
     // setup mocks
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
-      .mockResolvedValueOnce([]) // list of settled transactions
-      .mockResolvedValueOnce([
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]); // list of pending transactions
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      });
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
@@ -117,7 +150,9 @@ describe("useTransactions transaction flow", () => {
     );
 
     const {result} = renderHook(() => useTransactions());
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false), {
+      timeout: 2000
+    });
     expect(result.current.transactions).toEqual([
       {
         id: "a15d8156569ba848d84c07c34d291bca",
@@ -156,19 +191,28 @@ describe("useTransactions transaction flow", () => {
 
   test("merges transactions from separate api calls correctly", async () => {
     // setup mocks
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
-      .mockResolvedValueOnce([
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]) // list of settled transactions
-      .mockResolvedValueOnce([
-        TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]); // list of pending transactions
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS],
+        status: "Succeeded"
+      });
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
@@ -177,7 +221,9 @@ describe("useTransactions transaction flow", () => {
     );
 
     const {result} = renderHook(() => useTransactions());
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await waitFor(() => expect(result.current.isLoading).toBe(false), {
+      timeout: 2000
+    });
     expect(result.current.transactions).toEqual([
       {
         id: "a15d8156569ba848d84c07c34d291bca",
