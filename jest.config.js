@@ -2,6 +2,7 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ["**/*.{ts,tsx}", "!**/tests/**", "!**/types/**"],
+  globalSetup: "<rootDir>/tests/globalSetup.ts",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   moduleNameMapper: {
     // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports.

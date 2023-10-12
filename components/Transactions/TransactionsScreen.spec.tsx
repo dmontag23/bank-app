@@ -37,6 +37,8 @@ describe("TransactionsScreen component", () => {
     expect(LoadingSpinner).toBeCalledWith({}, {});
     expect(useOnFocus).toBeCalledTimes(1);
     expect(useOnFocus).toBeCalledWith(mockRefetch);
+    expect(mockUseTransactions).toBeCalledTimes(1);
+    expect(mockUseTransactions).toBeCalledWith({enabled: false});
   });
 
   test("renders transactions after loading", () => {
@@ -76,5 +78,7 @@ describe("TransactionsScreen component", () => {
       {transactions: testTransactions},
       {}
     );
+    expect(mockUseTransactions).toBeCalledTimes(1);
+    expect(mockUseTransactions).toBeCalledWith({enabled: false});
   });
 });

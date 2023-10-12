@@ -5,7 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {trueLayerDataApi} from "../../api/axiosConfig";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import {TransactionCategory} from "../../types/transaction";
-import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
+import {Card, CardTransaction} from "../../types/trueLayer/dataAPI/cards";
+import {TRUELAYER_MASTERCARD} from "../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -15,15 +16,32 @@ import {
 jest.mock("../../api/axiosConfig");
 
 describe("useTransactions transaction flow", () => {
+  test("returns empty values when no truelayer cards exist", async () => {
+    // setup mocks
+    (
+      trueLayerDataApi.get as jest.MockedFunction<
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
+      >
+    ).mockResolvedValueOnce([]); // list of cards
+
+    const {result} = renderHook(() => useTransactions());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.transactions).toEqual([]);
+    expect(await AsyncStorage.getAllKeys()).toEqual([]);
+  });
+
   test("returns empty values when no truelayer transactions exist", async () => {
     // setup mocks
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
-    ).mockImplementation(async () => []);
+    )
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
+      .mockResolvedValueOnce([]) // list of settled transactions
+      .mockResolvedValueOnce([]); // list of pending transactions
 
-    const {result} = renderHook(() => useTransactions("dummy"));
+    const {result} = renderHook(() => useTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
     expect(await AsyncStorage.getAllKeys()).toEqual([]);
@@ -33,16 +51,17 @@ describe("useTransactions transaction flow", () => {
     // setup mocks
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
     )
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
       .mockResolvedValueOnce([
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
         TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ])
-      .mockResolvedValueOnce([]);
+      ]) // list of settled transactions
+      .mockResolvedValueOnce([]); // list of pending transactions
 
-    const {result} = renderHook(() => useTransactions("dummy"));
+    const {result} = renderHook(() => useTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {
@@ -81,14 +100,15 @@ describe("useTransactions transaction flow", () => {
     // setup mocks
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
     )
-      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
+      .mockResolvedValueOnce([]) // list of settled transactions
       .mockResolvedValueOnce([
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
         TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]);
+      ]); // list of pending transactions
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
@@ -96,7 +116,7 @@ describe("useTransactions transaction flow", () => {
       TransactionCategory.SAVINGS
     );
 
-    const {result} = renderHook(() => useTransactions("dummy"));
+    const {result} = renderHook(() => useTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {
@@ -138,16 +158,17 @@ describe("useTransactions transaction flow", () => {
     // setup mocks
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
     )
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
       .mockResolvedValueOnce([
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
         TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ])
+      ]) // list of settled transactions
       .mockResolvedValueOnce([
         TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
-      ]);
+      ]); // list of pending transactions
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
@@ -155,7 +176,7 @@ describe("useTransactions transaction flow", () => {
       TransactionCategory.SAVINGS
     );
 
-    const {result} = renderHook(() => useTransactions("dummy"));
+    const {result} = renderHook(() => useTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([
       {

@@ -10,10 +10,10 @@ import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScreen = () => {
-  // TODO: Come back and use actual account number
-  const {isLoading, transactions, refetch} = useTransactions(
-    "2cbf9b6063102763ccbe3ea62f1b3e72"
-  );
+  // useTransactions is initially disabled because useOnFocus will call
+  // refetch as soon as the screen is focused, which will get the data
+  // setting enabled to false here prevents unnecessary api call(s)
+  const {isLoading, transactions, refetch} = useTransactions({enabled: false});
 
   useOnFocus(refetch);
 

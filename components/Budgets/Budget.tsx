@@ -56,14 +56,12 @@ type BudgetProps = {
 const Budget = ({budget}: BudgetProps) => {
   const theme = useTheme();
 
-  // TODO: use a dynamic account number here!
-  const {isLoading, transactions} = useTransactions(
-    "2cbf9b6063102763ccbe3ea62f1b3e72",
-    {
+  const {isLoading, transactions} = useTransactions({
+    dateRange: {
       from: budget.window.start,
       to: budget.window.end
     }
-  );
+  });
 
   const budgetItemsWithTransactions = useMemo(
     () => categorizeTransactions(transactions, budget.items),

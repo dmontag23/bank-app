@@ -12,6 +12,7 @@ import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
 } from "../integrations/truelayer/trueLayerMappings";
+import useGetAllTruelayerCards from "../integrations/truelayer/useGetAllTruelayerCards";
 import useGetAllTruelayerTransactions from "../integrations/truelayer/useGetAllTruelayerTransactions";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
@@ -61,16 +62,33 @@ type UseTransactionsDateRangeProp = {
   to: Date;
 };
 
-const useTransactions = (
-  cardId: string,
-  dateRange?: UseTransactionsDateRangeProp
-) => {
+type UseTransactionsProps = {
+  dateRange?: UseTransactionsDateRangeProp;
+  enabled?: boolean;
+};
+
+const useTransactions = ({
+  dateRange,
+  enabled = true
+}: UseTransactionsProps = {}) => {
+  const {
+    isLoading: isTruelayerCardsLoading,
+    isRefetching: isTruelayerCardsRefetching,
+    data: truelayerCardData,
+    refetch: refetchCardData
+  } = useGetAllTruelayerCards({enabled});
+
+  const cardIds = truelayerCardData?.map(card => card.account_id) ?? [];
+
   const {
     isLoading: isTruelayerTransactionsLoading,
     isSuccess: isTruelayerTransactionsSuccess,
-    data: truelayerTransactions,
-    refetch
-  } = useGetAllTruelayerTransactions(cardId, dateRange);
+    data: truelayerTransactions
+  } = useGetAllTruelayerTransactions({
+    cardIds,
+    dateRange,
+    enabled: !isTruelayerCardsLoading && !isTruelayerCardsRefetching
+  });
 
   const trueLayerTransactionIds = truelayerTransactions.map(
     transaction => transaction.transaction_id
@@ -82,7 +100,7 @@ const useTransactions = (
     data: trueLayerTransactionToCategoryMap
   } = useGetTransactionCategoryMap({
     transactionIds: trueLayerTransactionIds,
-    enabled: !isTruelayerTransactionsLoading
+    enabled: isTruelayerTransactionsSuccess
   });
 
   const {mutate: storeTransactionCategoryMap} =
@@ -111,9 +129,14 @@ const useTransactions = (
 
   return {
     isLoading:
-      isTruelayerTransactionsLoading || isTransactionToCategoryMapLoading,
+      isTruelayerCardsLoading ||
+      isTruelayerTransactionsLoading ||
+      isTransactionToCategoryMapLoading,
     transactions,
-    refetch
+    // only refetchCardData is called here because, as soon as the card data is refetched,
+    // the transaction queries are disabled. After the card query is finished, the transaction
+    // query is enabled again, which triggers an automatic refetch of the transaction data
+    refetch: refetchCardData
   };
 };
 

@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from "react";
+import {useMemo} from "react";
 
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
 import useGetTruelayerTransactions from "./useGetTruelayerTransactions";
@@ -8,41 +8,38 @@ type TransactionDateRangeQuery = {
   to: Date;
 };
 
+type UseGetAllTruelayerTransactionsProps = {
+  cardIds: string[];
+  dateRange?: TransactionDateRangeQuery;
+  enabled?: boolean;
+};
+
 const useGetAllTruelayerTransactions = (
-  cardId: string,
-  dateRange?: TransactionDateRangeQuery
+  props: UseGetAllTruelayerTransactionsProps
 ) => {
   const {
     isLoading: isTransactionsLoading,
     isSuccess: isTransactionsSuccess,
-    data: transactions,
-    refetch: refetchTransactions
-  } = useGetTruelayerTransactions(cardId, dateRange);
+    data: transactions
+  } = useGetTruelayerTransactions(props);
 
   const {
     isLoading: isPendingTransactionsLoading,
     isSuccess: isPendingTransactionsSuccess,
-    data: pendingTransactions,
-    refetch: refetchPendingTransactions
-  } = useGetTruelayerPendingTransactions(cardId, dateRange);
-
-  const isSuccess = isTransactionsSuccess && isPendingTransactionsSuccess;
-
-  const refetch = useCallback(() => {
-    refetchTransactions();
-    refetchPendingTransactions();
-  }, [refetchTransactions, refetchPendingTransactions]);
+    data: pendingTransactions
+  } = useGetTruelayerPendingTransactions(props);
 
   const data = useMemo(
     () => [...(transactions ?? []), ...(pendingTransactions ?? [])],
     [transactions, pendingTransactions]
   );
 
+  const isSuccess = isTransactionsSuccess && isPendingTransactionsSuccess;
+
   return {
     isLoading: isTransactionsLoading || isPendingTransactionsLoading,
     isSuccess,
-    data: isSuccess ? data : [],
-    refetch
+    data: isSuccess ? data : []
   };
 };
 

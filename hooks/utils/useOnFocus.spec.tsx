@@ -10,14 +10,6 @@ import {
 import useOnFocus from "./useOnFocus";
 
 describe("useOnFocus", () => {
-  test("defaults to a no-op function", async () => {
-    const customWrapper = (children: ReactNode) => (
-      <NavigationContainer>{children}</NavigationContainer>
-    );
-
-    renderHook(() => useOnFocus(), {customWrapper});
-  });
-
   test("executes callback whenever screen is re-focused", async () => {
     const mockRefetch = jest.fn();
     const MockStackNavigator = createStackNavigator();

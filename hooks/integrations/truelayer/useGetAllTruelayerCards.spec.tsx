@@ -75,4 +75,15 @@ describe("useGetAllTruelayerCards", () => {
       id: "useGetAllTruelayerCards"
     });
   });
+
+  test("can disable the query", async () => {
+    const {result} = renderHook(() =>
+      useGetAllTruelayerCards({enabled: false})
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(false));
+    expect(result.current.data).toBeUndefined();
+    expect(result.current.error).toBeNull();
+    expect(trueLayerDataApi.get).not.toBeCalled();
+  });
 });

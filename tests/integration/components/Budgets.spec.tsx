@@ -8,11 +8,12 @@ import {trueLayerDataApi} from "../../../api/axiosConfig";
 import Budget from "../../../components/Budgets/Budget";
 import {Budget as BudgetType} from "../../../types/budget";
 import {TransactionCategory} from "../../../types/transaction";
-import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
+import {Card, CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
 } from "../../mocks/data/budgets";
+import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
@@ -105,14 +106,15 @@ describe("Budgets", () => {
     // mock
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
     )
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD]) // list of cards
       .mockResolvedValueOnce([
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
         TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ])
-      .mockResolvedValueOnce([]);
+      ]) // list of settled transactions
+      .mockResolvedValueOnce([]); // list of pending transactions
 
     render(
       <NavigationContainer>
@@ -145,14 +147,15 @@ describe("Budgets", () => {
     ).toBeVisible();
 
     // check the transactions are filtered by the correct date
-    expect(trueLayerDataApi.get).toBeCalledTimes(2);
+    expect(trueLayerDataApi.get).toBeCalledTimes(3);
+    expect(trueLayerDataApi.get).toBeCalledWith("v1/cards");
     expect(trueLayerDataApi.get).toBeCalledWith(
-      `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
+      `v1/cards/mastercard-1/transactions?from=${new Date(
         "01-01-2023"
       ).toISOString()}&to=${new Date("01-02-2023").toISOString()}`
     );
     expect(trueLayerDataApi.get).toBeCalledWith(
-      "v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions/pending"
+      "v1/cards/mastercard-1/transactions/pending"
     );
   });
 

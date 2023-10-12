@@ -3,7 +3,7 @@ import {Request} from "express";
 import {CardTransaction} from "../../../../types/trueLayer/dataAPI/cards";
 
 export const filterTransactionsByTimestamp = (
-  req: Request<{account_id: string}, any, any, {from: string; to: string}>,
+  req: Request<{accountId: string}, any, any, {from: string; to: string}>,
   transactions: CardTransaction[]
 ) =>
   transactions.filter(transaction => {

@@ -1,4 +1,5 @@
 import "@testing-library/jest-native/extend-expect";
+import nock from "nock";
 import {afterEach, beforeEach, jest} from "@jest/globals";
 import MockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 
@@ -20,6 +21,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  nock.abortPendingRequests();
   jest.clearAllMocks();
   MockAsyncStorage.clear();
 });

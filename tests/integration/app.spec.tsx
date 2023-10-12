@@ -42,13 +42,10 @@ describe("App component", () => {
     );
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards/<uuid>/transactions"
-      .get(/\/v1\/cards\/([0-9a-z]+)\/transactions/)
-      .reply(400, {error: "invalid_token"});
-
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      // matches any url of the form "v1/cards/<uuid>/transactions"
-      .get(/\/v1\/cards\/([0-9a-z]+)\/transactions/)
+      // matches any url of the form "v1/cards"
+      .get(/\/v1\/cards/)
+      .reply(400, {error: "invalid_token"})
+      .get(/\/v1\/cards/)
       .reply(200, {
         results: [],
         status: "Succeeded"
@@ -100,7 +97,7 @@ describe("App component", () => {
       expect(screen.getAllByText("Transactions").length).toBe(3)
     );
     // ensure the badge on the settings icon has disappeared
-    expect(screen.queryByText("1")).toBeNull();
+    await waitFor(() => expect(screen.queryByText("1")).toBeNull());
 
     // ensure the badge on the settings screen is also gone
     // TODO: investigate why fireEvent.press does not work here
@@ -112,5 +109,5 @@ describe("App component", () => {
     );
     expect(screen.getAllByText("Settings").length).toBe(3);
     expect(screen.queryByText("1")).toBeNull();
-  });
+  }, 70000);
 });

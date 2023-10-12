@@ -1,29 +1,31 @@
 import React from "react";
+import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
-import {describe, expect, jest, test} from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
-import {trueLayerDataApi} from "../../../api/axiosConfig";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
+import config from "../../../config.json";
 import {TransactionCategory} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
+import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
 
-jest.mock("../../../api/axiosConfig");
-
 describe("Transactions", () => {
   test("renders a loading spinner when loading", () => {
-    // TODO: Can probably refactor this across all tests to have a
-    // helper where you just pass in the implementation for the data
-    // mock
-    (
-      trueLayerDataApi as jest.MockedObject<typeof trueLayerDataApi>
-    ).get.mockImplementation(async () => new Promise(() => {}));
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards"
+      .get(/\/v1\/cards/)
+      .delayConnection(5000)
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -42,13 +44,30 @@ describe("Transactions", () => {
     const testPendingTransactions: CardTransaction[] = [
       TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
     ];
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce(testTransactions)
-      .mockResolvedValueOnce(testPendingTransactions);
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards"
+      .get(/\/v1\/cards/)
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      });
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: testTransactions,
+        status: "Succeeded"
+      });
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: testPendingTransactions,
+        status: "Succeeded"
+      });
 
     render(
       <NavigationContainer>
@@ -63,15 +82,29 @@ describe("Transactions", () => {
   });
 
   test("sets a new category correctly", async () => {
-    (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
-      >
-    )
-      .mockResolvedValueOnce([
-        TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
-      ])
-      .mockResolvedValueOnce([]);
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards"
+      .get(/\/v1\/cards/)
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      });
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS],
+        status: "Succeeded"
+      });
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
     const testTransactionId = `truelayer-${TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.transaction_id}`;
     const testTransactionName =

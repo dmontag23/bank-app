@@ -7,12 +7,13 @@ import {NavigationContainer} from "@react-navigation/native";
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
 import {TransactionCategory} from "../../../types/transaction";
-import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
+import {Card, CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
 } from "../../mocks/data/budgets";
+import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -258,9 +259,10 @@ describe("Budget screen", () => {
     // setup mock transactions
     (
       trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<CardTransaction[]>
+        typeof trueLayerDataApi.get<Card[] | CardTransaction[]>
       >
     )
+      .mockResolvedValueOnce([TRUELAYER_MASTERCARD])
       .mockResolvedValueOnce([
         TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
@@ -381,14 +383,15 @@ describe("Budget screen", () => {
     await waitFor(() => expect(newBudgetTitle).not.toBeOnTheScreen());
 
     // check the truelayer api is called with the correct endpoints
-    expect(trueLayerDataApi.get).toBeCalledTimes(2);
+    expect(trueLayerDataApi.get).toBeCalledTimes(3);
+    expect(trueLayerDataApi.get).toBeCalledWith("v1/cards");
     expect(trueLayerDataApi.get).toBeCalledWith(
-      `v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions?from=${new Date(
+      `v1/cards/mastercard-1/transactions?from=${new Date(
         "2023-03-01"
       ).toISOString()}&to=${new Date("2023-04-01").toISOString()}`
     );
     expect(trueLayerDataApi.get).toBeCalledWith(
-      "v1/cards/2cbf9b6063102763ccbe3ea62f1b3e72/transactions/pending"
+      "v1/cards/mastercard-1/transactions/pending"
     );
 
     // check all first budget items are okay
