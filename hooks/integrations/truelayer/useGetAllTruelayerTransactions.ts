@@ -1,7 +1,7 @@
 import {useMemo} from "react";
 
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
-import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
 type TransactionDateRangeQuery = {
   from: Date;

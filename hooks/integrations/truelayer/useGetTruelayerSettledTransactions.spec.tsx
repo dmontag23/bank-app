@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";

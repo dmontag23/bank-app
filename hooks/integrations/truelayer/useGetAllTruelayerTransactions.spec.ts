@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 
 import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
-import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -11,7 +11,7 @@ import {
 } from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
 
 jest.mock("./useGetTruelayerPendingTransactions");
-jest.mock("./useGetTruelayerTransactions");
+jest.mock("./useGetTruelayerSettledTransactions");
 
 describe("useGetAllTruelayerTransactions", () => {
   test("returns a loading status if loading settled truelayer transactions", async () => {
