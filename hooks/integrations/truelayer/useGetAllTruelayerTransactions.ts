@@ -1,7 +1,7 @@
 import {useMemo} from "react";
 
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
-import useGetTruelayerTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
 
 type TransactionDateRangeQuery = {
   from: Date;
@@ -21,7 +21,7 @@ const useGetAllTruelayerTransactions = (
     isLoading: isTransactionsLoading,
     isSuccess: isTransactionsSuccess,
     data: transactions
-  } = useGetTruelayerTransactions(props);
+  } = useGetTruelayerSettledTransactions(props);
 
   const {
     isLoading: isPendingTransactionsLoading,

@@ -3,7 +3,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 
 import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
-import useGetTruelayerTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
 
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -20,7 +20,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
       isSuccess: false,
@@ -55,7 +55,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: false,
@@ -90,7 +90,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: true,
@@ -125,7 +125,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: true,
@@ -149,8 +149,8 @@ describe("useGetAllTruelayerTransactions", () => {
     );
 
     // assertions
-    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
-    expect(useGetTruelayerTransactions).toBeCalledWith({
+    expect(useGetTruelayerSettledTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerSettledTransactions).toBeCalledWith({
       cardIds: ["dummy_id_list"]
     });
     expect(useGetTruelayerPendingTransactions).toBeCalledTimes(1);
@@ -171,7 +171,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: false,
@@ -199,8 +199,8 @@ describe("useGetAllTruelayerTransactions", () => {
     );
 
     // assertions
-    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
-    expect(useGetTruelayerTransactions).toBeCalledWith({
+    expect(useGetTruelayerSettledTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerSettledTransactions).toBeCalledWith({
       cardIds: ["dummy_id_list"],
       dateRange
     });
@@ -217,7 +217,7 @@ describe("useGetAllTruelayerTransactions", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (
-      useGetTruelayerTransactions as jest.MockedFunction<any>
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: false,
@@ -244,8 +244,8 @@ describe("useGetAllTruelayerTransactions", () => {
     );
 
     // assertions
-    expect(useGetTruelayerTransactions).toBeCalledTimes(1);
-    expect(useGetTruelayerTransactions).toBeCalledWith({
+    expect(useGetTruelayerSettledTransactions).toBeCalledTimes(1);
+    expect(useGetTruelayerSettledTransactions).toBeCalledWith({
       cardIds: ["dummy_id_list"],
       enabled: false
     });

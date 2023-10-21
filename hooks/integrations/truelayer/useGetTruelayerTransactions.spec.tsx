@@ -2,7 +2,7 @@ import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useGetTruelayerTransactions from "./useGetTruelayerTransactions";
+import useGetTruelayerSettledTransactions from "./useGetTruelayerTransactions";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
@@ -38,7 +38,7 @@ describe("useGetTruelayerTransactions", () => {
       );
 
       const {result} = renderHook(
-        () => useGetTruelayerTransactions({cardIds: ["id_1"]}),
+        () => useGetTruelayerSettledTransactions({cardIds: ["id_1"]}),
         {
           customWrapper
         }
@@ -64,7 +64,7 @@ describe("useGetTruelayerTransactions", () => {
       ).mockImplementation(async () => []);
 
       const {result} = renderHook(() =>
-        useGetTruelayerTransactions({
+        useGetTruelayerSettledTransactions({
           cardIds: ["id_1"],
           dateRange: {
             from: new Date("01-01-2022"),
@@ -99,7 +99,7 @@ describe("useGetTruelayerTransactions", () => {
       future.setDate(future.getDate() + 1);
 
       const {result} = renderHook(() =>
-        useGetTruelayerTransactions({
+        useGetTruelayerSettledTransactions({
           cardIds: ["id_1"],
           dateRange: {from: now, to: future}
         })
@@ -132,7 +132,7 @@ describe("useGetTruelayerTransactions", () => {
       );
 
       const {result} = renderHook(
-        () => useGetTruelayerTransactions({cardIds: ["id_1"]}),
+        () => useGetTruelayerSettledTransactions({cardIds: ["id_1"]}),
         {
           customWrapper
         }
@@ -172,7 +172,7 @@ describe("useGetTruelayerTransactions", () => {
       );
 
       const {result} = renderHook(
-        () => useGetTruelayerTransactions({cardIds: ["id_1", "id_2"]}),
+        () => useGetTruelayerSettledTransactions({cardIds: ["id_1", "id_2"]}),
         {
           customWrapper
         }
@@ -208,7 +208,7 @@ describe("useGetTruelayerTransactions", () => {
         .mockImplementationOnce(async () => new Promise(() => {}));
 
       const {result} = renderHook(() =>
-        useGetTruelayerTransactions({cardIds: ["id_1", "id_2"]})
+        useGetTruelayerSettledTransactions({cardIds: ["id_1", "id_2"]})
       );
 
       await waitFor(() =>
@@ -249,7 +249,7 @@ describe("useGetTruelayerTransactions", () => {
       );
 
       const {result} = renderHook(
-        () => useGetTruelayerTransactions({cardIds: ["id_1", "id_2"]}),
+        () => useGetTruelayerSettledTransactions({cardIds: ["id_1", "id_2"]}),
         {
           customWrapper
         }
@@ -276,7 +276,7 @@ describe("useGetTruelayerTransactions", () => {
 
   test("can disable all queries", async () => {
     const {result} = renderHook(() =>
-      useGetTruelayerTransactions({
+      useGetTruelayerSettledTransactions({
         cardIds: ["id_1", "id_2"],
         enabled: false
       })

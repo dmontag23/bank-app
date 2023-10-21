@@ -40,7 +40,7 @@ type UseGetTruelayerTransactionsProps = {
   enabled?: boolean;
 };
 
-const useGetTruelayerTransactions = ({
+const useGetTruelayerSettledTransactions = ({
   cardIds,
   dateRange,
   enabled = true
@@ -85,4 +85,4 @@ const useGetTruelayerTransactions = ({
   };
 };
 
-export default useGetTruelayerTransactions;
+export default useGetTruelayerSettledTransactions;
