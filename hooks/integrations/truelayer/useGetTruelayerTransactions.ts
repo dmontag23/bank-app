@@ -1,4 +1,4 @@
-import {useContext} from "react";
+import {useContext, useMemo} from "react";
 import {useQueries, UseQueryOptions} from "@tanstack/react-query";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
@@ -62,13 +62,24 @@ const useGetTruelayerTransactions = ({
     }))
   });
 
+  // TODO: instead of extracting the data here and ensuring that the combined
+  // data does not change on re-renders with useMemo, the combine feature of TanStack
+  // query should be used when upgrading to TanStack Query v5
+  const allData = combinedQueries.map(query => query.data);
+  const combinedData = useMemo(
+    () =>
+      allData.reduce<CardTransaction[]>(
+        (acc, cur) => [...(cur ?? []), ...acc],
+        []
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(allData)]
+  );
+
   return {
     // note that this implies partial data can be returned
     // from this hook even if 1 of the calls fails
-    data: combinedQueries.reduce<CardTransaction[]>(
-      (acc, cur) => [...(cur.data ?? []), ...acc],
-      []
-    ),
+    data: combinedData,
     isLoading: combinedQueries.some(query => query.isLoading),
     isSuccess: combinedQueries.every(query => query.isSuccess)
   };
