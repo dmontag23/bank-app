@@ -127,12 +127,20 @@ const useTransactions = ({
       storeTransactionCategoryMap(unsavedTransactionsToCategoryMap);
   }, [storeTransactionCategoryMap, unsavedTransactionsToCategoryMap]);
 
+  const sortedTransactions = useMemo(
+    () =>
+      transactions.sort(
+        (a, b) => b.timestamp.valueOf() - a.timestamp.valueOf()
+      ),
+    [transactions]
+  );
+
   return {
     isLoading:
       isTruelayerCardsLoading ||
       isTruelayerTransactionsLoading ||
       isTransactionToCategoryMapLoading,
-    transactions,
+    transactions: sortedTransactions,
     // only refetchCardData is called here because, as soon as the card data is refetched,
     // the transaction queries are disabled. After the card query is finished, the transaction
     // query is enabled again, which triggers an automatic refetch of the transaction data

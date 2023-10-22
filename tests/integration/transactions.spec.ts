@@ -226,6 +226,16 @@ describe("useTransactions transaction flow", () => {
     });
     expect(result.current.transactions).toEqual([
       {
+        id: "1234000-chai-pot",
+        name: "CHAI POT YUM",
+        description: "Food & Dining",
+        amount: 3.3,
+        category: TransactionCategory.EATING_OUT,
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        )
+      },
+      {
         id: "a15d8156569ba848d84c07c34d291bca",
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
@@ -243,16 +253,6 @@ describe("useTransactions transaction flow", () => {
         category: TransactionCategory.EATING_OUT,
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        )
-      },
-      {
-        id: "1234000-chai-pot",
-        name: "CHAI POT YUM",
-        description: "Food & Dining",
-        amount: 3.3,
-        category: TransactionCategory.EATING_OUT,
-        timestamp: new Date(
-          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         )
       }
     ]);
