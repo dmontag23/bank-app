@@ -35,7 +35,21 @@ describe("BudgetItem component", () => {
   };
 
   test("renders item with no transactions correctly", () => {
-    render(<BudgetItem item={{...testItem, transactions: []}} />);
+    const mockBudget = {
+      id: "",
+      name: "",
+      items: [],
+      window: {start: new Date(), end: new Date()}
+    };
+    const mockSetSelectedBudget = jest.fn();
+
+    render(
+      <BudgetItem
+        item={{...testItem, transactions: []}}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+      />
+    );
 
     expect(
       screen.getByText(
@@ -44,16 +58,41 @@ describe("BudgetItem component", () => {
     ).toBeVisible();
     expect(BudgetItemSummary).toBeCalledTimes(1);
     expect(BudgetItemSummary).toBeCalledWith(
-      {item: {...testItem, transactions: []}},
+      {
+        item: {...testItem, transactions: []},
+        budget: mockBudget,
+        setSelectedBudget: mockSetSelectedBudget
+      },
       {}
     );
   });
 
   test("renders item with transactions correctly", () => {
-    render(<BudgetItem item={testItem} />);
+    const mockBudget = {
+      id: "",
+      name: "",
+      items: [],
+      window: {start: new Date(), end: new Date()}
+    };
+    const mockSetSelectedBudget = jest.fn();
+
+    render(
+      <BudgetItem
+        item={testItem}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+      />
+    );
 
     expect(BudgetItemSummary).toBeCalledTimes(1);
-    expect(BudgetItemSummary).toBeCalledWith({item: testItem}, {});
+    expect(BudgetItemSummary).toBeCalledWith(
+      {
+        item: testItem,
+        budget: mockBudget,
+        setSelectedBudget: mockSetSelectedBudget
+      },
+      {}
+    );
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
       {transactions: testTransactions},
@@ -62,17 +101,42 @@ describe("BudgetItem component", () => {
   });
 
   test("equality of two BudgetItems", () => {
-    const {rerender} = render(<BudgetItem item={testItem} />);
+    const mockBudget = {
+      id: "",
+      name: "",
+      items: [],
+      window: {start: new Date(), end: new Date()}
+    };
 
-    rerender(<BudgetItem item={{...testItem, id: "2"}} />);
+    const mockSetSelectedBudget = jest.fn();
+
+    const {rerender} = render(
+      <BudgetItem
+        item={testItem}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+      />
+    );
+
+    rerender(
+      <BudgetItem
+        item={{...testItem, id: "2"}}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+      />
+    );
 
     expect(isEqual).toBeCalledTimes(1);
     expect(isEqual).toBeCalledWith(
       {
-        item: testItem
+        item: testItem,
+        budget: mockBudget,
+        setSelectedBudget: mockSetSelectedBudget
       },
       {
-        item: {...testItem, id: "2"}
+        item: {...testItem, id: "2"},
+        budget: mockBudget,
+        setSelectedBudget: mockSetSelectedBudget
       }
     );
   });

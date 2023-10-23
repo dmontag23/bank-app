@@ -2,7 +2,7 @@ import React from "react";
 import {MD3LightTheme} from "react-native-paper";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
-import {describe, expect, test} from "@jest/globals";
+import {describe, expect, jest, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
 import Budget from "../../../components/Budgets/Budget";
@@ -40,7 +40,7 @@ describe("Budgets", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={EMPTY_BUDGET} />
+        <Budget budget={EMPTY_BUDGET} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 
@@ -57,7 +57,7 @@ describe("Budgets", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={EMPTY_BUDGET} />
+        <Budget budget={EMPTY_BUDGET} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 
@@ -78,7 +78,7 @@ describe("Budgets", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={BUDGET_WITH_ONE_ITEM} />
+        <Budget budget={BUDGET_WITH_ONE_ITEM} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 
@@ -130,6 +130,7 @@ describe("Budgets", () => {
             ...BUDGET_WITH_ONE_ITEM,
             items: [{...BUDGET_WITH_ONE_ITEM.items[0], cap: 150}]
           }}
+          setSelectedBudget={jest.fn()}
         />
       </NavigationContainer>
     );
@@ -164,7 +165,7 @@ describe("Budgets", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={BUDGET_WITH_TWO_ITEMS} />
+        <Budget budget={BUDGET_WITH_TWO_ITEMS} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 

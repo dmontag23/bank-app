@@ -19,7 +19,7 @@ const BudgetsScreen = () => {
         setSelectedBudget={setSelectedBudget}
       />
       {selectedBudget ? (
-        <Budget budget={selectedBudget} />
+        <Budget budget={selectedBudget} setSelectedBudget={setSelectedBudget} />
       ) : (
         <View style={styles.budgetTextContainer}>
           <Text variant="headlineLarge" style={styles.text}>

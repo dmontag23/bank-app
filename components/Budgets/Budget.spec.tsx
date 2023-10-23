@@ -50,7 +50,7 @@ describe("Budget component", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={emptyBudget} />
+        <Budget budget={emptyBudget} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 
@@ -76,7 +76,7 @@ describe("Budget component", () => {
 
     render(
       <NavigationContainer>
-        <Budget budget={emptyBudget} />
+        <Budget budget={emptyBudget} setSelectedBudget={jest.fn()} />
       </NavigationContainer>
     );
 
@@ -110,9 +110,12 @@ describe("Budget component", () => {
       transactions: []
     }));
 
+    const mockSetSelectedBudget = jest.fn();
+    const budget = {...emptyBudget, items: testBudgetItems};
+
     render(
       <NavigationContainer>
-        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+        <Budget budget={budget} setSelectedBudget={mockSetSelectedBudget} />
       </NavigationContainer>
     );
 
@@ -132,7 +135,9 @@ describe("Budget component", () => {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
           params: undefined
-        }
+        },
+        budget,
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );
@@ -166,9 +171,12 @@ describe("Budget component", () => {
       ]
     }));
 
+    const mockSetSelectedBudget = jest.fn();
+    const budget = {...emptyBudget, items: testBudgetItems};
+
     render(
       <NavigationContainer>
-        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+        <Budget budget={budget} setSelectedBudget={mockSetSelectedBudget} />
       </NavigationContainer>
     );
 
@@ -192,7 +200,9 @@ describe("Budget component", () => {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
           params: undefined
-        }
+        },
+        budget,
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );
@@ -226,9 +236,12 @@ describe("Budget component", () => {
       ]
     }));
 
+    const mockSetSelectedBudget = jest.fn();
+    const budget = {...emptyBudget, items: testBudgetItems};
+
     render(
       <NavigationContainer>
-        <Budget budget={{...emptyBudget, items: testBudgetItems}} />
+        <Budget budget={budget} setSelectedBudget={mockSetSelectedBudget} />
       </NavigationContainer>
     );
 
@@ -252,7 +265,9 @@ describe("Budget component", () => {
           key: expect.stringContaining(testBudgetItems[0].id),
           name: testBudgetItems[0].id,
           params: undefined
-        }
+        },
+        budget,
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );
@@ -276,7 +291,9 @@ describe("Budget component", () => {
           key: expect.stringContaining(testBudgetItems[1].id),
           name: testBudgetItems[1].id,
           params: undefined
-        }
+        },
+        budget,
+        setSelectedBudget: mockSetSelectedBudget
       },
       {}
     );

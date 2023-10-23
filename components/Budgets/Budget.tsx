@@ -51,9 +51,10 @@ const renderTabBarIcon =
 
 type BudgetProps = {
   budget: BudgetType;
+  setSelectedBudget: React.Dispatch<React.SetStateAction<BudgetType | null>>;
 };
 
-const Budget = ({budget}: BudgetProps) => {
+const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
   const theme = useTheme();
 
   const {isLoading, transactions} = useTransactions({
@@ -95,7 +96,14 @@ const Budget = ({budget}: BudgetProps) => {
           {budgetItemsWithTransactions.map(item => (
             <Tab.Screen key={item.id} name={item.id}>
               {/* TODO: use context here, see https://reactnavigation.org/docs/hello-react-navigation#passing-additional-props */}
-              {props => <BudgetItem {...props} item={item} />}
+              {props => (
+                <BudgetItem
+                  {...props}
+                  item={item}
+                  budget={budget}
+                  setSelectedBudget={setSelectedBudget}
+                />
+              )}
             </Tab.Screen>
           ))}
         </Tab.Navigator>

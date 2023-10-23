@@ -5,17 +5,23 @@ import {isEqual} from "lodash";
 
 import BudgetItemSummary from "./BudgetItemSummary";
 
-import {BudgetItemWithTransactions} from "../../types/budget";
+import {Budget, BudgetItemWithTransactions} from "../../types/budget";
 import TransactionList from "../Transactions/TransactionList";
 
 type BudgetItemProps = {
   item: BudgetItemWithTransactions;
+  budget: Budget;
+  setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
 };
 
-const BudgetItem = ({item}: BudgetItemProps) => (
+const BudgetItem = ({item, budget, setSelectedBudget}: BudgetItemProps) => (
   <View style={styles.container}>
     <View style={styles.summaryContainer}>
-      <BudgetItemSummary item={item} />
+      <BudgetItemSummary
+        item={item}
+        budget={budget}
+        setSelectedBudget={setSelectedBudget}
+      />
     </View>
     <View style={styles.transactionsContainer}>
       {item.transactions.length === 0 ? (

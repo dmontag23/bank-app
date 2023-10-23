@@ -53,6 +53,9 @@ describe("BudgetsScreen component", () => {
       setSelectedBudget: expect.any(Function)
     });
     expect(Budget).toBeCalledTimes(1);
-    expect(Budget).toBeCalledWith({budget: BUDGET_WITH_ONE_ITEM}, {});
+    expect(Budget).toBeCalledWith(
+      {budget: BUDGET_WITH_ONE_ITEM, setSelectedBudget: setSelectedBudgetFn},
+      {}
+    );
   });
 });

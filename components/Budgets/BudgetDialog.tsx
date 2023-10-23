@@ -15,16 +15,25 @@ const mapBudgetInputToBudget = (budgetInput: BudgetInput): Budget => ({
   items: budgetInput.items.map(item => ({...item, cap: Number(item.cap)}))
 });
 
+const mapBudgetToBudgetInput = (budget: Budget): BudgetInput => ({
+  ...budget,
+  items: budget.items.map(item => ({...item, cap: item.cap.toString()}))
+});
+
 type BudgetDialogProps = {
   isVisible: boolean;
   hide: () => void;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
+  isEditing?: boolean;
+  formValues?: Budget;
 };
 
 const BudgetDialog = ({
   isVisible,
   hide,
-  setSelectedBudget
+  setSelectedBudget,
+  isEditing = false,
+  formValues
 }: BudgetDialogProps) => {
   const theme = useTheme();
   const {height: deviceHeight} = useWindowDimensions();
@@ -51,18 +60,26 @@ const BudgetDialog = ({
   RN TextBox component. It could be peripherally related to 
   https://github.com/facebook/react-native/issues/36494 but I should verify if 
   this is actually an issue and I might need to raise a bug for it. */
+
+  const useFormOptions = {
+    defaultValues: defaultBudget,
+    ...(formValues ? {values: mapBudgetToBudgetInput(formValues)} : {})
+  };
   const {
     control,
     handleSubmit,
     formState: {isSubmitSuccessful},
     reset
-  } = useForm<BudgetInput>({defaultValues: defaultBudget});
+  } = useForm<BudgetInput>(useFormOptions);
 
   useEffect(() => {
     // the default budget needs to be passed in here in order to
     // get a new unique uuid for the next budget
-    if (isSubmitSuccessful) reset({...defaultBudget, id: uuid()});
-  }, [isSubmitSuccessful, reset, defaultBudget]);
+    const resetValues = formValues
+      ? mapBudgetToBudgetInput(formValues)
+      : {...defaultBudget, id: uuid()};
+    if (isSubmitSuccessful) reset(resetValues);
+  }, [formValues, isSubmitSuccessful, reset, defaultBudget]);
 
   const onBudgetDialogSubmit: SubmitHandler<
     BudgetInput
@@ -87,7 +104,7 @@ const BudgetDialog = ({
           {/* TODO: Add proper styling here, e.g. remove lines from
           the box with the categories and spaces between the title text*/}
           <Text variant="titleLarge" style={styles.text}>
-            New Budget
+            {isEditing ? "Edit Budget" : "New Budget"}
           </Text>
         </Dialog.Title>
         <Dialog.ScrollArea>
@@ -97,7 +114,7 @@ const BudgetDialog = ({
           <Button
             onPress={() => {
               hide();
-              reset({...defaultBudget, id: uuid()});
+              reset();
             }}
             textColor={theme.colors.error}>
             Cancel
@@ -107,7 +124,7 @@ const BudgetDialog = ({
               hide();
               handleSubmit(onBudgetDialogSubmit)();
             }}>
-            Create
+            {isEditing ? "Save" : "Create"}
           </Button>
         </Dialog.Actions>
       </Dialog>

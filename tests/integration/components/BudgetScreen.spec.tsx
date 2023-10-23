@@ -156,8 +156,8 @@ describe("Budget screen", () => {
     // delete the budget
     fireEvent.press(budgetMenuButton);
     const menuButtons = screen.getAllByRole("button");
-    expect(menuButtons.length).toBe(2);
-    fireEvent.press(menuButtons[1]);
+    expect(menuButtons.length).toBe(3);
+    fireEvent.press(menuButtons[2]);
 
     await waitFor(() =>
       expect(screen.getByText("Please select a budget")).toBeVisible()
