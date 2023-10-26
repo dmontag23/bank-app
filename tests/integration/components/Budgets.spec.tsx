@@ -177,4 +177,144 @@ describe("Budgets", () => {
     fireEvent.press(allTabs[1]);
     expect(screen.getByText("Fun")).toBeVisible();
   });
+
+  test("can edit a budget", async () => {
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
+
+    const mockSetSelectedBudget = jest.fn();
+
+    render(
+      <NavigationContainer>
+        <Budget
+          budget={BUDGET_WITH_ONE_ITEM}
+          setSelectedBudget={mockSetSelectedBudget}
+        />
+      </NavigationContainer>
+    );
+
+    // check the initial transactions for the bills budget item
+    await waitFor(() => expect(screen.getByText("£307.48")).toBeVisible());
+    expect(screen.getByText("left of £500.00")).toBeVisible();
+
+    const editButton = screen.getByRole("button");
+    expect(editButton).toBeVisible();
+
+    fireEvent.press(editButton);
+
+    // check the budget is pre-populated with the correct values
+    await waitFor(() => expect(screen.getByText("Edit Budget")).toBeVisible());
+    const nameField = screen.getByLabelText("Name");
+    const startDateField = screen.getByLabelText("Start date");
+    const endDateField = screen.getByLabelText("End date");
+    const itemNameField = screen.getByLabelText("Item name");
+    const capField = screen.getByLabelText("Cap");
+    const billsField = screen.getByLabelText(
+      Object.keys(TransactionCategory)[TransactionCategory.BILLS]
+    );
+
+    expect(nameField).toBeVisible();
+    expect(nameField.props).toMatchObject({
+      value: BUDGET_WITH_ONE_ITEM.name
+    });
+
+    expect(startDateField).toBeVisible();
+    expect(startDateField.props).toMatchObject({
+      date: BUDGET_WITH_ONE_ITEM.window.start.getTime()
+    });
+
+    expect(endDateField).toBeVisible();
+    expect(endDateField.props).toMatchObject({
+      date: BUDGET_WITH_ONE_ITEM.window.end.getTime()
+    });
+
+    expect(itemNameField).toBeVisible();
+    expect(itemNameField.props).toMatchObject({
+      value: BUDGET_WITH_ONE_ITEM.items[0].name
+    });
+
+    expect(capField).toBeVisible();
+    expect(capField.props).toMatchObject({
+      value: BUDGET_WITH_ONE_ITEM.items[0].cap.toString()
+    });
+
+    expect(billsField).toBeVisible();
+    expect(billsField).toHaveAccessibilityState({checked: true});
+
+    // change the form values and save
+    fireEvent.changeText(nameField, "New name");
+    const newStartDate = new Date("2013-01-01");
+    fireEvent(
+      startDateField,
+      "onChange",
+      {
+        type: "set",
+        nativeEvent: {
+          timestamp: newStartDate.getTime()
+        }
+      },
+      newStartDate
+    );
+    const newEndDate = new Date("2013-05-01");
+    fireEvent(
+      endDateField,
+      "onChange",
+      {
+        type: "set",
+        nativeEvent: {
+          timestamp: newEndDate.getTime()
+        }
+      },
+      newEndDate
+    );
+
+    fireEvent.changeText(itemNameField, "New item name");
+    fireEvent.changeText(capField, "50");
+    fireEvent.press(billsField);
+    fireEvent.press(
+      screen.getByLabelText(
+        Object.keys(TransactionCategory)[TransactionCategory.EATING_OUT]
+      )
+    );
+
+    fireEvent.press(screen.getByText("Save"));
+
+    // check all the new values are correct
+    await waitFor(() => expect(mockSetSelectedBudget).toBeCalledTimes(1));
+    expect(mockSetSelectedBudget).toBeCalledWith({
+      id: BUDGET_WITH_ONE_ITEM.id,
+      name: "New name",
+      window: {
+        start: newStartDate,
+        end: newEndDate
+      },
+      items: [
+        {
+          id: BUDGET_WITH_ONE_ITEM.items[0].id,
+          name: "New item name",
+          cap: 50,
+          categories: [TransactionCategory.EATING_OUT]
+        }
+      ]
+    });
+  });
 });
