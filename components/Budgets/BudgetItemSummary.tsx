@@ -44,6 +44,7 @@ const BudgetItemSummary = ({
         </Text>
         <View style={styles.titleSideItems}>
           <IconButton
+            accessibilityLabel="Edit budget"
             icon="pencil"
             mode="contained-tonal"
             size={20}

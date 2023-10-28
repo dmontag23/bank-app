@@ -392,4 +392,106 @@ describe("Budget page", () => {
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
     await expect(element(by.text("CHAI POT YUM"))).toBeVisible();
   });
+
+  it("can cancel an edit to a budget", async () => {
+    const budget: Budget = {
+      id: "first-budget",
+      name: "My first budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 150,
+          categories: [TransactionCategory.BILLS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(budget);
+
+    // ensure the correct elements initially appear
+    await expect(element(by.text("Bills"))).toBeVisible();
+    await expect(element(by.text("£-42.52"))).toBeVisible();
+    await expect(element(by.text("left of £150.00"))).toBeVisible();
+
+    // tap the edit button
+    const editButton = element(by.label("Edit budget")).atIndex(1);
+    await editButton.tap();
+
+    // edit one field, and then cancel the edit
+    const nameField = element(by.label("Name")).atIndex(1);
+    await expect(nameField).toHaveText(budget.name);
+    await nameField.replaceText("Cancel meeeeeee!");
+    await element(by.text("Cancel")).tap();
+
+    // tap the edit button to ensure all values are populated correctly in the form
+    await editButton.tap();
+
+    // set new budget values
+    await expect(nameField).toHaveText(budget.name);
+  });
+
+  it("can edit a budget", async () => {
+    const budget: Budget = {
+      id: "first-budget",
+      name: "My first budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 150,
+          categories: [TransactionCategory.BILLS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(budget);
+
+    // ensure the correct elements initially appear
+    await expect(element(by.text("My "))).toBeVisible(); // menu button
+    await expect(element(by.text("Bills"))).toBeVisible();
+    await expect(element(by.text("£-42.52"))).toBeVisible();
+    await expect(element(by.text("left of £150.00"))).toBeVisible();
+
+    // tap the edit button
+    const editButton = element(by.label("Edit budget")).atIndex(1);
+    await editButton.tap();
+
+    // set new budget values
+    const nameField = element(by.label("Name")).atIndex(1);
+    await nameField.replaceText("March");
+    await element(by.label("Start date")).tap();
+    await element(
+      by
+        .type("UIDatePicker")
+        .withAncestor(by.type("_UIDatePickerContainerView"))
+    ).setDatePickerDate(new Date("2023-03-01").toISOString(), "ISO8601");
+    await nameField.tap(); // dismiss the modal
+    await element(by.label("End date")).tap();
+    await element(
+      by
+        .type("UIDatePicker")
+        .withAncestor(by.type("_UIDatePickerContainerView"))
+    ).setDatePickerDate(new Date("2023-04-01").toISOString(), "ISO8601");
+    await nameField.tap(); // dismiss the modal
+    await element(by.label("Item name")).atIndex(0).replaceText("Fun");
+    await element(by.label("Cap")).atIndex(0).replaceText("500");
+    await element(
+      by.text(Object.keys(TransactionCategory)[TransactionCategory.BILLS])
+    ).tap();
+    await element(
+      by.text(
+        Object.keys(TransactionCategory)[TransactionCategory.ENTERTAINMENT]
+      )
+    ).tap();
+    await element(by.text("Save")).tap();
+
+    // check the new values have taken effect
+    await expect(element(by.text("Mar"))).toBeVisible(); // menu button
+    await expect(element(by.text("Fun"))).toBeVisible();
+    await expect(element(by.text("£352.48"))).toBeVisible();
+    await expect(element(by.text("left of £500.00"))).toBeVisible();
+  });
 });
