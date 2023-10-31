@@ -156,8 +156,8 @@ describe("Budget screen", () => {
     // delete the budget
     fireEvent.press(budgetMenuButton);
     const menuButtons = screen.getAllByRole("button");
-    expect(menuButtons.length).toBe(3);
-    fireEvent.press(menuButtons[2]);
+    expect(menuButtons.length).toBe(4);
+    fireEvent.press(menuButtons[3]);
 
     await waitFor(() =>
       expect(screen.getByText("Please select a budget")).toBeVisible()
@@ -444,5 +444,62 @@ describe("Budget screen", () => {
     // TODO: Investigate why toBeVisible() fails here
     // I think it's because the opacity of a parent is 0
     expect(screen.getByText("My first budget!")).toBeOnTheScreen();
+  });
+
+  test("can show and hide categories", async () => {
+    // setup AsyncStorage with mock data
+    await AsyncStorage.setItem(
+      `budget-${BUDGET_WITH_ONE_ITEM.id}`,
+      JSON.stringify(BUDGET_WITH_ONE_ITEM)
+    );
+
+    // setup mock transaction data
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
+
+    render(
+      <NavigationContainer>
+        <BudgetsScreen />
+      </NavigationContainer>
+    );
+
+    // select the budget from the menu
+    await waitFor(() => {
+      expect(screen.getByLabelText("Budget menu")).toBeVisible();
+    });
+    fireEvent.press(screen.getByLabelText("Budget menu"));
+    const budgetMenuItem = screen.getByText(BUDGET_WITH_ONE_ITEM.name);
+    // TODO: Investigate why toBeVisible() fails here
+    // I think it's because the opacity of a parent is 0
+    expect(budgetMenuItem).toBeOnTheScreen();
+    fireEvent.press(budgetMenuItem);
+
+    // check the home screen has updated accordingly
+    await waitFor(() => expect(screen.getByText("Bill Item")).toBeVisible());
+
+    // twirl down the categories section
+    const categoriesButton = screen.getByText("Categories");
+    fireEvent.press(categoriesButton);
+    expect(screen.getByText("BILLS")).toBeVisible();
+
+    // twirl up the categories section
+    fireEvent.press(categoriesButton);
+    expect(screen.queryByText("BILLS")).not.toBeOnTheScreen();
   });
 });

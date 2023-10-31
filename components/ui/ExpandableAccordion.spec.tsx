@@ -96,4 +96,18 @@ describe("ExpandableAccordion component", () => {
 
     expect(screen.getByText("Test title")).toBeVisible();
   });
+
+  test("can add a custom header style", async () => {
+    const customStyle = {backgroundColor: "green"};
+
+    render(
+      <ExpandableAccordion title="" headerStyle={customStyle}>
+        <></>
+      </ExpandableAccordion>
+    );
+
+    const accordion = screen.getByRole("button");
+    expect(accordion).toBeVisible();
+    expect(accordion).toHaveStyle(customStyle);
+  });
 });

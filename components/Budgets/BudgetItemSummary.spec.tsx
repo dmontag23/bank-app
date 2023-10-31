@@ -7,8 +7,13 @@ import BudgetDialog from "./BudgetDialog";
 import BudgetItemSummary from "./BudgetItemSummary";
 
 import {BudgetItemWithTransactions} from "../../types/budget";
+import {TransactionCategory} from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
+import ExpandableAccordion from "../ui/ExpandableAccordion";
 
 jest.mock("./BudgetDialog");
+jest.mock("../ui/CategoryIcon");
+jest.mock("../ui/ExpandableAccordion");
 
 describe("BudgetItemSummary component", () => {
   const testItem: BudgetItemWithTransactions = {
@@ -20,15 +25,15 @@ describe("BudgetItemSummary component", () => {
     transactions: []
   };
 
-  test("renders item with no cap correctly", () => {
-    const mockBudget = {
-      id: "",
-      name: "",
-      items: [],
-      window: {start: new Date(), end: new Date()}
-    };
-    const mockSetSelectedBudget = jest.fn();
+  const mockBudget = {
+    id: "",
+    name: "",
+    items: [],
+    window: {start: new Date(), end: new Date()}
+  };
+  const mockSetSelectedBudget = jest.fn();
 
+  test("renders item with no cap correctly", () => {
     render(
       <BudgetItemSummary
         item={testItem}
@@ -49,14 +54,6 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with negative percentage correctly", () => {
-    const mockBudget = {
-      id: "",
-      name: "",
-      items: [],
-      window: {start: new Date(), end: new Date()}
-    };
-    const mockSetSelectedBudget = jest.fn();
-
     render(
       <BudgetItemSummary
         item={{...testItem, cap: 1.5, spent: 2.2}}
@@ -79,14 +76,6 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("renders item with positive percentage correctly", () => {
-    const mockBudget = {
-      id: "",
-      name: "",
-      items: [],
-      window: {start: new Date(), end: new Date()}
-    };
-    const mockSetSelectedBudget = jest.fn();
-
     render(
       <BudgetItemSummary
         item={{...testItem, cap: 3.2, spent: 2.2}}
@@ -107,14 +96,6 @@ describe("BudgetItemSummary component", () => {
   });
 
   test("can open and close the budget dialog", () => {
-    const mockBudget = {
-      id: "",
-      name: "",
-      items: [],
-      window: {start: new Date(), end: new Date()}
-    };
-    const mockSetSelectedBudget = jest.fn();
-
     render(
       <BudgetItemSummary
         item={testItem}
@@ -172,5 +153,48 @@ describe("BudgetItemSummary component", () => {
       isEditing: true,
       formValues: mockBudget
     });
+  });
+
+  test("renders item categories", () => {
+    render(
+      <BudgetItemSummary
+        item={{
+          ...testItem,
+          categories: [TransactionCategory.BILLS]
+        }}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+      />
+    );
+
+    expect(ExpandableAccordion).toBeCalledTimes(1);
+    expect(ExpandableAccordion).toBeCalledWith(
+      {
+        title: "Categories",
+        headerStyle: {width: "80%", alignSelf: "center"},
+        children: expect.any(Object)
+      },
+      {}
+    );
+
+    // test the children of the ExpandableAccordion
+    const categories = (
+      ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
+    ).mock.calls[0][0].children as JSX.Element;
+    render(categories);
+
+    expect(
+      screen.getByText(
+        Object.keys(TransactionCategory)[TransactionCategory.BILLS]
+      )
+    ).toBeVisible();
+    expect(screen.getByTestId("chip-container")).toHaveStyle({
+      backgroundColor: "red"
+    });
+    expect(CategoryIcon).toBeCalledTimes(1);
+    expect(CategoryIcon).toBeCalledWith(
+      expect.objectContaining({category: TransactionCategory.BILLS}),
+      {}
+    );
   });
 });

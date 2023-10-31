@@ -1,10 +1,19 @@
 import React, {useState} from "react";
 import {StyleSheet, View} from "react-native";
-import {IconButton, ProgressBar, Text, useTheme} from "react-native-paper";
+import {
+  Chip,
+  IconButton,
+  ProgressBar,
+  Text,
+  useTheme
+} from "react-native-paper";
 
 import BudgetDialog from "./BudgetDialog";
 
 import {Budget, BudgetItemWithTransactions} from "../../types/budget";
+import {TransactionCategory} from "../../types/transaction";
+import CategoryIcon, {categoryToIconMap} from "../ui/CategoryIcon";
+import ExpandableAccordion from "../ui/ExpandableAccordion";
 
 type BudgetItemSummaryProps = {
   item: BudgetItemWithTransactions;
@@ -80,17 +89,43 @@ const BudgetItemSummary = ({
           testID="budgetItemSummaryProgressBar"
         />
       </View>
+      <ExpandableAccordion title="Categories" headerStyle={styles.accordion}>
+        <View style={styles.categoriesContainer}>
+          {item.categories.map(category => (
+            <Chip
+              key={category}
+              avatar={<CategoryIcon category={category} />}
+              textStyle={styles.categoryChip}
+              style={{backgroundColor: categoryToIconMap[category].color}}>
+              {Object.keys(TransactionCategory)[category]}
+            </Chip>
+          ))}
+        </View>
+      </ExpandableAccordion>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  amountsContainer: {flex: 1.6, justifyContent: "center", alignItems: "center"},
+  accordion: {width: "80%", alignSelf: "center"},
+  amountsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10
+  },
   amountsTextContainer: {alignItems: "flex-end"},
-  progressBarContainer: {flex: 1, justifyContent: "center"},
+  categoriesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    paddingLeft: "12%",
+    paddingRight: "10%"
+  },
+  categoryChip: {fontSize: 11, color: "white"},
+  progressBarContainer: {justifyContent: "center", marginBottom: 10},
   progressBar: {width: "80%", height: 20, borderRadius: 8, alignSelf: "center"},
-  titleContainer: {flex: 1, flexDirection: "row", justifyContent: "center"},
-  titleSideItems: {flex: 1.5, justifyContent: "center", paddingLeft: 15},
+  titleContainer: {flexDirection: "row", justifyContent: "center"},
+  titleSideItems: {justifyContent: "center", paddingLeft: 15},
   title: {textAlign: "center", textAlignVertical: "center"}
 });
 

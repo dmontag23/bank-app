@@ -83,7 +83,7 @@ describe("Budgets", () => {
     );
 
     // Budget summary
-    await waitFor(() => expect(screen.getByText("Bills")).toBeVisible());
+    await waitFor(() => expect(screen.getByText("Bill Item")).toBeVisible());
     expect(screen.getByText("£500.00")).toBeVisible();
     expect(screen.getByText("left of £500.00")).toBeVisible();
     const progressBar = screen.getByTestId("budgetItemSummaryProgressBar");
@@ -136,7 +136,7 @@ describe("Budgets", () => {
     );
 
     // Budget summary
-    await waitFor(() => expect(screen.getByText("Bills")).toBeVisible());
+    await waitFor(() => expect(screen.getByText("Bill Item")).toBeVisible());
     expect(screen.getByText("£-42.52")).toBeVisible();
     expect(screen.getByText("left of £150.00")).toBeVisible();
     const progressBar = screen.getByTestId("budgetItemSummaryProgressBar");
@@ -169,7 +169,7 @@ describe("Budgets", () => {
       </NavigationContainer>
     );
 
-    await waitFor(() => expect(screen.getByText("Bills")).toBeVisible());
+    await waitFor(() => expect(screen.getByText("Bill Item")).toBeVisible());
 
     // switch tabs
     const allTabs = screen.getAllByRole("tab");
@@ -216,7 +216,7 @@ describe("Budgets", () => {
     await waitFor(() => expect(screen.getByText("£307.48")).toBeVisible());
     expect(screen.getByText("left of £500.00")).toBeVisible();
 
-    const editButton = screen.getByRole("button");
+    const editButton = screen.getAllByRole("button")[0];
     expect(editButton).toBeVisible();
 
     fireEvent.press(editButton);

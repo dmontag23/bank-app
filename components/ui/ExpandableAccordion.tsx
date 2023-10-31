@@ -1,5 +1,5 @@
 import React, {ReactNode, useState} from "react";
-import {LayoutAnimation, StyleSheet} from "react-native";
+import {LayoutAnimation, StyleProp, StyleSheet, ViewStyle} from "react-native";
 import {List, useTheme} from "react-native-paper";
 import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
 
@@ -14,15 +14,17 @@ type ExpandableAccordionProps = {
   icon?: IconSource;
   unselectedColor?: string;
   selectedColor?: string;
+  headerStyle?: StyleProp<ViewStyle>;
 };
 
 const ExpandableAccordion = ({
   title,
   children,
   isInitiallyExpanded = false,
-  icon = undefined,
-  unselectedColor = undefined,
-  selectedColor = undefined
+  icon,
+  unselectedColor,
+  selectedColor,
+  headerStyle
 }: ExpandableAccordionProps) => {
   const theme = useTheme();
 
@@ -42,7 +44,7 @@ const ExpandableAccordion = ({
         setIsAccordionExpanded(isExpanded => !isExpanded);
       }}
       expanded={isAccordionExpanded}
-      style={[styles.accordionHeader]}
+      style={[styles.accordionHeader, headerStyle]}
       theme={{
         colors: {
           // blend the background color with the container background color

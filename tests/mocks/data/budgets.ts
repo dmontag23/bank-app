@@ -3,7 +3,7 @@ import {TransactionCategory} from "../../../types/transaction";
 
 export const BUDGET_ITEM_BILLS: BudgetItem = {
   id: "item-1",
-  name: "Bills",
+  name: "Bill Item",
   cap: 500,
   categories: [TransactionCategory.BILLS]
 };
@@ -31,7 +31,7 @@ export const BUDGET_WITH_NO_ITEMS: Budget = {
 
 export const BUDGET_WITH_ONE_ITEM: Budget = {
   id: "3",
-  name: "Bills Item",
+  name: "Bills",
   items: [BUDGET_ITEM_BILLS],
   window: {start: new Date("01-01-2023"), end: new Date("01-02-2023")}
 };

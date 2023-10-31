@@ -5,7 +5,7 @@ import {TransactionCategory} from "../../types/transaction";
 
 type CategoryToIconMap = Record<string, {icon: string; color: string}>;
 
-const categoryToIconMap: CategoryToIconMap = {
+export const categoryToIconMap: CategoryToIconMap = {
   [TransactionCategory.BILLS]: {icon: "card-text-outline", color: "red"},
   [TransactionCategory.EATING_OUT]: {icon: "food-fork-drink", color: "orange"},
   [TransactionCategory.ENTERTAINMENT]: {
