@@ -494,4 +494,32 @@ describe("Budget page", () => {
     await expect(element(by.text("£352.48"))).toBeVisible();
     await expect(element(by.text("left of £500.00"))).toBeVisible();
   });
+
+  it("shows and hides budget categories", async () => {
+    const firstBudget: Budget = {
+      id: "first-budget",
+      name: "First budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 1000,
+          categories: [TransactionCategory.BILLS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(firstBudget);
+
+    // twirl down the categories and check they all exist on the screen
+    const categoriesButton = element(by.text("Categories"));
+    await categoriesButton.tap();
+    const billsCategory = element(by.text("BILLS"));
+    await expect(billsCategory).toBeVisible();
+
+    // twirl up the categories and check they are no longer visible
+    await categoriesButton.tap();
+    await expect(billsCategory).not.toBeVisible();
+  });
 });
