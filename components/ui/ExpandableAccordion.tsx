@@ -1,7 +1,9 @@
 import React, {ReactNode, useState} from "react";
 import {LayoutAnimation, StyleProp, StyleSheet, ViewStyle} from "react-native";
-import {List, useTheme} from "react-native-paper";
+import {List} from "react-native-paper";
 import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
+
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 
 const createIcon = (props: {color: string; icon: IconSource}) => (
   <List.Icon {...props} />
@@ -26,7 +28,7 @@ const ExpandableAccordion = ({
   selectedColor,
   headerStyle
 }: ExpandableAccordionProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const [isAccordionExpanded, setIsAccordionExpanded] =
     useState(isInitiallyExpanded);

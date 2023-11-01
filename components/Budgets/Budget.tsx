@@ -1,11 +1,12 @@
 import React, {useMemo} from "react";
 import {StyleSheet, View} from "react-native";
-import {Avatar, Text, useTheme} from "react-native-paper";
+import {Avatar, Text} from "react-native-paper";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 
 import BudgetItem from "./BudgetItem";
 
 import useTransactions from "../../hooks/transactions/useTransactions";
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {
   BudgetItem as BudgetItemType,
   BudgetItemWithTransactions,
@@ -55,7 +56,7 @@ type BudgetProps = {
 };
 
 const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const {isLoading, transactions} = useTransactions({
     dateRange: {

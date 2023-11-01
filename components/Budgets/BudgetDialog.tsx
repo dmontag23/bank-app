@@ -1,13 +1,14 @@
 import React, {useEffect, useMemo} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {StyleSheet, useWindowDimensions} from "react-native";
-import {Button, Dialog, Portal, Text, useTheme} from "react-native-paper";
+import {Button, Dialog, Portal, Text} from "react-native-paper";
 import "react-native-get-random-values";
 import {v4 as uuid} from "uuid";
 
 import BudgetForm from "./form/BudgetForm";
 
 import useStoreBudget from "../../hooks/budgets/useStoreBudget";
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {Budget, BudgetInput} from "../../types/budget";
 
 const mapBudgetInputToBudget = (budgetInput: BudgetInput): Budget => ({
@@ -35,7 +36,7 @@ const BudgetDialog = ({
   isEditing = false,
   formValues
 }: BudgetDialogProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const {height: deviceHeight} = useWindowDimensions();
   const {mutate: storeBudget} = useStoreBudget();
 

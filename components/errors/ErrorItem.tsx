@@ -1,7 +1,8 @@
 import React from "react";
 import {StyleSheet, View} from "react-native";
-import {Divider, Text, useTheme} from "react-native-paper";
+import {Divider, Text} from "react-native-paper";
 
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {AppError} from "../../types/errors";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
@@ -11,7 +12,7 @@ type ErrorItemProps = {
 };
 
 const ErrorItem = ({error, isSelected}: ErrorItemProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   return (
     <View style={styles.container}>
       <ExpandableAccordion

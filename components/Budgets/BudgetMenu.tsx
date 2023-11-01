@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import {GestureResponderEvent, StyleSheet, View} from "react-native";
-import {IconButton, Menu, useTheme} from "react-native-paper";
+import {IconButton, Menu} from "react-native-paper";
 
 import useDeleteBudget from "../../hooks/budgets/useDeleteBudget";
 import useGetAllBudgets from "../../hooks/budgets/useGetAllBudgets";
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {Budget} from "../../types/budget";
 
 type BudgetMenuProps = {
@@ -14,7 +15,7 @@ type BudgetMenuProps = {
 };
 
 const BudgetMenu = ({renderMenuIcon, setSelectedBudget}: BudgetMenuProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const openMenu = () => setIsMenuVisible(true);

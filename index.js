@@ -7,6 +7,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 import App from "./App";
 import {name as appName} from "./app.json";
+import {theme} from "./hooks/utils/useAppTheme";
 import {ErrorContextProvider} from "./store/error-context";
 import {ToastContextProvider} from "./store/toast-context";
 import {TruelayerAuthContextProvider} from "./store/truelayer-auth-context";
@@ -25,7 +26,7 @@ const AppWrappers = () => {
             {/* PaperProvider needs to be the innermost provider so that
             any context from any other providers is available to components 
             rendered inside a modal from the library */}
-            <PaperProvider>
+            <PaperProvider theme={theme}>
               <App />
             </PaperProvider>
           </ErrorContextProvider>

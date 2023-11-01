@@ -1,15 +1,10 @@
 import React, {useState} from "react";
 import {StyleSheet, View} from "react-native";
-import {
-  Chip,
-  IconButton,
-  ProgressBar,
-  Text,
-  useTheme
-} from "react-native-paper";
+import {Chip, IconButton, ProgressBar, Text} from "react-native-paper";
 
 import BudgetDialog from "./BudgetDialog";
 
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {Budget, BudgetItemWithTransactions} from "../../types/budget";
 import {TransactionCategory} from "../../types/transaction";
 import CategoryIcon, {categoryToIconMap} from "../ui/CategoryIcon";
@@ -26,7 +21,7 @@ const BudgetItemSummary = ({
   budget,
   setSelectedBudget
 }: BudgetItemSummaryProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const [isBudgetDialogVisible, setIsBudgetDialogVisible] = useState(false);
   const showBudgetDialog = () => setIsBudgetDialogVisible(true);

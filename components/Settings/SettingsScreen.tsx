@@ -1,18 +1,12 @@
 import React, {useContext} from "react";
 import {StyleSheet, View} from "react-native";
-import {
-  Badge,
-  Divider,
-  List,
-  Surface,
-  Text,
-  useTheme
-} from "react-native-paper";
+import {Badge, Divider, List, Surface, Text} from "react-native-paper";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {MaterialBottomTabScreenProps} from "@react-navigation/material-bottom-tabs";
 import {CompositeScreenProps} from "@react-navigation/native";
 import {StackScreenProps} from "@react-navigation/stack";
 
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import ErrorContext from "../../store/error-context";
 import {AppError} from "../../types/errors";
 import {LoggedInTabParamList, RootStackParamList} from "../../types/screens";
@@ -34,7 +28,7 @@ const SettingsScreen = ({
   MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
   StackScreenProps<RootStackParamList>
 >) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const {errorModal, errors} = useContext(ErrorContext);
 
