@@ -4,6 +4,7 @@ import {$RemoveChildren} from "react-native-paper/lib/typescript/src/types";
 
 export enum ToastType {
   LOG = "LOG",
+  WARNING = "WARNING",
   ERROR = "ERROR"
 }
 
