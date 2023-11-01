@@ -32,7 +32,7 @@ const useGetTransactionCategoryMap = ({
 }: UseGetTransactionCategoryMappingProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
-  return useQuery<TransactionIDToCategoryMapping>({
+  return useQuery({
     queryKey: ["transactionCategoryMapping", ...transactionIds],
     queryFn: () => getTransactionCategoryMapFromStorage(transactionIds),
     enabled,
