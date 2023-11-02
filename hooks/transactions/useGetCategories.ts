@@ -3,28 +3,29 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useQuery} from "@tanstack/react-query";
 
 import ErrorContext from "../../store/error-context";
+import {CategoryMap} from "../../types/transaction";
 
-const getTransactionCategories = async (): Promise<string[]> => {
+const getCategories = async (): Promise<CategoryMap> => {
   const categoryArrayString = await AsyncStorage.getItem("categories");
   return categoryArrayString ? JSON.parse(categoryArrayString) : [];
 };
 
-const useGetTransactionCategories = () => {
+const useGetCategories = () => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery({
-    queryKey: ["transactionCategories"],
-    queryFn: getTransactionCategories,
+    queryKey: ["categories"],
+    queryFn: getCategories,
     onError: error =>
       addError({
-        id: "useGetTransactionCategories",
-        error: "AsyncStorage - Get transaction categories",
-        errorMessage: `There was a problem getting the transaction categories from AsyncStorage: ${JSON.stringify(
+        id: "useGetCategories",
+        error: "AsyncStorage - Get categories",
+        errorMessage: `There was a problem getting the categories from AsyncStorage: ${JSON.stringify(
           error
         )}`
       }),
-    onSuccess: () => removeError("useGetTransactionCategories")
+    onSuccess: () => removeError("useGetCategories")
   });
 };
 
-export default useGetTransactionCategories;
+export default useGetCategories;

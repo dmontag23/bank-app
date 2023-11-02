@@ -3,13 +3,14 @@ import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import useGetTransactionCategories from "./useGetTransactionCategories";
+import useGetCategories from "./useGetCategories";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
+import {CategoryMap} from "../../types/transaction";
 
-describe("useGetTransactionCategories", () => {
+describe("useGetCategories", () => {
   test("returns an empty array when called with no stored categories", async () => {
-    const {result} = renderHook(() => useGetTransactionCategories());
+    const {result} = renderHook(() => useGetCategories());
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toEqual([]);
@@ -18,7 +19,10 @@ describe("useGetTransactionCategories", () => {
   });
 
   test("returns stored categories", async () => {
-    const categories = ["Cardi B's Demands", "Boo"];
+    const categories: CategoryMap = {
+      "Cardi B's Demands": {icon: "nail", color: "pink"},
+      Boo: {icon: "ghost", color: "white"}
+    };
     await AsyncStorage.setItem("categories", JSON.stringify(categories));
 
     // setup error context mocks
@@ -31,7 +35,7 @@ describe("useGetTransactionCategories", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useGetTransactionCategories(), {
+    const {result} = renderHook(() => useGetCategories(), {
       customWrapper
     });
 
@@ -40,7 +44,7 @@ describe("useGetTransactionCategories", () => {
     expect(AsyncStorage.getItem).toBeCalledTimes(1);
     expect(AsyncStorage.getItem).toBeCalledWith("categories");
     expect(mockRemoveError).toBeCalledTimes(1);
-    expect(mockRemoveError).toBeCalledWith("useGetTransactionCategories");
+    expect(mockRemoveError).toBeCalledWith("useGetCategories");
   });
 
   test("returns error on failed call to storage", async () => {
@@ -59,7 +63,7 @@ describe("useGetTransactionCategories", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useGetTransactionCategories(), {
+    const {result} = renderHook(() => useGetCategories(), {
       customWrapper
     });
 
@@ -67,10 +71,10 @@ describe("useGetTransactionCategories", () => {
     expect(result.current.error).toBe("Cannot connect to async storage");
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
-      id: "useGetTransactionCategories",
-      error: "AsyncStorage - Get transaction categories",
+      id: "useGetCategories",
+      error: "AsyncStorage - Get categories",
       errorMessage:
-        'There was a problem getting the transaction categories from AsyncStorage: "Cannot connect to async storage"'
+        'There was a problem getting the categories from AsyncStorage: "Cannot connect to async storage"'
     });
   });
 });
