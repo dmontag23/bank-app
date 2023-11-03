@@ -7,7 +7,7 @@ import {
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import useStoreCategories from "./useStoreCategories";
+import useStoreCategoryMap from "./useStoreCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 import ToastContext, {ToastType} from "../../store/toast-context";
@@ -17,7 +17,7 @@ jest.mock("uuid", () => ({
   v4: () => "unique-id"
 }));
 
-describe("useStoreCategories", () => {
+describe("useStoreCategoryMap", () => {
   test("does nothing when called with an empty map", async () => {
     const mockAddToast = jest.fn();
 
@@ -33,7 +33,7 @@ describe("useStoreCategories", () => {
       </ToastContext.Provider>
     );
 
-    const {result} = renderHook(() => useStoreCategories(), {
+    const {result} = renderHook(() => useStoreCategoryMap(), {
       customWrapper
     });
     result.current.mutate({});
@@ -41,17 +41,17 @@ describe("useStoreCategories", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({});
     expect(AsyncStorage.getItem).toBeCalledTimes(1);
-    expect(AsyncStorage.getItem).toBeCalledWith("categories");
+    expect(AsyncStorage.getItem).toBeCalledWith("category-map");
     expect(AsyncStorage.setItem).not.toBeCalled();
     expect(AsyncStorage.setItem).not.toBeCalled();
-    expect(await AsyncStorage.getItem("categories")).toBeNull();
+    expect(await AsyncStorage.getItem("category-map")).toBeNull();
     expect(mockAddToast).not.toBeCalled();
   });
 
   test("stores category correctly", async () => {
     // put some test data in the cache
     const queryClient = createQueryClient();
-    const queryKey = ["categories"];
+    const queryKey = ["categoryMap"];
     queryClient.setQueryData<CategoryMap>(queryKey, () => ({}));
 
     const mockRemoveError = jest.fn();
@@ -63,7 +63,7 @@ describe("useStoreCategories", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useStoreCategories(), {
+    const {result} = renderHook(() => useStoreCategoryMap(), {
       customWrapper,
       queryClient
     });
@@ -76,21 +76,21 @@ describe("useStoreCategories", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(newCategory);
     expect(AsyncStorage.getItem).toBeCalledTimes(1);
-    expect(AsyncStorage.getItem).toBeCalledWith("categories");
+    expect(AsyncStorage.getItem).toBeCalledWith("category-map");
     expect(AsyncStorage.setItem).toBeCalledTimes(1);
     expect(AsyncStorage.setItem).toBeCalledWith(
-      "categories",
+      "category-map",
       JSON.stringify(newCategory)
     );
-    expect(await AsyncStorage.getItem("categories")).toBe(
+    expect(await AsyncStorage.getItem("category-map")).toBe(
       JSON.stringify(newCategory)
     );
 
     // check that any previous errors are removed
     expect(mockRemoveError).toBeCalledTimes(1);
-    expect(mockRemoveError).toBeCalledWith("useStoreCategories");
+    expect(mockRemoveError).toBeCalledWith("useStoreCategoryMap");
 
-    // check that the categories query is invalidated
+    // check that the category map query is invalidated
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
   });
 
@@ -98,9 +98,12 @@ describe("useStoreCategories", () => {
     const originalCategory: CategoryMap = {
       "Cardi B": {icon: "nails", color: "pink"}
     };
-    await AsyncStorage.setItem("categories", JSON.stringify(originalCategory));
+    await AsyncStorage.setItem(
+      "category-map",
+      JSON.stringify(originalCategory)
+    );
 
-    const {result} = renderHook(() => useStoreCategories());
+    const {result} = renderHook(() => useStoreCategoryMap());
     const newCategory: CategoryMap = {
       "Lady Gaga": {icon: "microphone", color: "white"}
     };
@@ -108,7 +111,7 @@ describe("useStoreCategories", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(newCategory);
-    expect(await AsyncStorage.getItem("categories")).toBe(
+    expect(await AsyncStorage.getItem("category-map")).toBe(
       JSON.stringify({...originalCategory, ...newCategory})
     );
   });
@@ -117,7 +120,7 @@ describe("useStoreCategories", () => {
     const oldCategory: CategoryMap = {
       " Lady Gaga    ": {icon: "microphone", color: "white"}
     };
-    await AsyncStorage.setItem("categories", JSON.stringify(oldCategory));
+    await AsyncStorage.setItem("category-map", JSON.stringify(oldCategory));
 
     const mockAddToast = jest.fn();
 
@@ -133,14 +136,14 @@ describe("useStoreCategories", () => {
       </ToastContext.Provider>
     );
 
-    const {result} = renderHook(() => useStoreCategories(), {
+    const {result} = renderHook(() => useStoreCategoryMap(), {
       customWrapper
     });
     result.current.mutate({"  LADY GAgA  ": {icon: "star", color: "purple"}});
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({});
-    expect(await AsyncStorage.getItem("categories")).toBe(
+    expect(await AsyncStorage.getItem("category-map")).toBe(
       JSON.stringify(oldCategory)
     );
     expect(mockAddToast).toBeCalledTimes(1);
@@ -153,11 +156,11 @@ describe("useStoreCategories", () => {
   });
 
   test("stores multiple new categories", async () => {
-    const oldCategories: CategoryMap = {
+    const oldCategoryMap: CategoryMap = {
       "Lady Gaga": {icon: "diva", color: "blonde"},
       "Beyoncé!": {icon: "boots", color: "red"}
     };
-    await AsyncStorage.setItem("categories", JSON.stringify(oldCategories));
+    await AsyncStorage.setItem("category-map", JSON.stringify(oldCategoryMap));
 
     const mockAddToast = jest.fn();
 
@@ -173,22 +176,22 @@ describe("useStoreCategories", () => {
       </ToastContext.Provider>
     );
 
-    const {result} = renderHook(() => useStoreCategories(), {
+    const {result} = renderHook(() => useStoreCategoryMap(), {
       customWrapper
     });
-    const cardiBCategory: CategoryMap = {
+    const cardiBCategoryMap: CategoryMap = {
       "Cardi B": {icon: "nails", color: "pink"}
     };
     result.current.mutate({
       " Beyoncé! ": {icon: "block", color: "yellow"},
       "  LADY GAGA ": {icon: "hair", color: "black"},
-      ...cardiBCategory
+      ...cardiBCategoryMap
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toEqual(cardiBCategory);
-    expect(await AsyncStorage.getItem("categories")).toBe(
-      JSON.stringify({...oldCategories, ...cardiBCategory})
+    expect(result.current.data).toEqual(cardiBCategoryMap);
+    expect(await AsyncStorage.getItem("category-map")).toBe(
+      JSON.stringify({...oldCategoryMap, ...cardiBCategoryMap})
     );
     expect(mockAddToast).toBeCalledTimes(1);
     expect(mockAddToast).toBeCalledWith({
@@ -206,11 +209,11 @@ describe("useStoreCategories", () => {
 
     // put some test data in the cache
     const queryClient = createQueryClient();
-    const queryKey = ["categories"];
-    const previousCachedCategories = ["Evanescence"];
+    const queryKey = ["categoryMap"];
+    const previousCachedCategoryMap = ["Evanescence"];
     queryClient.setQueryData<string[]>(
       queryKey,
-      () => previousCachedCategories
+      () => previousCachedCategoryMap
     );
 
     const mockAddError = jest.fn();
@@ -222,7 +225,7 @@ describe("useStoreCategories", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useStoreCategories(), {
+    const {result} = renderHook(() => useStoreCategoryMap(), {
       queryClient,
       customWrapper
     });
@@ -234,17 +237,17 @@ describe("useStoreCategories", () => {
 
     // check the cached data has not changed but has been invalidated
     expect(queryClient.getQueryData(queryKey)).toEqual(
-      previousCachedCategories
+      previousCachedCategoryMap
     );
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);
 
     // check the error has been added correctly
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
-      id: "useStoreCategories",
-      error: "AsyncStorage - Store categories",
+      id: "useStoreCategoryMap",
+      error: "AsyncStorage - Store category map",
       errorMessage:
-        'There was a problem storing the categories in AsyncStorage: "Cannot connect to async storage"'
+        'There was a problem storing the category map in AsyncStorage: "Cannot connect to async storage"'
     });
   });
 });

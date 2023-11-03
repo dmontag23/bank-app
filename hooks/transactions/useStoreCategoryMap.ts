@@ -7,10 +7,10 @@ import ErrorContext from "../../store/error-context";
 import ToastContext, {Toast, ToastType} from "../../store/toast-context";
 import {CategoryMap} from "../../types/transaction";
 
-const storeCategories =
+const storeCategoryMap =
   (addToast: (toast: Toast) => void) =>
   async (categoriesToAdd: CategoryMap) => {
-    const prevCategoryMapString = await AsyncStorage.getItem("categories");
+    const prevCategoryMapString = await AsyncStorage.getItem("category-map");
     const prevCategoryMap: CategoryMap = prevCategoryMapString
       ? JSON.parse(prevCategoryMapString)
       : {};
@@ -21,9 +21,9 @@ const storeCategories =
 
     const newCategoryNames = Object.keys(categoriesToAdd);
 
-    const {commonCategoryNames, newCategories} = newCategoryNames.reduce<{
+    const {commonCategoryNames, newCategoryMap} = newCategoryNames.reduce<{
       commonCategoryNames: string[];
-      newCategories: CategoryMap;
+      newCategoryMap: CategoryMap;
     }>(
       (prevCategoryObject, newCategory) => {
         const trimmedCategoryName = newCategory.trim();
@@ -37,13 +37,13 @@ const storeCategories =
             }
           : {
               ...prevCategoryObject,
-              newCategories: {
-                ...prevCategoryObject.newCategories,
+              newCategoryMap: {
+                ...prevCategoryObject.newCategoryMap,
                 [trimmedCategoryName]: categoriesToAdd[newCategory]
               }
             };
       },
-      {commonCategoryNames: [], newCategories: {}}
+      {commonCategoryNames: [], newCategoryMap: {}}
     );
 
     if (commonCategoryNames.length)
@@ -55,38 +55,38 @@ const storeCategories =
         type: ToastType.WARNING
       });
 
-    if (Object.keys(newCategories).length)
+    if (Object.keys(newCategoryMap).length)
       await AsyncStorage.setItem(
-        "categories",
-        JSON.stringify({...prevCategoryMap, ...newCategories})
+        "category-map",
+        JSON.stringify({...prevCategoryMap, ...newCategoryMap})
       );
 
-    return newCategories;
+    return newCategoryMap;
   };
 
-const useStoreCategories = () => {
+const useStoreCategoryMap = () => {
   const queryClient = useQueryClient();
   const {addError, removeError} = useContext(ErrorContext);
   const {addToast} = useContext(ToastContext);
 
   return useMutation({
-    mutationFn: storeCategories(addToast),
-    // Always refetch all categories after success or error
+    mutationFn: storeCategoryMap(addToast),
+    // Always refetch the category map after success or error
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["categories"]
+        queryKey: ["categoryMap"]
       });
     },
     onError: error =>
       addError({
-        id: "useStoreCategories",
-        error: "AsyncStorage - Store categories",
-        errorMessage: `There was a problem storing the categories in AsyncStorage: ${JSON.stringify(
+        id: "useStoreCategoryMap",
+        error: "AsyncStorage - Store category map",
+        errorMessage: `There was a problem storing the category map in AsyncStorage: ${JSON.stringify(
           error
         )}`
       }),
-    onSuccess: () => removeError("useStoreCategories")
+    onSuccess: () => removeError("useStoreCategoryMap")
   });
 };
 
-export default useStoreCategories;
+export default useStoreCategoryMap;
