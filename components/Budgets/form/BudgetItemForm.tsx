@@ -8,7 +8,6 @@ import {v4 as uuid} from "uuid";
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
 import {BudgetInput, BudgetItemInput} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
 import ExpandableAccordion from "../../ui/ExpandableAccordion";
 
 type BudgetItemFormProps = {
@@ -35,7 +34,7 @@ const BudgetItemForm = ({control}: BudgetItemFormProps) => {
           title={field.name || "Budget Item"}
           isInitiallyExpanded>
           <BudgetItemFormFields
-            disabledCategories={budgetItems.reduce<TransactionCategory[]>(
+            disabledCategories={budgetItems.reduce<string[]>(
               (accCategories, curBudgetItem) =>
                 // note: have to use budgetItems[i].id instead of field.id here due
                 // to how react-hook-form handles dynamic ids (it adds its own id

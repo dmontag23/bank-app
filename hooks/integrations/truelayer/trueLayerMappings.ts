@@ -1,19 +1,20 @@
-import {Transaction, TransactionCategory} from "../../../types/transaction";
+import {Transaction} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 export const mapTrueLayerCategoryToInternalCategory = (
   trueLayerTransactionCategories: string[]
 ) =>
+  // TODO: ensure the values map to one of the initial category keys
   ({
-    "Bills and Utilities": TransactionCategory.BILLS,
-    "Food & Dining": TransactionCategory.EATING_OUT,
-    Shopping: TransactionCategory.ENTERTAINMENT,
-    Entertainment: TransactionCategory.ENTERTAINMENT
-  }[trueLayerTransactionCategories[0]] || TransactionCategory.UNKNOWN);
+    "Bills and Utilities": "Bills",
+    "Food & Dining": "Eating out",
+    Shopping: "Shopping",
+    Entertainment: "Entertainment"
+  }[trueLayerTransactionCategories[0]] || "Unknown");
 
 export const mapTrueLayerTransactionToInternalTransaction = (
   trueLayerTransaction: CardTransaction,
-  category: TransactionCategory
+  category: string
 ): Transaction => ({
   id: trueLayerTransaction.transaction_id,
   name: trueLayerTransaction.description,

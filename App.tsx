@@ -13,6 +13,8 @@ import RootScreens from "./components/RootScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
 import Toasts from "./components/ui/Toasts";
 import config from "./config.json";
+import {INITIAL_CATEGORY_MAP} from "./constants";
+import useStoreCategoryMap from "./hooks/transactions/useStoreCategoryMap";
 import {useAppTheme} from "./hooks/utils/useAppTheme";
 
 const App = () => {
@@ -26,6 +28,13 @@ const App = () => {
     const subscription = AppState.addEventListener("change", onAppStateChange);
     return () => subscription.remove();
   }, []);
+
+  // pre-populate async storage with pre-defined transaction categories
+  // TODO: Find a better way to initially populate this data
+  const {mutate: storeTransactionCategory} = useStoreCategoryMap();
+  useEffect(() => {
+    storeTransactionCategory(INITIAL_CATEGORY_MAP);
+  }, [storeTransactionCategory]);
 
   const theme = useAppTheme();
 

@@ -2,7 +2,7 @@
 // It might be necessary for unit/integration tests but shouldn't be necessary
 // for e2e tests, so it would be good to determine just how useful they are
 
-import {Transaction, TransactionCategory} from "../../../types/transaction";
+import {Transaction} from "../../../types/transaction";
 
 // The transformed version of TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
 // from the TrueLayer mocked card data
@@ -11,7 +11,7 @@ export const EATING_OUT_CARD_TRANSACTION: Transaction = {
   name: "CHIPOTLE AIRPORT BLVD",
   description: "Food & Dining",
   amount: 36.71,
-  category: TransactionCategory.EATING_OUT,
+  category: "Eating out",
   timestamp: new Date("2013-02-24T14:00:00Z")
 };
 
@@ -20,7 +20,7 @@ export const PAY_BILL_CARD_TRANSACTION: Transaction = {
   name: "PAY OFF CREDIT CARD BILL",
   description: "Bills and Utilities",
   amount: 192.52,
-  category: TransactionCategory.BILLS,
+  category: "Bills",
   timestamp: new Date("2023-01-01T00:00:00Z")
 };
 
@@ -29,6 +29,6 @@ export const PAY_RENT_TRANSACTION: Transaction = {
   name: "RENT",
   description: "Bills and Utilities",
   amount: 10,
-  category: TransactionCategory.BILLS,
+  category: "Bills",
   timestamp: new Date("2023-03-07T00:00:00Z")
 };

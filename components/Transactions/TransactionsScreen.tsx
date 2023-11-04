@@ -5,6 +5,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 import TransactionList from "./TransactionList";
 
+import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import useTransactions from "../../hooks/transactions/useTransactions";
 import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -13,21 +14,31 @@ const TransactionsScreen = () => {
   // useTransactions is initially disabled because useOnFocus will call
   // refetch as soon as the screen is focused, which will get the data
   // setting enabled to false here prevents unnecessary api call(s)
-  const {isLoading, transactions, refetch} = useTransactions({enabled: false});
+  const {
+    isLoading: isTransactionsLoading,
+    transactions,
+    refetch
+  } = useTransactions({enabled: false});
+
+  const {isLoading: isCategoryMapLoading, data: categoryMap} =
+    useGetCategoryMap();
 
   useOnFocus(refetch);
 
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, {paddingTop: insets.top}]}>
-      {isLoading ? (
+      {isTransactionsLoading || isCategoryMapLoading ? (
         <LoadingSpinner />
       ) : (
         <>
           <Text variant="displaySmall" style={styles.text}>
             Transactions
           </Text>
-          <TransactionList transactions={transactions} />
+          <TransactionList
+            transactions={transactions}
+            categoryMap={categoryMap ?? {}}
+          />
         </>
       )}
     </View>

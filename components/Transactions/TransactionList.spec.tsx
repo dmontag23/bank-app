@@ -5,11 +5,9 @@ import {describe, expect, jest, test} from "@jest/globals";
 import Transaction from "./Transaction";
 import TransactionList from "./TransactionList";
 
+import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {
-  TransactionCategory,
-  Transaction as TransactionType
-} from "../../types/transaction";
+import {Transaction as TransactionType} from "../../types/transaction";
 
 jest.mock("./Transaction");
 
@@ -22,18 +20,24 @@ describe("TransactionList component", () => {
         name: "Savings transaction",
         description: "This is my second transaction",
         amount: 12.29,
-        category: TransactionCategory.SAVINGS,
+        category: "Savings",
         timestamp: new Date("2023-01-01")
       }
     ];
 
-    render(<TransactionList transactions={testTransactions} />);
+    render(
+      <TransactionList
+        transactions={testTransactions}
+        categoryMap={INITIAL_CATEGORY_MAP}
+      />
+    );
 
     expect(Transaction).toBeCalledTimes(testTransactions.length);
     testTransactions.map(transaction =>
       expect(Transaction).toBeCalledWith(
         {
-          transaction: transaction
+          transaction: transaction,
+          categoryMap: INITIAL_CATEGORY_MAP
         },
         {}
       )

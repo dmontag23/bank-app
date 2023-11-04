@@ -1,12 +1,17 @@
 import React from "react";
 import {useForm} from "react-hook-form";
 import {fireEvent, render, renderHook, screen} from "testing-library/extension";
-import {describe, expect, test} from "@jest/globals";
+import {describe, expect, jest, test} from "@jest/globals";
 
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
+import {INITIAL_CATEGORY_MAP} from "../../../constants";
+import useGetCategoryMap from "../../../hooks/transactions/useGetCategoryMap";
 import {BudgetInput} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
+import LoadingSpinner from "../../ui/LoadingSpinner";
+
+jest.mock("../../../hooks/transactions/useGetCategoryMap");
+jest.mock("../../ui/LoadingSpinner");
 
 describe("BudgetItemFormFields component", () => {
   const BUDGET_WITH_EMPTY_ITEM: BudgetInput = {
@@ -23,7 +28,12 @@ describe("BudgetItemFormFields component", () => {
     ]
   };
 
-  test("renders the correct form fields", async () => {
+  test("loading spinner is rendered when category map is loading", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: true,
+      data: undefined
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
@@ -39,7 +49,56 @@ describe("BudgetItemFormFields component", () => {
     expect(screen.getByLabelText("Item name")).toBeVisible();
     expect(screen.getByLabelText("Cap")).toBeVisible();
     expect(screen.getByText("Select categories")).toBeVisible();
-    Object.keys(TransactionCategory).map(category => {
+    expect(LoadingSpinner).toBeCalledTimes(1);
+    expect(LoadingSpinner).toBeCalledWith({}, {});
+  });
+
+  test("does not render categories when no category map exists", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: undefined
+    });
+
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
+
+    render(
+      <BudgetItemFormFields
+        disabledCategories={[]}
+        control={result.current.control}
+        index={0}
+      />
+    );
+
+    expect(screen.getByLabelText("Item name")).toBeVisible();
+    expect(screen.getByLabelText("Cap")).toBeVisible();
+    expect(screen.getByText("Select categories")).toBeVisible();
+    expect(screen.queryByText("Unknown")).toBeNull();
+  });
+
+  test("renders form fields with categories", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: INITIAL_CATEGORY_MAP
+    });
+
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
+
+    render(
+      <BudgetItemFormFields
+        disabledCategories={[]}
+        control={result.current.control}
+        index={0}
+      />
+    );
+
+    expect(screen.getByLabelText("Item name")).toBeVisible();
+    expect(screen.getByLabelText("Cap")).toBeVisible();
+    expect(screen.getByText("Select categories")).toBeVisible();
+    Object.keys(INITIAL_CATEGORY_MAP).map(category => {
       const categoryCheckbox = screen.getByLabelText(category);
       expect(categoryCheckbox).toBeVisible();
       expect(categoryCheckbox).toBeEnabled();
@@ -47,14 +106,16 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("renders disabled categories", () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: INITIAL_CATEGORY_MAP
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
-    const disabledCategories = [
-      TransactionCategory.ENTERTAINMENT,
-      TransactionCategory.SAVINGS
-    ];
+    const disabledCategories = ["Entertainment", "Savings"];
 
     render(
       <BudgetItemFormFields
@@ -64,18 +125,21 @@ describe("BudgetItemFormFields component", () => {
       />
     );
 
-    Object.keys(TransactionCategory).map(category => {
+    Object.keys(INITIAL_CATEGORY_MAP).map(category => {
       const categoryCheckbox = screen.getByLabelText(category);
       expect(categoryCheckbox).toBeVisible();
-      disabledCategories.includes(
-        TransactionCategory[category as keyof typeof TransactionCategory]
-      )
+      disabledCategories.includes(category)
         ? expect(categoryCheckbox).toBeDisabled()
         : expect(categoryCheckbox).toBeEnabled();
     });
   });
 
   test("can set item name", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: {}
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({
         defaultValues: {
@@ -100,6 +164,11 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can set item cap", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: {}
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({
         defaultValues: {
@@ -125,19 +194,24 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("cannot set disabled category", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: INITIAL_CATEGORY_MAP
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
 
     render(
       <BudgetItemFormFields
-        disabledCategories={[TransactionCategory.EATING_OUT]}
+        disabledCategories={["Eating out"]}
         control={result.current.control}
         index={0}
       />
     );
 
-    const eatingOutCheckbox = screen.getByLabelText("EATING_OUT");
+    const eatingOutCheckbox = screen.getByLabelText("Eating out");
     expect(eatingOutCheckbox).toBeDisabled();
     expect(result.current.getValues("items.0.categories")).toEqual([]);
     fireEvent.press(eatingOutCheckbox);
@@ -146,6 +220,11 @@ describe("BudgetItemFormFields component", () => {
   });
 
   test("can select and deselect enabled category", async () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: INITIAL_CATEGORY_MAP
+    });
+
     const {result} = renderHook(() =>
       useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
     );
@@ -158,14 +237,12 @@ describe("BudgetItemFormFields component", () => {
       />
     );
 
-    const billsCheckbox = screen.getByLabelText("BILLS");
+    const billsCheckbox = screen.getByLabelText("Bills");
     expect(billsCheckbox).toBeEnabled();
     expect(result.current.getValues("items.0.categories")).toEqual([]);
     fireEvent.press(billsCheckbox);
     expect(billsCheckbox).toBeEnabled();
-    expect(result.current.getValues("items.0.categories")).toEqual([
-      TransactionCategory.BILLS
-    ]);
+    expect(result.current.getValues("items.0.categories")).toEqual(["Bills"]);
     fireEvent.press(billsCheckbox);
     expect(billsCheckbox).toBeEnabled();
     expect(result.current.getValues("items.0.categories")).toEqual([]);
