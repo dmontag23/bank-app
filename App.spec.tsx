@@ -98,5 +98,9 @@ describe("App component", () => {
 
     expect(mockStoreTransactionCategory).toBeCalledTimes(1);
     expect(mockStoreTransactionCategory).toBeCalledWith(INITIAL_CATEGORY_MAP);
+    expect(useStoreCategoryMap).toBeCalledTimes(1);
+    expect(useStoreCategoryMap).toBeCalledWith({
+      showWarningOnDuplicateCategory: false
+    });
   });
 });

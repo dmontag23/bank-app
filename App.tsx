@@ -30,8 +30,10 @@ const App = () => {
   }, []);
 
   // pre-populate async storage with pre-defined transaction categories
-  // TODO: Find a better way to initially populate this data
-  const {mutate: storeTransactionCategory} = useStoreCategoryMap();
+  // TODO: Maybe find a better way to initially populate this data
+  const {mutate: storeTransactionCategory} = useStoreCategoryMap({
+    showWarningOnDuplicateCategory: false
+  });
   useEffect(() => {
     storeTransactionCategory(INITIAL_CATEGORY_MAP);
   }, [storeTransactionCategory]);

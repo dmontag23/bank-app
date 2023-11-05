@@ -155,6 +155,42 @@ describe("useStoreCategoryMap", () => {
     });
   });
 
+  test("does not display toast when do not display warning is set", async () => {
+    const oldCategory: CategoryMap = {
+      " Lady Gaga    ": {icon: "microphone", color: "white"}
+    };
+    await AsyncStorage.setItem("category-map", JSON.stringify(oldCategory));
+
+    const mockAddToast = jest.fn();
+
+    const customWrapper = (children: ReactNode) => (
+      <ToastContext.Provider
+        value={{
+          toasts: [],
+          addToast: mockAddToast,
+          clearToast: () => {},
+          clearAllToasts: () => {}
+        }}>
+        {children}
+      </ToastContext.Provider>
+    );
+
+    const {result} = renderHook(
+      () => useStoreCategoryMap({showWarningOnDuplicateCategory: false}),
+      {
+        customWrapper
+      }
+    );
+    result.current.mutate({"  LADY GAgA  ": {icon: "star", color: "purple"}});
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual({});
+    expect(await AsyncStorage.getItem("category-map")).toBe(
+      JSON.stringify(oldCategory)
+    );
+    expect(mockAddToast).not.toBeCalled();
+  });
+
   test("stores multiple new categories", async () => {
     const oldCategoryMap: CategoryMap = {
       "Lady Gaga": {icon: "diva", color: "blonde"},

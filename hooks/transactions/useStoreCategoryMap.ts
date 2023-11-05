@@ -8,7 +8,7 @@ import ToastContext, {Toast, ToastType} from "../../store/toast-context";
 import {CategoryMap} from "../../types/transaction";
 
 const storeCategoryMap =
-  (addToast: (toast: Toast) => void) =>
+  (addToast: (toast: Toast) => void, showWarningOnDuplicateCategory: boolean) =>
   async (categoriesToAdd: CategoryMap) => {
     const prevCategoryMapString = await AsyncStorage.getItem("category-map");
     const prevCategoryMap: CategoryMap = prevCategoryMapString
@@ -46,7 +46,7 @@ const storeCategoryMap =
       {commonCategoryNames: [], newCategoryMap: {}}
     );
 
-    if (commonCategoryNames.length)
+    if (commonCategoryNames.length && showWarningOnDuplicateCategory)
       addToast({
         id: uuid(),
         message: `${commonCategoryNames.join(
@@ -64,13 +64,19 @@ const storeCategoryMap =
     return newCategoryMap;
   };
 
-const useStoreCategoryMap = () => {
+type UseStoreCategoryMapProps = {
+  showWarningOnDuplicateCategory?: boolean;
+};
+
+const useStoreCategoryMap = ({
+  showWarningOnDuplicateCategory = true
+}: UseStoreCategoryMapProps = {}) => {
   const queryClient = useQueryClient();
   const {addError, removeError} = useContext(ErrorContext);
   const {addToast} = useContext(ToastContext);
 
   return useMutation({
-    mutationFn: storeCategoryMap(addToast),
+    mutationFn: storeCategoryMap(addToast, showWarningOnDuplicateCategory),
     // Always refetch the category map after success or error
     onSettled: () => {
       queryClient.invalidateQueries({
