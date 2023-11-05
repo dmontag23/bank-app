@@ -166,6 +166,13 @@ describe("BudgetDialog component", () => {
   });
 
   test("displays correct text when editing", async () => {
+    // TODO: any should probably not be used as a type here, but since a
+    // mutation from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (useStoreBudget as jest.MockedFunction<any>).mockReturnValueOnce({
+      mutate: () => {}
+    });
+
     render(
       <BudgetDialog
         isVisible={true}
@@ -186,7 +193,7 @@ describe("BudgetDialog component", () => {
     (useStoreBudget as jest.MockedFunction<any>).mockReturnValue({
       mutate: () => {}
     });
-    (v4 as jest.MockedFunction<typeof v4>).mockReturnValue("unique-id");
+    (v4 as jest.MockedFunction<typeof v4>).mockReturnValueOnce("unique-id");
 
     const mockHideFn = jest.fn();
     const mockFormValues: Budget = {
@@ -228,7 +235,7 @@ describe("BudgetDialog component", () => {
     });
   });
 
-  test("resets form with passed in form values", () => {
+  test("resets form with passed in form values", async () => {
     // TODO: any should probably not be used as a type here, but since a
     // mutation from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
@@ -257,15 +264,15 @@ describe("BudgetDialog component", () => {
     const createButton = screen.getByText("Create");
     expect(createButton).toBeVisible();
 
-    fireEvent.press(createButton);
+    await act(() => fireEvent.press(createButton));
 
     // check the form was reset properly
     expect(mockHideFn).toBeCalledTimes(1);
     expect(mockHideFn).toBeCalledWith();
 
-    expect(BudgetForm).toBeCalledTimes(2);
+    expect(BudgetForm).toBeCalledTimes(4);
     const control = (BudgetForm as jest.MockedFunction<typeof BudgetForm>).mock
-      .calls[1][0].control;
+      .calls[3][0].control;
     expect(control._formValues).toEqual({
       ...mockFormValues,
       items: [

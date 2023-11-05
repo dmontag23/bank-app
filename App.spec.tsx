@@ -96,7 +96,9 @@ describe("App component", () => {
 
     render(<App />);
 
-    expect(mockStoreTransactionCategory).toBeCalledTimes(1);
+    await waitFor(() =>
+      expect(mockStoreTransactionCategory).toBeCalledTimes(1)
+    );
     expect(mockStoreTransactionCategory).toBeCalledWith(INITIAL_CATEGORY_MAP);
     expect(useStoreCategoryMap).toBeCalledTimes(1);
     expect(useStoreCategoryMap).toBeCalledWith({

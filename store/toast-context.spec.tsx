@@ -1,5 +1,5 @@
 import React, {ReactNode, useContext} from "react";
-import {renderHook, waitFor} from "testing-library/extension";
+import {act, renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 
 import ToastContext, {
@@ -38,11 +38,11 @@ describe("ToastContext", () => {
     expect(result.current.toasts).toEqual([]);
 
     // add a toast
-    result.current.addToast(toast);
+    act(() => result.current.addToast(toast));
     await waitFor(() => expect(result.current.toasts).toEqual([toast]));
 
     // clear a toast
-    result.current.clearToast(toast.id);
+    act(() => result.current.clearToast(toast.id));
     await waitFor(() => expect(result.current.toasts).toEqual([]));
   });
 
@@ -63,11 +63,11 @@ describe("ToastContext", () => {
       {...toast, id: "dummy-id-2"},
       {...toast, id: "dummy-id-3"}
     ];
-    toasts.map(toastToAdd => result.current.addToast(toastToAdd));
+    toasts.map(toastToAdd => act(() => result.current.addToast(toastToAdd)));
     await waitFor(() => expect(result.current.toasts).toEqual(toasts));
 
     // clear all toasts
-    result.current.clearAllToasts();
+    act(() => result.current.clearAllToasts());
     await waitFor(() => expect(result.current.toasts).toEqual([]));
   });
 });
