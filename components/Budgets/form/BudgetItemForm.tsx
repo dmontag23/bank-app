@@ -31,7 +31,7 @@ const BudgetItemForm = ({control}: BudgetItemFormProps) => {
       {fields.map((field, i) => (
         <ExpandableAccordion
           key={field.id}
-          title={field.name || "Budget Item"}
+          title={budgetItems[i]?.name || "Budget Item"}
           isInitiallyExpanded>
           <BudgetItemFormFields
             disabledCategories={budgetItems.reduce<string[]>(

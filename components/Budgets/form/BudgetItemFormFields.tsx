@@ -53,7 +53,7 @@ const BudgetItemFormFields = ({
         )}
         name={`items.${index}.cap`}
       />
-      <View>
+      <View testID="categoryList">
         <Text variant="bodyLarge">Select categories</Text>
         {isCategoryMapLoading ? (
           <LoadingSpinner />

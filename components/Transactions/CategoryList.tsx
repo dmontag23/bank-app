@@ -20,7 +20,7 @@ const CategoryList = ({onItemPress}: CategoryListProps) => {
   if (isLoading) return <LoadingSpinner />;
   const categoryMap = categories ?? {};
   return (
-    <ScrollView>
+    <ScrollView testID="categoryListScrollView">
       {Object.keys(categoryMap).map((category, i) => (
         <List.Item
           key={i}
