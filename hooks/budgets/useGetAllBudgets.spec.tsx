@@ -10,7 +10,6 @@ import {
   BUDGET_NO_NAME_OR_ITEMS,
   BUDGET_WITH_NO_ITEMS
 } from "../../tests/mocks/data/budgets";
-import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetAllBudgets", () => {
   test("returns an empty list if there are no stored items", async () => {
@@ -22,7 +21,7 @@ describe("useGetAllBudgets", () => {
 
   test("returns an empty list if there are no stored budgets", async () => {
     // setup AsyncStorage with mock data
-    await AsyncStorage.setItem("id-2", TransactionCategory.BILLS);
+    await AsyncStorage.setItem("id-2", "Bills");
 
     const {result} = renderHook(() => useGetAllBudgets());
 

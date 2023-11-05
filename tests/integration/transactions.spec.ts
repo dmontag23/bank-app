@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../../config.json";
 import useTransactions from "../../hooks/transactions/useTransactions";
-import {TransactionCategory} from "../../types/transaction";
 import {TRUELAYER_MASTERCARD} from "../mocks/trueLayer/dataAPI/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -92,7 +91,7 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.BILLS,
+        category: "Bills",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
         )
@@ -102,7 +101,7 @@ describe("useTransactions transaction flow", () => {
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT,
+        category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         )
@@ -114,8 +113,8 @@ describe("useTransactions transaction flow", () => {
         "truelayer-1234094-shocking-chipotle"
       ])
     ).toEqual([
-      ["truelayer-a15d8156569ba848d84c07c34d291bca", TransactionCategory.BILLS],
-      ["truelayer-1234094-shocking-chipotle", TransactionCategory.EATING_OUT]
+      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Bills"],
+      ["truelayer-1234094-shocking-chipotle", "Eating out"]
     ]);
   });
 
@@ -146,7 +145,7 @@ describe("useTransactions transaction flow", () => {
     // setup data in Async Storage
     await AsyncStorage.setItem(
       "truelayer-a15d8156569ba848d84c07c34d291bca",
-      TransactionCategory.SAVINGS
+      "Savings"
     );
 
     const {result} = renderHook(() => useTransactions());
@@ -159,7 +158,7 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.SAVINGS,
+        category: "Savings",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
         )
@@ -169,7 +168,7 @@ describe("useTransactions transaction flow", () => {
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT,
+        category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         )
@@ -181,11 +180,8 @@ describe("useTransactions transaction flow", () => {
         "truelayer-1234094-shocking-chipotle"
       ])
     ).toEqual([
-      [
-        "truelayer-a15d8156569ba848d84c07c34d291bca",
-        TransactionCategory.SAVINGS
-      ],
-      ["truelayer-1234094-shocking-chipotle", TransactionCategory.EATING_OUT]
+      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
+      ["truelayer-1234094-shocking-chipotle", "Eating out"]
     ]);
   });
 
@@ -217,7 +213,7 @@ describe("useTransactions transaction flow", () => {
     // setup data in Async Storage
     await AsyncStorage.setItem(
       "truelayer-a15d8156569ba848d84c07c34d291bca",
-      TransactionCategory.SAVINGS
+      "Savings"
     );
 
     const {result} = renderHook(() => useTransactions());
@@ -230,7 +226,7 @@ describe("useTransactions transaction flow", () => {
         name: "CHAI POT YUM",
         description: "Food & Dining",
         amount: 3.3,
-        category: TransactionCategory.EATING_OUT,
+        category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         )
@@ -240,7 +236,7 @@ describe("useTransactions transaction flow", () => {
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
         amount: 192.52,
-        category: TransactionCategory.SAVINGS,
+        category: "Savings",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
         )
@@ -250,7 +246,7 @@ describe("useTransactions transaction flow", () => {
         name: "CHIPOTLE AIRPORT BLVD",
         description: "Food & Dining",
         amount: 36.71,
-        category: TransactionCategory.EATING_OUT,
+        category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         )
@@ -263,12 +259,9 @@ describe("useTransactions transaction flow", () => {
         "truelayer-1234000-chai-pot"
       ])
     ).toEqual([
-      [
-        "truelayer-a15d8156569ba848d84c07c34d291bca",
-        TransactionCategory.SAVINGS
-      ],
-      ["truelayer-1234094-shocking-chipotle", TransactionCategory.EATING_OUT],
-      ["truelayer-1234000-chai-pot", TransactionCategory.EATING_OUT]
+      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
+      ["truelayer-1234094-shocking-chipotle", "Eating out"],
+      ["truelayer-1234000-chai-pot", "Eating out"]
     ]);
   });
 });

@@ -7,7 +7,6 @@ import useTransactions from "./useTransactions";
 
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
-import {TransactionCategory} from "../../types/transaction";
 import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
@@ -476,7 +475,7 @@ describe("useTransactions", () => {
       mapTrueLayerCategoryToInternalCategory as jest.MockedFunction<
         typeof mapTrueLayerCategoryToInternalCategory
       >
-    ).mockReturnValueOnce(TransactionCategory.EATING_OUT);
+    ).mockReturnValueOnce("Eating out");
 
     (
       mapTrueLayerTransactionToInternalTransaction as jest.MockedFunction<
@@ -510,11 +509,11 @@ describe("useTransactions", () => {
     expect(mapTrueLayerTransactionToInternalTransaction).toBeCalledTimes(1);
     expect(mapTrueLayerTransactionToInternalTransaction).toBeCalledWith(
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
-      TransactionCategory.EATING_OUT
+      "Eating out"
     );
     expect(updateStore).toBeCalledTimes(1);
     expect(updateStore).toBeCalledWith({
-      "1234094-shocking-chipotle": TransactionCategory.EATING_OUT
+      "1234094-shocking-chipotle": "Eating out"
     });
   });
 
@@ -549,7 +548,7 @@ describe("useTransactions", () => {
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: true,
-      data: {"1234094-shocking-chipotle": TransactionCategory.EATING_OUT}
+      data: {"1234094-shocking-chipotle": "Eating out"}
     });
 
     const updateStore = jest.fn();
@@ -591,7 +590,7 @@ describe("useTransactions", () => {
     expect(mapTrueLayerTransactionToInternalTransaction).toBeCalledTimes(1);
     expect(mapTrueLayerTransactionToInternalTransaction).toBeCalledWith(
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
-      TransactionCategory.EATING_OUT
+      "Eating out"
     );
     expect(updateStore).not.toBeCalled();
   });
@@ -627,7 +626,7 @@ describe("useTransactions", () => {
     ).mockReturnValueOnce({
       isLoading: false,
       isSuccess: true,
-      data: {"1234094-shocking-chipotle": TransactionCategory.EATING_OUT}
+      data: {"1234094-shocking-chipotle": "Eating out"}
     });
 
     // TODO: any should probably not be used as a type here, but since a
