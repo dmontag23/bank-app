@@ -2,6 +2,8 @@
 // jest global expect types do not ship with reanimated.
 // See https://github.com/software-mansion/react-native-reanimated/issues/4645#issuecomment-1817481670
 
+export * from "@jest/expect";
+
 // Explicit `@jest/globals` `expect` matchers.
 declare module "@jest/expect" {
   interface Matchers<R> {

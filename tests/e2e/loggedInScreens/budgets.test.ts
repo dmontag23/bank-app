@@ -64,7 +64,7 @@ const createBudget = async (budget: Budget) => {
       await waitFor(categoryElement)
         .toBeVisible()
         .whileElement(by.id("budgetFormScrollView"))
-        .scroll(400, "down");
+        .scroll(500, "down");
       await categoryElement.tap();
     }
   }

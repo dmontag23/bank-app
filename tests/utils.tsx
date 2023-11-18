@@ -1,6 +1,8 @@
 // created this file following the instructions from https://testing-library.com/docs/react-testing-library/setup/
 import React, {ReactElement, ReactNode} from "react";
+import {StyleProp, ViewStyle} from "react-native";
 import {Provider as PaperProvider} from "react-native-paper";
+import {AnimatedStyle} from "react-native-reanimated";
 import {expect} from "@jest/globals";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {
@@ -117,4 +119,18 @@ export const stackNavigationObject = {
   popToTop: expect.any(Function),
   push: expect.any(Function),
   replace: expect.any(Function)
+};
+
+export const reanimatedStyleProp = (
+  prop: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>,
+  isInitial = false
+) => {
+  const finalExpectation = expect.objectContaining({
+    value: prop
+  });
+  return expect.objectContaining({
+    ...(isInitial
+      ? {initial: finalExpectation}
+      : {animatedStyle: {current: finalExpectation}})
+  });
 };
