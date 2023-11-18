@@ -1,7 +1,7 @@
 import React from "react";
 import {ScrollView} from "react-native";
 import {List} from "react-native-paper";
-import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
+import {IconSource} from "react-native-paper/lib/typescript/components/Icon";
 
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import CategoryIcon from "../ui/CategoryIcon";

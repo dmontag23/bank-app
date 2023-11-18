@@ -1,6 +1,6 @@
 import React, {createContext, useState} from "react";
 import {Button} from "react-native-paper";
-import {$RemoveChildren} from "react-native-paper/lib/typescript/src/types";
+import {$RemoveChildren} from "react-native-paper/lib/typescript/types";
 
 export enum ToastType {
   LOG = "LOG",

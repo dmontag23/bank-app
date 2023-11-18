@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {StyleSheet, useWindowDimensions, View} from "react-native";
 import {Dialog, List, Portal, Text} from "react-native-paper";
-import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
+import {IconSource} from "react-native-paper/lib/typescript/components/Icon";
 
 import CategoryList from "./CategoryList";
 

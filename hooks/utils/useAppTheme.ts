@@ -10,9 +10,9 @@ export const theme = {
     text: MD3LightTheme.colors.background,
     border: MD3LightTheme.colors.surface,
     notification: MD3LightTheme.colors.secondary,
-    warning: "rgb(105, 95, 0)", // dirty yellow
-    warningContainer: "rgb(249, 229, 52)", // bright yellow
-    warningOnContainer: "rgb(32, 28, 0)" // very dark brown
+    warning: "rgb(105, 95, 0)",
+    warningContainer: "rgb(249, 229, 52)",
+    warningOnContainer: "rgb(32, 28, 0)"
   }
 };
 

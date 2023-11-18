@@ -1,7 +1,7 @@
 import React, {ReactNode, useState} from "react";
 import {LayoutAnimation, StyleProp, StyleSheet, ViewStyle} from "react-native";
 import {List} from "react-native-paper";
-import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
+import {IconSource} from "react-native-paper/lib/typescript/components/Icon";
 
 import {useAppTheme} from "../../hooks/utils/useAppTheme";
 

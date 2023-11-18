@@ -1,6 +1,6 @@
 import React from "react";
 import {Avatar} from "react-native-paper";
-import {IconSource} from "react-native-paper/lib/typescript/src/components/Icon";
+import {IconSource} from "react-native-paper/lib/typescript/components/Icon";
 
 type CategoryIconProps = {
   icon: IconSource;
