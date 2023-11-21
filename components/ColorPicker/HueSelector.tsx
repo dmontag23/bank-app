@@ -70,12 +70,15 @@ const HueSelector = ({
     })
     .withTestId("pan");
 
-  const translation = useAnimatedStyle(() => {
+  const selectorAnimation = useAnimatedStyle(() => {
     const cartesianCoords = polarToCartesian({
       coordinate: {radius: outerCircle.radius, angle: hue.value},
       origin: outerCircle.center
     });
     return {
+      backgroundColor: `hsl(${radiansToDegrees(
+        hue.value
+      )}, ${saturation}%, ${lightness}%)`,
       transform: [
         {translateX: cartesianCoords.x},
         {translateY: cartesianCoords.y}
@@ -83,7 +86,11 @@ const HueSelector = ({
     };
   });
 
-  const color = useAnimatedStyle(() => ({
+  // note that jest tests do not pass if the same animated style
+  // is passed to more than 1 component, hence the duplication
+  // of the background color here
+  // see https://github.com/software-mansion/react-native-reanimated/issues/5392
+  const innerCircleAnimation = useAnimatedStyle(() => ({
     backgroundColor: `hsl(${radiansToDegrees(
       hue.value
     )}, ${saturation}%, ${lightness}%)`
@@ -114,7 +121,7 @@ const HueSelector = ({
         <GestureDetector gesture={pan}>
           <ReanimatedCircle
             circle={selector}
-            style={[styles.selectorCircle, color, translation]}
+            style={[styles.selectorCircle, selectorAnimation]}
           />
         </GestureDetector>
       </GestureHandlerRootView>
@@ -122,7 +129,7 @@ const HueSelector = ({
       <ReanimatedCircle
         circle={innerCircle}
         iconName={iconName}
-        style={[styles.layeredElement, color]}
+        style={[styles.layeredElement, innerCircleAnimation]}
       />
     </View>
   );
