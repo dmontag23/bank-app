@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run clean-mock-server && npm run mock-ts-compile && cp package.json ./dist",
+    "build": "npm run clean-mock-server && npm run mock-ts-compile",
     "clean-mock-server": "rm -rf dist",
     "mock-ts-compile": "npx tsc",
-    "start": "node mock-server/runMockServer.js"
+    "start": "node dist/mock-server/runMockServer.js"
   },
   "dependencies": {
     "express": "^4.18.2"
