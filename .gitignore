@@ -75,4 +75,4 @@ yarn-error.log
 /coverage
 
 # Mock server compiled files
-tests/mocks/server/dist/
+mock-server/dist

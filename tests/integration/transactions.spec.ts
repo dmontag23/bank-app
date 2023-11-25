@@ -5,12 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../../config.json";
 import useTransactions from "../../hooks/transactions/useTransactions";
-import {TRUELAYER_MASTERCARD} from "../mocks/trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_MASTERCARD} from "../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../mocks/trueLayer/dataAPI/data/cardTransactionData";
+} from "../../mock-server/truelayer/data/cardTransactionData";
 
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer cards exist", async () => {

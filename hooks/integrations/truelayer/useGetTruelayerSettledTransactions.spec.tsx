@@ -5,12 +5,12 @@ import {describe, expect, jest, test} from "@jest/globals";
 import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
-import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
+} from "../../../mock-server/truelayer/data/cardTransactionData";
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {AppError} from "../../../types/errors";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 

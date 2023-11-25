@@ -5,7 +5,7 @@ import {
   mapTrueLayerTransactionToInternalTransaction
 } from "./trueLayerMappings";
 
-import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
+import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../mock-server/trueLayer/data/cardTransactionData";
 
 describe("mapTrueLayerCategoryToInternalCategory", () => {
   const categoryData = [

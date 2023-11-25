@@ -3,8 +3,8 @@ import {AddressInfo} from "net";
 
 import express from "express";
 
-import truelayerAuthRouter from "./truelayerAuthRouter";
-import truelayerDataRouter from "./truelayerDataRouter";
+import truelayerAuthRouter from "./truelayer/routers/authRouter";
+import truelayerDataRouter from "./truelayer/routers/dataRouter";
 
 const app = express();
 let server: Server;
@@ -12,10 +12,12 @@ let server: Server;
 app.use("/truelayer/auth", truelayerAuthRouter);
 app.use("/truelayer/data", truelayerDataRouter);
 
+const port = process.env.PORT || 3000;
+
 export const listen = async () =>
   await new Promise<void>(
     resolve =>
-      (server = app.listen(9091, () => {
+      (server = app.listen(port, () => {
         const serverAddress = server.address() as AddressInfo;
         console.log(`Running mock server on port '${serverAddress.port}'...`);
         server.timeout = 5000;

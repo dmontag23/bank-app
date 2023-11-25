@@ -18,8 +18,8 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../../components/LoggedInScreens";
 import config from "../../../config.json";
-import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
-import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
+import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
+import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../mock-server/truelayer/data/cardTransactionData";
 
 describe("Categories", () => {
   test("can add a category", async () => {

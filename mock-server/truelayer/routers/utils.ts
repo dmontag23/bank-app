@@ -1,6 +1,6 @@
 import {Request} from "express";
 
-import {CardTransaction} from "../../../../types/trueLayer/dataAPI/cards";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 export const filterTransactionsByTimestamp = (
   req: Request<{accountId: string}, any, any, {from: string; to: string}>,

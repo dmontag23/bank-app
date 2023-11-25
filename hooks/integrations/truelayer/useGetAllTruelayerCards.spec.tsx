@@ -5,11 +5,11 @@ import {describe, expect, jest, test} from "@jest/globals";
 import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
 
 import {trueLayerDataApi} from "../../../api/axiosConfig";
-import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   TRUELAYER_MASTERCARD,
   TRUELAYER_VISA
-} from "../../../tests/mocks/trueLayer/dataAPI/data/cardData";
+} from "../../../mock-server/truelayer/data/cardData";
+import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {AppError} from "../../../types/errors";
 import {Card} from "../../../types/trueLayer/dataAPI/cards";
 

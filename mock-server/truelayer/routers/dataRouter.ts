@@ -1,19 +1,16 @@
 import express, {Request} from "express";
 
-import {filterTransactionsByTimestamp} from "./utils/truelayerDataRouterUtils";
+import {filterTransactionsByTimestamp} from "./utils";
 
-import {
-  TRUELAYER_MASTERCARD,
-  TRUELAYER_VISA
-} from "../trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_MASTERCARD, TRUELAYER_VISA} from "../data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS,
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../trueLayer/dataAPI/data/cardTransactionData";
-import {ERROR_429_RESPONSE} from "../trueLayer/dataAPI/data/serverResponseData";
+} from "../data/cardTransactionData";
+import {ERROR_429_RESPONSE} from "../data/serverResponseData";
 
 const truelayerDataRouter = express.Router();
 

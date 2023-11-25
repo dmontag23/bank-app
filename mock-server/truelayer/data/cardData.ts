@@ -1,4 +1,4 @@
-import {Card} from "../../../../../types/trueLayer/dataAPI/cards";
+import {Card} from "../../../types/trueLayer/dataAPI/cards";
 
 export const TRUELAYER_MASTERCARD: Card = {
   account_id: "mastercard-1",
