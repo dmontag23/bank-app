@@ -6,7 +6,7 @@
     "build": "npm run clean-mock-server && npm run mock-ts-compile && cp package.json ./dist",
     "clean-mock-server": "rm -rf dist",
     "mock-ts-compile": "npx tsc",
-    "start": "node ./dist/mock-server/runMockServer.js"
+    "start": "node mock-server/runMockServer.js"
   },
   "dependencies": {
     "express": "^4.18.2"
