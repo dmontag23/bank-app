@@ -5,7 +5,11 @@ import {
   GestureDetector,
   GestureHandlerRootView
 } from "react-native-gesture-handler";
-import {useAnimatedStyle, useSharedValue} from "react-native-reanimated";
+import {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue
+} from "react-native-reanimated";
 
 import ColorRing from "./ColorRing";
 import {
@@ -23,12 +27,14 @@ type HueSelectorProps = {
   saturation?: number;
   lightness?: number;
   iconName?: string;
+  onColorChange?: (color: string) => void;
 };
 
 const HueSelector = ({
   saturation = 100,
   lightness = 50,
-  iconName
+  iconName,
+  onColorChange = () => {}
 }: HueSelectorProps) => {
   const [{width, height}, setDimensions] = useState({width: 0, height: 0});
   const minDimension = Math.min(width, height);
@@ -90,11 +96,13 @@ const HueSelector = ({
   // is passed to more than 1 component, hence the duplication
   // of the background color here
   // see https://github.com/software-mansion/react-native-reanimated/issues/5392
-  const innerCircleAnimation = useAnimatedStyle(() => ({
-    backgroundColor: `hsl(${radiansToDegrees(
+  const innerCircleAnimation = useAnimatedStyle(() => {
+    const backgroundColor = `hsl(${radiansToDegrees(
       hue.value
-    )}, ${saturation}%, ${lightness}%)`
-  }));
+    )}, ${saturation}%, ${lightness}%)`;
+    runOnJS(onColorChange)(backgroundColor);
+    return {backgroundColor};
+  });
 
   return (
     <View

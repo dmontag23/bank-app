@@ -7,9 +7,13 @@ import Slider from "../ui/Slider";
 
 type ColorPickerProps = {
   iconName?: string;
+  onColorChange?: (color: string) => void;
 };
 
-const ColorPicker = ({iconName}: ColorPickerProps) => {
+const ColorPicker = ({
+  iconName,
+  onColorChange = () => {}
+}: ColorPickerProps) => {
   // note that state has to be used here instead of animated values
   // because the Stop component from the svg library cannot be animated yet
   // see https://github.com/software-mansion/react-native-reanimated/issues/1938
@@ -46,6 +50,7 @@ const ColorPicker = ({iconName}: ColorPickerProps) => {
           saturation={saturation}
           lightness={lightness}
           iconName={iconName}
+          onColorChange={onColorChange}
         />
       </View>
       <View>

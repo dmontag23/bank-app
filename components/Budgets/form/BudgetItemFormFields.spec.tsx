@@ -105,6 +105,34 @@ describe("BudgetItemFormFields component", () => {
     });
   });
 
+  test("sorts categories", () => {
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: {
+        ...INITIAL_CATEGORY_MAP,
+        "Credit card": {icon: "credit-card", color: "hsl(90, 100%, 50%)"}
+      }
+    });
+
+    const {result} = renderHook(() =>
+      useForm<BudgetInput>({defaultValues: BUDGET_WITH_EMPTY_ITEM})
+    );
+
+    render(
+      <BudgetItemFormFields
+        disabledCategories={[]}
+        control={result.current.control}
+        index={0}
+      />
+    );
+
+    // credit card should be the 6th item in the list based on the initial category map
+    expect(screen.getAllByRole("checkbox")[5]).toHaveProp(
+      "accessibilityLabel",
+      "Credit card"
+    );
+  });
+
   test("renders disabled categories", () => {
     (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,

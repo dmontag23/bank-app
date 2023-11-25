@@ -34,10 +34,15 @@ describe("ColorPicker component", () => {
       {
         saturation: 100,
         lightness: 50,
-        iconName: undefined
+        iconName: undefined,
+        onColorChange: expect.any(Function)
       },
       {}
     );
+    const onColorChange =
+      (HueSelector as jest.MockedFunction<typeof HueSelector>).mock.calls[0][0]
+        .onColorChange ?? jest.fn();
+    expect(onColorChange("dummy-color")).toBeUndefined();
     expect(Slider).toBeCalledTimes(6);
     expect(Slider).toBeCalledWith(
       {value: 100, setValue: expect.any(Function)},
@@ -90,6 +95,18 @@ describe("ColorPicker component", () => {
     expect(HueSelector).toBeCalledTimes(1);
     expect(HueSelector).toBeCalledWith(
       expect.objectContaining({iconName: "wall"}),
+      {}
+    );
+  });
+
+  test("passes onColorChange handler to hue selector", () => {
+    const mockHandleColorChange = jest.fn();
+
+    render(<ColorPicker onColorChange={mockHandleColorChange} />);
+
+    expect(HueSelector).toBeCalledTimes(1);
+    expect(HueSelector).toBeCalledWith(
+      expect.objectContaining({onColorChange: mockHandleColorChange}),
       {}
     );
   });

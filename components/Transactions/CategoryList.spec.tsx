@@ -6,6 +6,7 @@ import CategoryList from "./CategoryList";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
+import {CategoryAssociations} from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
@@ -74,5 +75,26 @@ describe("CategoryList component", () => {
 
     expect(onItemPress).toBeCalledTimes(1);
     expect(onItemPress).toBeCalledWith("Savings");
+  });
+
+  test("sorts categories", () => {
+    const creditCardCategoryAssociation: CategoryAssociations = {
+      icon: "credit-card",
+      color: "red"
+    };
+    (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      data: {
+        ...INITIAL_CATEGORY_MAP,
+        "Credit card": creditCardCategoryAssociation
+      }
+    });
+
+    render(<CategoryList />);
+    // credit card should be 5th on the list
+    expect(
+      (CategoryIcon as jest.MockedFunction<typeof CategoryIcon>).mock
+        .calls[5][0]
+    ).toEqual(creditCardCategoryAssociation);
   });
 });

@@ -11,4 +11,6 @@ export type TransactionIDToCategoryMapping = {
   [id: string]: string | null;
 };
 
-export type CategoryMap = Record<string, {icon: string; color: string}>;
+export type CategoryAssociations = {icon: string; color: string};
+
+export type CategoryMap = Record<string, CategoryAssociations>;

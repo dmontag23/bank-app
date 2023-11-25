@@ -7,6 +7,7 @@ import {CompositeScreenProps} from "@react-navigation/native";
 import {StackScreenProps} from "@react-navigation/stack";
 
 import {useAppTheme} from "../../hooks/utils/useAppTheme";
+import AddCategoryContext from "../../store/add-category-context";
 import ErrorContext from "../../store/error-context";
 import {AppError} from "../../types/errors";
 import {LoggedInTabParamList, RootStackParamList} from "../../types/screens";
@@ -31,6 +32,7 @@ const SettingsScreen = ({
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const {errorModal, errors} = useContext(ErrorContext);
+  const {showModal} = useContext(AddCategoryContext);
 
   return (
     <View style={[styles.container, {paddingTop: insets.top}]}>
@@ -39,34 +41,53 @@ const SettingsScreen = ({
       </Text>
       {/* The surface is needed to set the background color
       so that it works with the ripple color */}
-      <Surface
-        mode="flat"
-        style={[
-          styles.item,
-          {backgroundColor: theme.colors.secondaryContainer}
-        ]}>
-        <List.Item
-          title="Reconnect to Truelayer"
-          onPress={() => navigation.replace("TruelayerWebAuth")}
-          right={() => createRightListIcons()}
-          style={styles.item}
-          rippleColor={theme.colors.surfaceVariant}
-        />
-        <Divider />
-        <List.Item
-          title="Show Errors"
-          onPress={() => errorModal.showModal()}
-          right={() => createRightListIcons(errors)}
-          style={styles.item}
-          rippleColor={theme.colors.surfaceVariant}
-        />
-      </Surface>
+      {/* TODO: Refactor the surface and list items below into a common
+      component */}
+      <View style={styles.contentContainer}>
+        <Surface
+          mode="flat"
+          style={[
+            styles.item,
+            {backgroundColor: theme.colors.secondaryContainer}
+          ]}>
+          <List.Item
+            title="Add category"
+            onPress={showModal}
+            right={() => createRightListIcons()}
+            style={styles.item}
+            rippleColor={theme.colors.surfaceVariant}
+          />
+        </Surface>
+        <Surface
+          mode="flat"
+          style={[
+            styles.item,
+            {backgroundColor: theme.colors.secondaryContainer}
+          ]}>
+          <List.Item
+            title="Reconnect to Truelayer"
+            onPress={() => navigation.replace("TruelayerWebAuth")}
+            right={() => createRightListIcons()}
+            style={styles.item}
+            rippleColor={theme.colors.surfaceVariant}
+          />
+          <Divider />
+          <List.Item
+            title="Show Errors"
+            onPress={() => errorModal.showModal()}
+            right={() => createRightListIcons(errors)}
+            style={styles.item}
+            rippleColor={theme.colors.surfaceVariant}
+          />
+        </Surface>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {flex: 1, paddingHorizontal: 10},
+  contentContainer: {rowGap: 30},
   item: {borderRadius: 10},
   rightListItems: {flexDirection: "row", columnGap: 10},
   titleText: {marginVertical: 20, textAlign: "center"}

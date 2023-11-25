@@ -4,6 +4,7 @@ import {createMaterialBottomTabNavigator} from "@react-navigation/material-botto
 
 import BudgetsScreen from "./Budgets/BudgetsScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
+import AddCategory from "./Transactions/AddCategory";
 import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 import ErrorContext from "../store/error-context";
@@ -37,33 +38,36 @@ const LoggedInScreens = () => {
   const {errors} = useContext(ErrorContext);
   const tabBarBadgeObject = errors.length ? {tabBarBadge: errors.length} : {};
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Budgets"
-        component={BudgetsScreen}
-        options={{
-          tabBarIcon: ({focused}) => budgetsIcon(focused),
-          tabBarTestID: "budgetsBottomNavButton"
-        }}
-      />
-      <Tab.Screen
-        name="Transactions"
-        component={TransactionsScreen}
-        options={{
-          tabBarIcon: ({focused}) => transactionsIcon(focused),
-          tabBarTestID: "transactionsBottomNavButton"
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarIcon: ({focused}) => settingsIcon(focused),
-          tabBarTestID: "settingsBottomNavButton",
-          ...tabBarBadgeObject
-        }}
-      />
-    </Tab.Navigator>
+    <>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Budgets"
+          component={BudgetsScreen}
+          options={{
+            tabBarIcon: ({focused}) => budgetsIcon(focused),
+            tabBarTestID: "budgetsBottomNavButton"
+          }}
+        />
+        <Tab.Screen
+          name="Transactions"
+          component={TransactionsScreen}
+          options={{
+            tabBarIcon: ({focused}) => transactionsIcon(focused),
+            tabBarTestID: "transactionsBottomNavButton"
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            tabBarIcon: ({focused}) => settingsIcon(focused),
+            tabBarTestID: "settingsBottomNavButton",
+            ...tabBarBadgeObject
+          }}
+        />
+      </Tab.Navigator>
+      <AddCategory />
+    </>
   );
 };
 

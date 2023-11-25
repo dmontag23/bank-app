@@ -12,6 +12,7 @@ import {StackScreenProps} from "@react-navigation/stack";
 
 import SettingsScreen from "./SettingsScreen";
 
+import AddCategoryContext from "../../store/add-category-context";
 import ErrorContext from "../../store/error-context";
 import {LoggedInTabParamList, RootStackParamList} from "../../types/screens";
 
@@ -42,9 +43,11 @@ describe("SettingsScreen component", () => {
     expect(screen.getByText("Settings")).toBeVisible();
     expect(screen.getByText("Reconnect to Truelayer")).toBeVisible();
     expect(screen.getByText("Show Errors")).toBeVisible();
-    expect(screen.getByTestId("surface")).toHaveStyle({
-      backgroundColor: MD3LightTheme.colors.secondaryContainer
-    });
+    screen.getAllByTestId("surface").map(surfaceElement =>
+      expect(surfaceElement).toHaveStyle({
+        backgroundColor: MD3LightTheme.colors.secondaryContainer
+      })
+    );
     expect(screen.queryByText("2")).toBeNull();
   });
 
@@ -88,6 +91,47 @@ describe("SettingsScreen component", () => {
 
     expect(screen.getByText("Show Errors")).toBeVisible();
     expect(screen.getByText("2")).toBeVisible();
+  });
+
+  test("can open the category modal", () => {
+    const customWrapper = (children: ReactNode) => (
+      <NavigationContainer>{children}</NavigationContainer>
+    );
+
+    const {result} = renderHook(
+      () =>
+        useNavigation<
+          CompositeScreenProps<
+            MaterialBottomTabScreenProps<LoggedInTabParamList, "Settings">,
+            StackScreenProps<RootStackParamList>
+          >
+        >(),
+      {customWrapper}
+    );
+
+    const mockShowModalFn = jest.fn();
+
+    render(
+      <AddCategoryContext.Provider
+        value={{
+          isVisible: false,
+          showModal: mockShowModalFn,
+          hideModal: jest.fn()
+        }}>
+        <SettingsScreen
+          route={{key: "", name: "Settings"}}
+          navigation={result.current.navigation}
+        />
+      </AddCategoryContext.Provider>
+    );
+
+    const addCategoryButton = screen.getByText("Add category");
+    expect(addCategoryButton).toBeVisible();
+
+    fireEvent.press(addCategoryButton);
+
+    expect(mockShowModalFn).toBeCalledTimes(1);
+    expect(mockShowModalFn).toBeCalledWith();
   });
 
   test("can open the error modal", () => {

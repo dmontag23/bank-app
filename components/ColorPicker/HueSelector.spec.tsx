@@ -41,6 +41,10 @@ describe("HueSelector component", () => {
       .mockReturnValueOnce({x: 150, y: 144});
     (radiansToDegrees as jest.MockedFunction<typeof radiansToDegrees>)
       .mockReturnValueOnce(45)
+      .mockReturnValueOnce(45)
+      .mockReturnValueOnce(45)
+      .mockReturnValueOnce(45)
+      .mockReturnValueOnce(60)
       .mockReturnValueOnce(60);
 
     render(<HueSelector />);
@@ -63,7 +67,7 @@ describe("HueSelector component", () => {
       origin: {x: 150, y: 76.5}
     });
 
-    expect(radiansToDegrees).toBeCalledTimes(2);
+    expect(radiansToDegrees).toBeCalledTimes(6);
     expect(radiansToDegrees).toBeCalledWith(0);
 
     // check the components to render are called correctly
@@ -95,9 +99,11 @@ describe("HueSelector component", () => {
         circle: {radius: 0},
         style: [
           {borderColor: "black", borderWidth: 1},
-          reanimatedStyleProp({backgroundColor: "hsl(45, 100%, 50%)"}, true),
           reanimatedStyleProp(
-            {transform: [{translateX: 0}, {translateY: 0}]},
+            {
+              backgroundColor: "hsl(45, 100%, 50%)",
+              transform: [{translateX: 0}, {translateY: 0}]
+            },
             true
           )
         ]
@@ -120,8 +126,8 @@ describe("HueSelector component", () => {
         circle: {radius: 9},
         style: [
           {borderColor: "black", borderWidth: 1},
-          reanimatedStyleProp({backgroundColor: "hsl(60, 100%, 50%)"}),
           reanimatedStyleProp({
+            backgroundColor: "hsl(60, 100%, 50%)",
             transform: [{translateX: 150}, {translateY: 144}]
           })
         ]
@@ -154,9 +160,14 @@ describe("HueSelector component", () => {
       .mockReturnValueOnce({x: 144, y: 150});
     (radiansToDegrees as jest.MockedFunction<typeof radiansToDegrees>)
       .mockReturnValueOnce(45)
+      .mockReturnValueOnce(45)
+      .mockReturnValueOnce(45)
+      .mockReturnValueOnce(60)
       .mockReturnValueOnce(60);
 
-    render(<HueSelector />);
+    const mockOnColorChange = jest.fn();
+
+    render(<HueSelector onColorChange={mockOnColorChange} />);
 
     // set the container the hue selector will be visible in
     const hueSelector = screen.getByLabelText("Hue selector");
@@ -176,7 +187,7 @@ describe("HueSelector component", () => {
       origin: {x: 76.5, y: 150}
     });
 
-    expect(radiansToDegrees).toBeCalledTimes(2);
+    expect(radiansToDegrees).toBeCalledTimes(5);
     expect(radiansToDegrees).toBeCalledWith(0);
 
     // check the components to render are called correctly
@@ -208,9 +219,11 @@ describe("HueSelector component", () => {
         circle: {radius: 0},
         style: [
           {borderColor: "black", borderWidth: 1},
-          reanimatedStyleProp({backgroundColor: "hsl(45, 100%, 50%)"}, true),
           reanimatedStyleProp(
-            {transform: [{translateX: 0}, {translateY: 0}]},
+            {
+              backgroundColor: "hsl(45, 100%, 50%)",
+              transform: [{translateX: 0}, {translateY: 0}]
+            },
             true
           )
         ]
@@ -233,8 +246,8 @@ describe("HueSelector component", () => {
         circle: {radius: 9},
         style: [
           {borderColor: "black", borderWidth: 1},
-          reanimatedStyleProp({backgroundColor: "hsl(60, 100%, 50%)"}),
           reanimatedStyleProp({
+            backgroundColor: "hsl(60, 100%, 50%)",
             transform: [{translateX: 144}, {translateY: 150}]
           })
         ]
@@ -252,6 +265,10 @@ describe("HueSelector component", () => {
       }),
       {}
     );
+
+    expect(mockOnColorChange).toBeCalledTimes(2);
+    expect(mockOnColorChange).toBeCalledWith("hsl(45, 100%, 50%)");
+    expect(mockOnColorChange).toBeCalledWith("hsl(60, 100%, 50%)");
   });
 
   test("renders with non-default props", async () => {

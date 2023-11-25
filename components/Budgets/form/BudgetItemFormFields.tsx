@@ -58,30 +58,35 @@ const BudgetItemFormFields = ({
         {isCategoryMapLoading ? (
           <LoadingSpinner />
         ) : (
-          Object.keys(categoryMap ?? {}).map((category, i) => (
-            <Controller
-              key={i}
-              control={control}
-              render={({field: {onChange, value}}) => (
-                <Checkbox.Item
-                  key={i}
-                  disabled={disabledCategories.includes(category)}
-                  label={category}
-                  labelVariant="bodyMedium"
-                  onPress={() =>
-                    onChange(
-                      value.includes(category)
-                        ? value.filter(curCategory => curCategory !== category)
-                        : [...value, category]
-                    )
-                  }
-                  status={value.includes(category) ? "checked" : "unchecked"}
-                  style={styles.checkbox}
-                />
-              )}
-              name={`items.${index}.categories`}
-            />
-          ))
+          // TODO: Maybe use CategoryList here instead somehow?
+          Object.keys(categoryMap ?? {})
+            .sort()
+            .map((category, i) => (
+              <Controller
+                key={i}
+                control={control}
+                render={({field: {onChange, value}}) => (
+                  <Checkbox.Item
+                    key={i}
+                    disabled={disabledCategories.includes(category)}
+                    label={category}
+                    labelVariant="bodyMedium"
+                    onPress={() =>
+                      onChange(
+                        value.includes(category)
+                          ? value.filter(
+                              curCategory => curCategory !== category
+                            )
+                          : [...value, category]
+                      )
+                    }
+                    status={value.includes(category) ? "checked" : "unchecked"}
+                    style={styles.checkbox}
+                  />
+                )}
+                name={`items.${index}.categories`}
+              />
+            ))
         )}
       </View>
     </View>

@@ -21,16 +21,18 @@ const CategoryList = ({onItemPress}: CategoryListProps) => {
   const categoryMap = categories ?? {};
   return (
     <ScrollView testID="categoryListScrollView">
-      {Object.keys(categoryMap).map((category, i) => (
-        <List.Item
-          key={i}
-          title={category}
-          left={() => ListIcon(categoryMap[category])}
-          onPress={() => {
-            onItemPress && onItemPress(category);
-          }}
-        />
-      ))}
+      {Object.keys(categoryMap)
+        .sort()
+        .map((category, i) => (
+          <List.Item
+            key={i}
+            title={category}
+            left={() => ListIcon(categoryMap[category])}
+            onPress={() => {
+              onItemPress && onItemPress(category);
+            }}
+          />
+        ))}
     </ScrollView>
   );
 };
