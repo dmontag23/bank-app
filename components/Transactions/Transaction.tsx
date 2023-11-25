@@ -1,12 +1,14 @@
 import React, {useState} from "react";
-import {StyleSheet, View} from "react-native";
+import {StyleSheet, useWindowDimensions, View} from "react-native";
 import {Dialog, List, Portal, Text} from "react-native-paper";
+import {IconSource} from "react-native-paper/lib/typescript/components/Icon";
 
 import CategoryList from "./CategoryList";
 
+import {INITIAL_CATEGORY_MAP} from "../../constants";
 import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
 import {
-  TransactionCategory,
+  CategoryMap,
   Transaction as TransactionType
 } from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
@@ -26,8 +28,8 @@ const createDescriptionString = (transaction: TransactionType) => {
   return `${localeDate} at ${localeTime}  -  ${transaction.category}`;
 };
 
-const ListIcon = (category: TransactionCategory) => (
-  <CategoryIcon category={category} />
+const ListIcon = ({icon, color}: {icon: IconSource; color: string}) => (
+  <CategoryIcon icon={icon} color={color} />
 );
 
 const RightText = (amount: number) => (
@@ -39,8 +41,9 @@ const RightText = (amount: number) => (
 
 type TransactionComponentProps = {
   transaction: TransactionType;
+  categoryMap: CategoryMap;
 };
-const Transaction = ({transaction}: TransactionComponentProps) => {
+const Transaction = ({transaction, categoryMap}: TransactionComponentProps) => {
   const {mutate: storeTransactionToCategoryMap} =
     useStoreTransactionCategoryMap();
 
@@ -49,12 +52,21 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
   const showDialog = () => setIsEditTransactionDialogVisible(true);
   const hideDialog = () => setIsEditTransactionDialogVisible(false);
 
+  const {height: deviceHeight} = useWindowDimensions();
+
   return (
     <>
       {/* TODO: Might want to consider refactoring the dialog into its
       own component. */}
       <Portal>
-        <Dialog visible={isEditTransactionDialogVisible} onDismiss={hideDialog}>
+        <Dialog
+          visible={isEditTransactionDialogVisible}
+          onDismiss={hideDialog}
+          // TODO: It seems the react paper dialog does not respect the
+          // safe area view out of the box, which is somewhat expected since the portal
+          // renders outside the safe area view. This is a workaround that is okay,
+          // but it would be nice to do something more elegant in the future.
+          style={{maxHeight: 0.85 * deviceHeight}}>
           <Dialog.Title>
             <View>
               {/* TODO: Add proper styling here, e.g. remove lines from
@@ -65,7 +77,7 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
           </Dialog.Title>
           <Dialog.ScrollArea>
             <CategoryList
-              onItemPress={(category: TransactionCategory) => {
+              onItemPress={(category: string) => {
                 storeTransactionToCategoryMap({
                   [transaction.id]: category
                 });
@@ -81,7 +93,11 @@ const Transaction = ({transaction}: TransactionComponentProps) => {
         title={transaction.name}
         // TODO: Show the mapped transaction name here
         description={createDescriptionString(transaction)}
-        left={() => ListIcon(transaction.category)}
+        left={() =>
+          ListIcon(
+            categoryMap[transaction.category] ?? INITIAL_CATEGORY_MAP.Unknown
+          )
+        }
         right={() =>
           RightText(
             Math.round((transaction.amount + Number.EPSILON) * 100) / 100

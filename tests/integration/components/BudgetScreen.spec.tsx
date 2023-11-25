@@ -7,7 +7,7 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
 import config from "../../../config.json";
-import {TransactionCategory} from "../../../types/transaction";
+import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {
   BUDGET_WITH_NO_ITEMS,
   BUDGET_WITH_ONE_ITEM,
@@ -167,6 +167,11 @@ describe("Budget screen", () => {
   test("can change the budget category", async () => {
     // setup AsyncStorage with mock data
     await AsyncStorage.setItem(
+      `category-map`,
+      JSON.stringify(INITIAL_CATEGORY_MAP)
+    );
+
+    await AsyncStorage.setItem(
       `budget-${BUDGET_WITH_TWO_ITEMS.id}`,
       JSON.stringify(BUDGET_WITH_TWO_ITEMS)
     );
@@ -213,16 +218,14 @@ describe("Budget screen", () => {
     await waitFor(() =>
       expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible()
     );
-    expect(
-      screen.getByText(`1 Jan 2023 at 00:00 - ${TransactionCategory.BILLS}`)
-    ).toBeVisible();
+    expect(screen.getByText("1 Jan 2023 at 00:00 - Bills")).toBeVisible();
 
     // change the transaction category
     fireEvent.press(screen.getByText("PAY OFF CREDIT CARD BILL"));
     await waitFor(() =>
       expect(screen.getByText("Select a category")).toBeVisible()
     );
-    const newCategory = screen.getByText("ENTERTAINMENT");
+    const newCategory = screen.getByText("Entertainment");
     expect(newCategory).toBeVisible();
     fireEvent.press(newCategory);
 
@@ -239,9 +242,7 @@ describe("Budget screen", () => {
     fireEvent.press(screen.getAllByRole("tab")[1]);
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(
-      screen.getByText(
-        `1 Jan 2023 at 00:00 - ${TransactionCategory.ENTERTAINMENT}`
-      )
+      screen.getByText("1 Jan 2023 at 00:00 - Entertainment")
     ).toBeVisible();
   });
 
@@ -268,6 +269,11 @@ describe("Budget screen", () => {
   });
 
   test("creates a budget", async () => {
+    await AsyncStorage.setItem(
+      "category-map",
+      JSON.stringify(INITIAL_CATEGORY_MAP)
+    );
+
     // setup mock transactions
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
@@ -362,16 +368,23 @@ describe("Budget screen", () => {
     expect(itemCapField).toBeVisible();
     fireEvent.changeText(itemCapField, "4300.21");
 
-    // set two categories
-    const eatingOutOption = screen.getAllByLabelText("EATING_OUT")[0];
-    expect(eatingOutOption).toBeVisible();
+    // set three categories
+    await waitFor(() =>
+      expect(screen.getByLabelText("Eating out")).toBeVisible()
+    );
+    const eatingOutOption = screen.getByLabelText("Eating out");
     expect(eatingOutOption).toBeEnabled();
     fireEvent.press(eatingOutOption);
 
-    const entertainmentOption = screen.getAllByLabelText("ENTERTAINMENT")[0];
+    const entertainmentOption = screen.getByLabelText("Entertainment");
     expect(entertainmentOption).toBeVisible();
     expect(entertainmentOption).toBeEnabled();
     fireEvent.press(entertainmentOption);
+
+    const shoppingOption = screen.getByLabelText("Shopping");
+    expect(shoppingOption).toBeVisible();
+    expect(shoppingOption).toBeEnabled();
+    fireEvent.press(shoppingOption);
 
     // click the button to add a second item
     expect(addItemButton).toBeVisible();
@@ -389,11 +402,11 @@ describe("Budget screen", () => {
     fireEvent.changeText(secondItemCapField, "2000");
 
     // check that already taken categories are disabled
-    expect(screen.getAllByLabelText("EATING_OUT")[1]).toBeDisabled();
-    expect(screen.getAllByLabelText("ENTERTAINMENT")[1]).toBeDisabled();
+    expect(screen.getAllByLabelText("Eating out")[1]).toBeDisabled();
+    expect(screen.getAllByLabelText("Entertainment")[1]).toBeDisabled();
 
     // set a category
-    const billsOption = screen.getAllByLabelText("BILLS")[1];
+    const billsOption = screen.getAllByLabelText("Bills")[1];
     expect(billsOption).toBeVisible();
     expect(billsOption).toBeEnabled();
     fireEvent.press(billsOption);
@@ -411,16 +424,17 @@ describe("Budget screen", () => {
     expect(screen.getByText("£4149.39")).toBeVisible();
     expect(screen.getByText("left of £4300.21")).toBeVisible();
     expect(screen.getByText("CHAI POT YUM")).toBeVisible();
-    // TODO: Uncomment the line below when you have proper categories displayed
-    // expect(screen.getByText(TransactionCategory.EATING_OUT)).toBeVisible();
+    expect(
+      screen.getByText("23 Mar 2023 at 14:00  -  Eating out")
+    ).toBeVisible();
     expect(screen.getByText("£3.30")).toBeVisible();
     expect(screen.getByText("ZARA")).toBeVisible();
-    // TODO: Uncomment the line below when you have proper categories displayed
-    // expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
+    expect(screen.getByText("1 Mar 2023 at 00:00  -  Shopping")).toBeVisible();
     expect(screen.getByText("£132.00")).toBeVisible();
     expect(screen.getByText("DOUBLE FEATURE")).toBeVisible();
-    // TODO: Uncomment the line below when you have proper categories displayed
-    // expect(screen.getByText(TransactionCategory.ENTERTAINMENT)).toBeVisible();
+    expect(
+      screen.getByText("15 Mar 2023 at 00:00  -  Entertainment")
+    ).toBeVisible();
     expect(screen.getByText("£15.52")).toBeVisible();
 
     // check second budget item
@@ -432,8 +446,7 @@ describe("Budget screen", () => {
     expect(screen.getByText("£1807.48")).toBeVisible();
     expect(screen.getByText("left of £2000.00")).toBeVisible();
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
-    // TODO: Uncomment the line below when you have proper categories displayed
-    // expect(screen.getByText(TransactionCategory.BILLS)).toBeVisible();
+    expect(screen.getByText("1 Jan 2023 at 00:00  -  Bills")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
 
     // check the menu contains one budget
@@ -448,6 +461,11 @@ describe("Budget screen", () => {
 
   test("can show and hide categories", async () => {
     // setup AsyncStorage with mock data
+    await AsyncStorage.setItem(
+      `category-map`,
+      JSON.stringify(INITIAL_CATEGORY_MAP)
+    );
+
     await AsyncStorage.setItem(
       `budget-${BUDGET_WITH_ONE_ITEM.id}`,
       JSON.stringify(BUDGET_WITH_ONE_ITEM)
@@ -496,10 +514,10 @@ describe("Budget screen", () => {
     // twirl down the categories section
     const categoriesButton = screen.getByText("Categories");
     fireEvent.press(categoriesButton);
-    expect(screen.getByText("BILLS")).toBeVisible();
+    expect(screen.getByText("Bills")).toBeVisible();
 
     // twirl up the categories section
     fireEvent.press(categoriesButton);
-    expect(screen.queryByText("BILLS")).not.toBeOnTheScreen();
+    expect(screen.queryByText("Bills")).not.toBeOnTheScreen();
   });
 });

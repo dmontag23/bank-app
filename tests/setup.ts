@@ -6,6 +6,10 @@ import MockAsyncStorage from "@react-native-async-storage/async-storage/jest/asy
 // included following https://reactnavigation.org/docs/testing/
 import "react-native-gesture-handler/jestSetup";
 
+// needed for reanimated
+// see https://docs.swmansion.com/react-native-reanimated/docs/guides/testing/
+require("react-native-reanimated").setUpTests();
+
 jest.mock("@react-native-async-storage/async-storage", () => MockAsyncStorage);
 
 // this is needed for the WebView component

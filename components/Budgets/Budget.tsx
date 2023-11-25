@@ -1,11 +1,13 @@
 import React, {useMemo} from "react";
 import {StyleSheet, View} from "react-native";
-import {Avatar, Text, useTheme} from "react-native-paper";
+import {Avatar, Text} from "react-native-paper";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
 
 import BudgetItem from "./BudgetItem";
 
+import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import useTransactions from "../../hooks/transactions/useTransactions";
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {
   BudgetItem as BudgetItemType,
   BudgetItemWithTransactions,
@@ -55,14 +57,17 @@ type BudgetProps = {
 };
 
 const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
-  const {isLoading, transactions} = useTransactions({
+  const {isLoading: isTransactionsLoading, transactions} = useTransactions({
     dateRange: {
       from: budget.window.start,
       to: budget.window.end
     }
   });
+
+  const {isLoading: isCategoryMapLoading, data: categoryMap} =
+    useGetCategoryMap();
 
   const budgetItemsWithTransactions = useMemo(
     () => categorizeTransactions(transactions, budget.items),
@@ -71,7 +76,7 @@ const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
+      {isTransactionsLoading || isCategoryMapLoading ? (
         <LoadingSpinner />
       ) : budgetItemsWithTransactions.length ? (
         <Tab.Navigator
@@ -102,6 +107,7 @@ const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
                   item={item}
                   budget={budget}
                   setSelectedBudget={setSelectedBudget}
+                  categoryMap={categoryMap ?? {}}
                 />
               )}
             </Tab.Screen>

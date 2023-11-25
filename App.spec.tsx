@@ -8,14 +8,24 @@ import App from "./App";
 import ErrorModal from "./components/errors/ErrorModal";
 import RootScreens from "./components/RootScreens";
 import Toasts from "./components/ui/Toasts";
+import {INITIAL_CATEGORY_MAP} from "./constants";
+import useStoreCategoryMap from "./hooks/transactions/useStoreCategoryMap";
 
 jest.mock("./components/RootScreens");
 jest.mock("./components/errors/ErrorModal");
 jest.mock("./components/ui/CenteredLoadingSpinner");
 jest.mock("./components/ui/Toasts");
+jest.mock("./hooks/transactions/useStoreCategoryMap");
 
 describe("App component", () => {
   test("renders root screens", async () => {
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (useStoreCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      mutate: jest.fn()
+    });
+
     render(<App />);
 
     await waitFor(() => expect(RootScreens).toBeCalledTimes(1));
@@ -29,6 +39,13 @@ describe("App component", () => {
   test("re-fetches queries when the user returns to the app on ios", () => {
     const appStateSpy = jest.spyOn(AppState, "addEventListener");
     const focusManagerSpy = jest.spyOn(focusManager, "setFocused");
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (useStoreCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      mutate: jest.fn()
+    });
 
     render(<App />);
 
@@ -49,6 +66,13 @@ describe("App component", () => {
     const appStateSpy = jest.spyOn(AppState, "addEventListener");
     const focusManagerSpy = jest.spyOn(focusManager, "setFocused");
 
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (useStoreCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      mutate: jest.fn()
+    });
+
     render(<App />);
 
     waitFor(() => expect(appStateSpy).toBeCalledTimes(1));
@@ -59,5 +83,26 @@ describe("App component", () => {
     expect(focusManagerSpy).toBeCalledTimes(0);
 
     jest.dontMock("react-native/Libraries/Utilities/Platform");
+  });
+
+  test("stores initial transaction categories on load", async () => {
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    const mockStoreTransactionCategory = jest.fn();
+    (useStoreCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
+      mutate: mockStoreTransactionCategory
+    });
+
+    render(<App />);
+
+    await waitFor(() =>
+      expect(mockStoreTransactionCategory).toBeCalledTimes(1)
+    );
+    expect(mockStoreTransactionCategory).toBeCalledWith(INITIAL_CATEGORY_MAP);
+    expect(useStoreCategoryMap).toBeCalledTimes(1);
+    expect(useStoreCategoryMap).toBeCalledWith({
+      showWarningOnDuplicateCategory: false
+    });
   });
 });

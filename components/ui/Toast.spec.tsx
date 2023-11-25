@@ -11,6 +11,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 
 import Toast from "./Toast";
 
+import {theme} from "../../hooks/utils/useAppTheme";
 import ToastContext, {
   Toast as ToastObjectType,
   ToastType
@@ -29,6 +30,12 @@ describe("Toast component", () => {
       textColor: MD3LightTheme.colors.inverseOnSurface,
       surfaceColor: MD3LightTheme.colors.inverseSurface,
       buttonColor: MD3LightTheme.colors.inversePrimary
+    },
+    {
+      toastType: ToastType.WARNING,
+      textColor: theme.colors.warningOnContainer,
+      surfaceColor: theme.colors.warningContainer,
+      buttonColor: theme.colors.warning
     },
     {
       toastType: ToastType.ERROR,

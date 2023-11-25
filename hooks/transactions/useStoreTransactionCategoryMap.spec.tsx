@@ -10,10 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
-import {
-  TransactionCategory,
-  TransactionIDToCategoryMapping
-} from "../../types/transaction";
+import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
@@ -45,8 +42,8 @@ describe("useStoreTransactionCategoryMap", () => {
 
     // put some test data in the cache
     const previouslyCachedTransactions: TransactionIDToCategoryMapping = {
-      "id-1": TransactionCategory.BILLS,
-      "id-2": TransactionCategory.EATING_OUT
+      "id-1": "Bills",
+      "id-2": "Eating out"
     };
     const queryKey = ["transactionCategoryMapping", "id-1", "id-2"];
     queryClient.setQueryData<TransactionIDToCategoryMapping>(
@@ -55,8 +52,8 @@ describe("useStoreTransactionCategoryMap", () => {
     );
 
     const testData: TransactionIDToCategoryMapping = {
-      "id-1": TransactionCategory.SAVINGS,
-      "id-2": TransactionCategory.UNKNOWN
+      "id-1": "Savings",
+      "id-2": "Unknown"
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
@@ -65,8 +62,8 @@ describe("useStoreTransactionCategoryMap", () => {
     result.current.mutate(testData);
 
     const expectedDataInAsyncStorage = [
-      ["truelayer-id-1", TransactionCategory.SAVINGS],
-      ["truelayer-id-2", TransactionCategory.UNKNOWN]
+      ["truelayer-id-1", "Savings"],
+      ["truelayer-id-2", "Unknown"]
     ];
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(testData);
@@ -94,8 +91,8 @@ describe("useStoreTransactionCategoryMap", () => {
 
     // put some test data in the cache
     const previouslyCachedTransactions: TransactionIDToCategoryMapping = {
-      "id-1": TransactionCategory.BILLS,
-      "id-2": TransactionCategory.EATING_OUT
+      "id-1": "Bills",
+      "id-2": "Eating out"
     };
     const queryKey = ["transactionCategoryMapping", "id-1", "id-2"];
     queryClient.setQueryData<TransactionIDToCategoryMapping>(
@@ -104,8 +101,8 @@ describe("useStoreTransactionCategoryMap", () => {
     );
 
     const testData: TransactionIDToCategoryMapping = {
-      "id-1": TransactionCategory.ENTERTAINMENT,
-      "id-2": TransactionCategory.SAVINGS
+      "id-1": "Entertainment",
+      "id-2": "Savings"
     };
 
     // setup error context mocks

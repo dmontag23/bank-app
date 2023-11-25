@@ -7,7 +7,7 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import config from "../../../config.json";
-import {TransactionCategory} from "../../../types/transaction";
+import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
 import {
@@ -76,6 +76,11 @@ describe("Transactions", () => {
   });
 
   test("sets a new category correctly", async () => {
+    await AsyncStorage.setItem(
+      "category-map",
+      JSON.stringify(INITIAL_CATEGORY_MAP)
+    );
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -106,42 +111,34 @@ describe("Transactions", () => {
     );
 
     // check that the original transaction category is displayed
-    // and nothing is in Async Storage
     await waitFor(() =>
       expect(
-        screen.getByText(
-          `24 Feb 2013 at 14:00 - ${TransactionCategory.EATING_OUT}`
-        )
+        screen.getByText("24 Feb 2013 at 14:00 - Eating out")
       ).toBeVisible()
     );
-    expect(await AsyncStorage.getAllKeys()).toEqual([testTransactionId]);
+    expect(await AsyncStorage.getAllKeys()).toEqual([
+      "category-map",
+      testTransactionId
+    ]);
 
     // press the transaction to bring up the dialog
-    fireEvent.press(
-      screen.getByText(
-        `24 Feb 2013 at 14:00 - ${TransactionCategory.EATING_OUT}`
-      )
-    );
+    fireEvent.press(screen.getByText("24 Feb 2013 at 14:00 - Eating out"));
     await waitFor(() =>
       expect(screen.getByText("Select a category")).toBeVisible()
     );
     expect(screen.getAllByText(testTransactionName)).toHaveLength(2);
-    Object.keys(TransactionCategory).map(transaction => {
-      expect(screen.getByText(transaction)).toBeVisible();
+    Object.keys(INITIAL_CATEGORY_MAP).map(category => {
+      expect(screen.getByText(category)).toBeVisible();
     });
 
     // Change the category to "Savings"
     const selectCategoryText = screen.getByText("Select a category");
-    fireEvent.press(screen.getByText("SAVINGS"));
+    fireEvent.press(screen.getByText("Savings"));
 
     // Check that the dialog is closed and
     // the transaction has been updated to have the "Savings" category
     await waitFor(() => expect(selectCategoryText).not.toBeOnTheScreen());
-    expect(
-      screen.getByText(`24 Feb 2013 at 14:00 - ${TransactionCategory.SAVINGS}`)
-    ).toBeVisible();
-    expect(await AsyncStorage.getItem(testTransactionId)).toEqual(
-      TransactionCategory.SAVINGS
-    );
+    expect(screen.getByText("24 Feb 2013 at 14:00 - Savings")).toBeVisible();
+    expect(await AsyncStorage.getItem(testTransactionId)).toBe("Savings");
   });
 });

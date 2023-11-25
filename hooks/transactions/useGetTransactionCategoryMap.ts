@@ -3,10 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useQuery} from "@tanstack/react-query";
 
 import ErrorContext from "../../store/error-context";
-import {
-  TransactionCategory,
-  TransactionIDToCategoryMapping
-} from "../../types/transaction";
+import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
 const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
   (
@@ -17,7 +14,7 @@ const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
     (mapping, currentTransactionToCategoryKeyValuePair) => ({
       ...mapping,
       [currentTransactionToCategoryKeyValuePair[0].replace("truelayer-", "")]:
-        currentTransactionToCategoryKeyValuePair[1] as TransactionCategory
+        currentTransactionToCategoryKeyValuePair[1]
     }),
     {}
   );
@@ -32,7 +29,7 @@ const useGetTransactionCategoryMap = ({
 }: UseGetTransactionCategoryMappingProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
-  return useQuery<TransactionIDToCategoryMapping>({
+  return useQuery({
     queryKey: ["transactionCategoryMapping", ...transactionIds],
     queryFn: () => getTransactionCategoryMapFromStorage(transactionIds),
     enabled,

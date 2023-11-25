@@ -1,18 +1,17 @@
 import {Budget, BudgetItem} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
 
 export const BUDGET_ITEM_BILLS: BudgetItem = {
   id: "item-1",
   name: "Bill Item",
   cap: 500,
-  categories: [TransactionCategory.BILLS]
+  categories: ["Bills"]
 };
 
 export const BUDGET_ITEM_FUN: BudgetItem = {
   id: "item-2",
   name: "Fun",
   cap: 50,
-  categories: [TransactionCategory.ENTERTAINMENT]
+  categories: ["Entertainment"]
 };
 
 export const BUDGET_NO_NAME_OR_ITEMS: Budget = {

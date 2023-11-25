@@ -6,8 +6,8 @@ import {describe, expect, jest, test} from "@jest/globals";
 import BudgetDialog from "./BudgetDialog";
 import BudgetItemSummary from "./BudgetItemSummary";
 
+import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {BudgetItemWithTransactions} from "../../types/budget";
-import {TransactionCategory} from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
@@ -39,6 +39,7 @@ describe("BudgetItemSummary component", () => {
         item={testItem}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -59,6 +60,7 @@ describe("BudgetItemSummary component", () => {
         item={{...testItem, cap: 1.5, spent: 2.2}}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -81,6 +83,7 @@ describe("BudgetItemSummary component", () => {
         item={{...testItem, cap: 3.2, spent: 2.2}}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -101,6 +104,7 @@ describe("BudgetItemSummary component", () => {
         item={testItem}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -155,15 +159,16 @@ describe("BudgetItemSummary component", () => {
     });
   });
 
-  test("renders item categories", () => {
+  test("renders unknown categories when no category map is present", () => {
     render(
       <BudgetItemSummary
         item={{
           ...testItem,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         }}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -183,17 +188,59 @@ describe("BudgetItemSummary component", () => {
     ).mock.calls[0][0].children as JSX.Element;
     render(categories);
 
-    expect(
-      screen.getByText(
-        Object.keys(TransactionCategory)[TransactionCategory.BILLS]
-      )
-    ).toBeVisible();
+    expect(screen.getByText("Unknown")).toBeVisible();
     expect(screen.getByTestId("chip-container")).toHaveStyle({
-      backgroundColor: "red"
+      backgroundColor: INITIAL_CATEGORY_MAP.Unknown.color
     });
     expect(CategoryIcon).toBeCalledTimes(1);
     expect(CategoryIcon).toBeCalledWith(
-      expect.objectContaining({category: TransactionCategory.BILLS}),
+      expect.objectContaining({
+        icon: INITIAL_CATEGORY_MAP.Unknown.icon,
+        color: INITIAL_CATEGORY_MAP.Unknown.color
+      }),
+      {}
+    );
+  });
+
+  test("renders item categories with category map", () => {
+    render(
+      <BudgetItemSummary
+        item={{
+          ...testItem,
+          categories: ["Bills"]
+        }}
+        budget={mockBudget}
+        setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={INITIAL_CATEGORY_MAP}
+      />
+    );
+
+    expect(ExpandableAccordion).toBeCalledTimes(1);
+    expect(ExpandableAccordion).toBeCalledWith(
+      {
+        title: "Categories",
+        headerStyle: {width: "80%", alignSelf: "center"},
+        children: expect.any(Object)
+      },
+      {}
+    );
+
+    // test the children of the ExpandableAccordion
+    const categories = (
+      ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
+    ).mock.calls[0][0].children as JSX.Element;
+    render(categories);
+
+    expect(screen.getByText("Bills")).toBeVisible();
+    expect(screen.getByTestId("chip-container")).toHaveStyle({
+      backgroundColor: INITIAL_CATEGORY_MAP.Bills.color
+    });
+    expect(CategoryIcon).toBeCalledTimes(1);
+    expect(CategoryIcon).toBeCalledWith(
+      expect.objectContaining({
+        icon: INITIAL_CATEGORY_MAP.Bills.icon,
+        color: INITIAL_CATEGORY_MAP.Bills.color
+      }),
       {}
     );
   });

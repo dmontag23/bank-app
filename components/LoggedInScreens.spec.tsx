@@ -11,12 +11,14 @@ import {NavigationContainer} from "@react-navigation/native";
 import BudgetsScreen from "./Budgets/BudgetsScreen";
 import LoggedInScreens from "./LoggedInScreens";
 import SettingsScreen from "./Settings/SettingsScreen";
+import AddCategory from "./Transactions/AddCategory";
 import TransactionsScreen from "./Transactions/TransactionsScreen";
 
 import ErrorContext from "../store/error-context";
 
 jest.mock("./Budgets/BudgetsScreen");
 jest.mock("./Settings/SettingsScreen");
+jest.mock("./Transactions/AddCategory");
 jest.mock("./Transactions/TransactionsScreen");
 
 // TODO: Come back and see if there's a way to test the icons
@@ -118,5 +120,16 @@ describe("LoggedInScreens component", () => {
     );
 
     expect(screen.getByText("2")).toBeVisible();
+  });
+
+  test("always renders the add category modal", () => {
+    render(
+      <NavigationContainer>
+        <LoggedInScreens />
+      </NavigationContainer>
+    );
+
+    expect(AddCategory).toBeCalledTimes(1);
+    expect(AddCategory).toBeCalledWith({}, {});
   });
 });

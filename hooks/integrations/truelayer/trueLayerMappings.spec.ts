@@ -6,29 +6,28 @@ import {
 } from "./trueLayerMappings";
 
 import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
-import {TransactionCategory} from "../../../types/transaction";
 
 describe("mapTrueLayerCategoryToInternalCategory", () => {
   const categoryData = [
     {
       categoryList: ["Bills and Utilities"],
-      expectedTransCategory: TransactionCategory.BILLS
+      expectedTransCategory: "Bills"
     },
     {
       categoryList: ["Food & Dining"],
-      expectedTransCategory: TransactionCategory.EATING_OUT
+      expectedTransCategory: "Eating out"
     },
     {
-      categoryList: ["Shopping", "Test"],
-      expectedTransCategory: TransactionCategory.ENTERTAINMENT
+      categoryList: ["Shopping"],
+      expectedTransCategory: "Shopping"
     },
     {
       categoryList: ["Entertainment", "Movies & DVDs"],
-      expectedTransCategory: TransactionCategory.ENTERTAINMENT
+      expectedTransCategory: "Entertainment"
     },
     {
       categoryList: ["I don't know what this is", "Shopping"],
-      expectedTransCategory: TransactionCategory.UNKNOWN
+      expectedTransCategory: "Unknown"
     }
   ];
   test.each(categoryData)(
@@ -45,14 +44,14 @@ describe("mapTrueLayerTransactionToInternalTransaction", () => {
   test("correctly maps a TrueLayer transaction to an internal transaction", async () => {
     const result = mapTrueLayerTransactionToInternalTransaction(
       TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-      TransactionCategory.BILLS
+      "Bills"
     );
     expect(result).toEqual({
       id: "a15d8156569ba848d84c07c34d291bca",
       name: "PAY OFF CREDIT CARD BILL",
       description: "Bills and Utilities",
       amount: 192.52,
-      category: TransactionCategory.BILLS,
+      category: "Bills",
       timestamp: new Date(
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
       )

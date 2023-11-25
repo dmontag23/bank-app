@@ -7,7 +7,6 @@ import BudgetItemForm from "./BudgetItemForm";
 import BudgetItemFormFields from "./BudgetItemFormFields";
 
 import {BudgetInput, BudgetItemInput} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
 import ExpandableAccordion from "../../ui/ExpandableAccordion";
 
 jest.mock("uuid", () => ({
@@ -27,7 +26,7 @@ describe("BudgetItemForm component", () => {
   const ITEM_1: BudgetItemInput = {
     id: "item-1",
     name: "Item 1",
-    categories: [TransactionCategory.EATING_OUT],
+    categories: ["Eating out"],
     cap: ""
   };
 
@@ -72,13 +71,13 @@ describe("BudgetItemForm component", () => {
       id: "item-2",
       name: "Item 2",
       cap: "",
-      categories: [TransactionCategory.SAVINGS]
+      categories: ["Savings"]
     };
     const item3: BudgetItemInput = {
       id: "item-3",
       name: "Item 3",
       cap: "",
-      categories: [TransactionCategory.BILLS]
+      categories: ["Bills"]
     };
 
     const budget: BudgetInput = {
@@ -107,10 +106,7 @@ describe("BudgetItemForm component", () => {
     expect(BudgetItemFormFields).toBeCalledTimes(1);
     expect(BudgetItemFormFields).toBeCalledWith(
       {
-        disabledCategories: [
-          TransactionCategory.EATING_OUT,
-          TransactionCategory.BILLS
-        ],
+        disabledCategories: ["Eating out", "Bills"],
         control: result.current.control,
         index: 1
       },

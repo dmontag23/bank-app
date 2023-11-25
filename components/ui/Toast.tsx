@@ -1,7 +1,8 @@
 import React, {useContext, useState} from "react";
 import {StyleSheet} from "react-native";
-import {Snackbar, useTheme} from "react-native-paper";
+import {Snackbar} from "react-native-paper";
 
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import ToastContext, {
   Toast as ToastObjectType,
   ToastType
@@ -12,7 +13,7 @@ type ToastProps = {
 };
 
 const Toast = ({toast}: ToastProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const [visible, setVisible] = useState(true);
   const {clearToast} = useContext(ToastContext);
 
@@ -26,6 +27,11 @@ const Toast = ({toast}: ToastProps) => {
       inverseSurface: theme.colors.inverseSurface,
       inverseOnSurface: theme.colors.inverseOnSurface,
       inversePrimary: theme.colors.inversePrimary
+    },
+    [ToastType.WARNING]: {
+      inverseSurface: theme.colors.warningContainer,
+      inverseOnSurface: theme.colors.warningOnContainer,
+      inversePrimary: theme.colors.warning
     },
     [ToastType.ERROR]: {
       inverseSurface: theme.colors.errorContainer,

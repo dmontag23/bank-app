@@ -17,6 +17,6 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/tests/e2e"],
   transformIgnorePatterns: [
-    "node_modules/(?!(@react-native|react-native|react-native-vector-icons|@react-native-community/datetimepicker|@react-navigation)/)"
+    "node_modules/(?!(@react-native|react-native|react-native-vector-icons|@react-native-community/datetimepicker|@react-navigation|react-native-reanimated)/)"
   ]
 };

@@ -6,27 +6,38 @@ import {isEqual} from "lodash";
 import BudgetItemSummary from "./BudgetItemSummary";
 
 import {Budget, BudgetItemWithTransactions} from "../../types/budget";
+import {CategoryMap} from "../../types/transaction";
 import TransactionList from "../Transactions/TransactionList";
 
 type BudgetItemProps = {
   item: BudgetItemWithTransactions;
   budget: Budget;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
+  categoryMap: CategoryMap;
 };
 
-const BudgetItem = ({item, budget, setSelectedBudget}: BudgetItemProps) => (
+const BudgetItem = ({
+  item,
+  budget,
+  setSelectedBudget,
+  categoryMap
+}: BudgetItemProps) => (
   <View style={styles.container}>
     <BudgetItemSummary
       item={item}
       budget={budget}
       setSelectedBudget={setSelectedBudget}
+      categoryMap={categoryMap}
     />
     {item.transactions.length === 0 ? (
       <Text variant="headlineMedium" style={styles.text}>
         There are currently no transactions for this budget item.
       </Text>
     ) : (
-      <TransactionList transactions={item.transactions} />
+      <TransactionList
+        transactions={item.transactions}
+        categoryMap={categoryMap}
+      />
     )}
   </View>
 );

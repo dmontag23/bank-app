@@ -1,7 +1,6 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
-import {TransactionCategory} from "../../../types/transaction";
 import {
   EATING_OUT_CARD_TRANSACTION,
   PAY_BILL_CARD_TRANSACTION
@@ -38,10 +37,14 @@ describe("Transactions page", () => {
     await expect(modalTitle).toBeVisible();
 
     // select a new category from the modal
-    await element(by.text("SAVINGS")).tap();
+    await waitFor(element(by.text("Savings")))
+      .toBeVisible()
+      .whileElement(by.id("categoryListScrollView"))
+      .scroll(400, "down");
+    await element(by.text("Savings")).tap();
     await expect(modalTitle).not.toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.SAVINGS}`))
+      element(by.text("1 Jan 2023 at 00:00  -  Savings"))
     ).toBeVisible();
   });
 });

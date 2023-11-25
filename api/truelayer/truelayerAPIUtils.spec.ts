@@ -111,7 +111,7 @@ describe("Truelayer API Utils", () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Auth API");
 
       const mockAuthAPIErrorResponse: AuthAPIErrorResponse = {
@@ -152,14 +152,14 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("handles Truelayer Data API error response with error description and config url", async () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -205,14 +205,14 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("handles Truelayer Data API error response with error details and response url", async () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -258,14 +258,14 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("handles Truelayer Data API error response with type, no details and no urls", async () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -311,14 +311,14 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("handles Truelayer Data API error response with type, details, and config url", async () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -367,14 +367,14 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("handles Truelayer Data API error response with type, details, and response url", async () => {
       const consoleError = jest.spyOn(console, "error");
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => undefined);
+        .mockImplementationOnce(async () => undefined);
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -423,13 +423,13 @@ describe("Truelayer API Utils", () => {
       );
       expect(getNewTokenMock).not.toBeCalled();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
 
     test("calls get new token for the data api on a 401 error", async () => {
       const getNewTokenMock = jest
         .spyOn(truelayerAPIUtils, "getNewToken")
-        .mockImplementation(async () => Promise.reject("Bad error"));
+        .mockImplementationOnce(async () => Promise.reject("Bad error"));
       const errorHandlingFn = await handleTruelayerError("Data API");
 
       const mockAuthAPIErrorResponse: DataAPIErrorResponse = {
@@ -457,7 +457,7 @@ describe("Truelayer API Utils", () => {
       expect(getNewTokenMock).toBeCalledTimes(1);
       expect(getNewTokenMock).toBeCalledWith();
 
-      getNewTokenMock.mockReset();
+      getNewTokenMock.mockRestore();
     });
   });
 
@@ -466,7 +466,7 @@ describe("Truelayer API Utils", () => {
       const consoleLog = jest.spyOn(console, "log");
       const mockGetTokenFromStorage = jest
         .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockImplementation(async () => null);
+        .mockResolvedValueOnce(null);
 
       await expect(getNewToken()).rejects.toEqual({
         error: "No refresh token found",
@@ -478,17 +478,17 @@ describe("Truelayer API Utils", () => {
       expect(mockGetTokenFromStorage).toBeCalledTimes(1);
       expect(mockGetTokenFromStorage).toBeCalledWith("truelayer-refresh-token");
 
-      mockGetTokenFromStorage.mockReset();
+      mockGetTokenFromStorage.mockRestore();
     });
 
     test("stores new access and refresh tokens", async () => {
       const consoleLog = jest.spyOn(console, "log");
       const mockGetTokenFromStorage = jest
         .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockImplementation(async () => "refresh-token");
+        .mockImplementationOnce(async () => "refresh-token");
       const mockStoreNewTokens = jest
         .spyOn(truelayerAPIUtils, "storeNewTokens")
-        .mockImplementation(async () => {});
+        .mockImplementationOnce(async () => {});
       (
         trueLayerAuthApi.post as jest.MockedFunction<
           typeof trueLayerAuthApi.post<
@@ -496,7 +496,7 @@ describe("Truelayer API Utils", () => {
             ConnectTokenPostResponse
           >
         >
-      ).mockImplementation(async () => ({
+      ).mockImplementationOnce(async () => ({
         access_token: "new-access-token",
         expires_in: 3600,
         refresh_token: "new-refresh-token",
@@ -531,17 +531,17 @@ describe("Truelayer API Utils", () => {
         "new-refresh-token"
       );
 
-      mockGetTokenFromStorage.mockReset();
-      mockStoreNewTokens.mockReset();
+      mockGetTokenFromStorage.mockRestore();
+      mockStoreNewTokens.mockRestore();
     });
 
     test("stores new access token without refresh token", async () => {
       const mockGetTokenFromStorage = jest
         .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockImplementation(async () => "refresh-token");
+        .mockImplementationOnce(async () => "refresh-token");
       const mockStoreNewTokens = jest
         .spyOn(truelayerAPIUtils, "storeNewTokens")
-        .mockImplementation(async () => {});
+        .mockImplementationOnce(async () => {});
       (
         trueLayerAuthApi.post as jest.MockedFunction<
           typeof trueLayerAuthApi.post<
@@ -549,7 +549,7 @@ describe("Truelayer API Utils", () => {
             ConnectTokenPostResponse
           >
         >
-      ).mockImplementation(async () => ({
+      ).mockImplementationOnce(async () => ({
         access_token: "new-access-token",
         expires_in: 3600,
         token_type: "token-type",
@@ -561,8 +561,8 @@ describe("Truelayer API Utils", () => {
       expect(mockStoreNewTokens).toBeCalledTimes(1);
       expect(mockStoreNewTokens).toBeCalledWith("new-access-token", "");
 
-      mockGetTokenFromStorage.mockReset();
-      mockStoreNewTokens.mockReset();
+      mockGetTokenFromStorage.mockRestore();
+      mockStoreNewTokens.mockRestore();
     });
   });
 

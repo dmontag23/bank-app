@@ -1,10 +1,10 @@
-import {Transaction, TransactionCategory} from "./transaction";
+import {Transaction} from "./transaction";
 
 export type BudgetItem = {
   id: string;
   name: string;
   cap: number;
-  categories: TransactionCategory[];
+  categories: string[];
 };
 
 export type BudgetItemWithTransactions = BudgetItem & {

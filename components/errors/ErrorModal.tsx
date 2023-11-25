@@ -1,13 +1,14 @@
 import React, {useContext} from "react";
 import {ScrollView, StyleSheet} from "react-native";
-import {Button, Modal, Portal, Text, useTheme} from "react-native-paper";
+import {Button, Modal, Portal, Text} from "react-native-paper";
 
 import ErrorItem from "./ErrorItem";
 
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import ErrorContext from "../../store/error-context";
 
 const ErrorModal = () => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const {errorModal, errors} = useContext(ErrorContext);
 
   return (

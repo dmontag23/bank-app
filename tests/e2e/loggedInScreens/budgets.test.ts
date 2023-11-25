@@ -1,8 +1,8 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
+import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {Budget} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
 import {logIn} from "../utils/utils";
 
 /* TODO: find a way to remove this function
@@ -42,22 +42,30 @@ const createBudget = async (budget: Budget) => {
   // have to use a for loop because array iterators don't know how to await a promise
   // before continuing to the next item in the array
   for (const [i, item] of budget.items.entries()) {
-    await element(by.text("Add item")).tap();
     await waitFor(element(by.text("Add item")))
       .toBeVisible()
       .whileElement(by.id("budgetFormScrollView"))
       .scroll(400, "down");
-    await expect(
-      element(by.id("budgetItemNameInput")).atIndex(i)
-    ).toBeVisible();
+    await element(by.text("Add item")).tap();
+    await waitFor(element(by.text("Select categories")).atIndex(i))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(400, "down");
     await element(by.id("budgetItemNameInput")).atIndex(i).typeText(item.name);
     const capInputElement = element(by.id("budgetItemCapInput")).atIndex(i);
     await capInputElement.typeText(item.cap.toString());
     await capInputElement.tapReturnKey();
+    // a for loop is used here instead of map in order to ensure
+    // each category is processed sequentially and not in parallel
     for (const category of item.categories) {
-      await element(by.text(Object.keys(TransactionCategory)[category]))
-        .atIndex(i)
-        .tap();
+      const categoryElement = element(
+        by.label(category).withAncestor(by.id("categoryList"))
+      ).atIndex(i);
+      await waitFor(categoryElement)
+        .toBeVisible()
+        .whileElement(by.id("budgetFormScrollView"))
+        .scroll(500, "down");
+      await categoryElement.tap();
     }
   }
 
@@ -151,7 +159,11 @@ describe("Budget page", () => {
     await itemCapInput.tapReturnKey();
 
     // select the entertainment category
-    const firstCategoryButton = await element(by.text("ENTERTAINMENT"));
+    await waitFor(element(by.text("Entertainment")))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(400, "down");
+    const firstCategoryButton = await element(by.text("Entertainment"));
     await expect(firstCategoryButton).toBeVisible();
     await firstCategoryButton.tap();
 
@@ -160,7 +172,7 @@ describe("Budget page", () => {
       .toBeVisible()
       .whileElement(by.id("budgetFormScrollView"))
       .scroll(100, "down");
-    const secondCategoryButton = await element(by.text("UNKNOWN"));
+    const secondCategoryButton = await element(by.text("Unknown"));
     await expect(secondCategoryButton).toBeVisible();
     await secondCategoryButton.tap();
 
@@ -186,13 +198,13 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Bills",
           cap: 150,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         },
         {
           id: "item-2",
           name: "Eating out",
           cap: 500,
-          categories: [TransactionCategory.EATING_OUT]
+          categories: ["Eating out"]
         }
       ],
       window: {start: new Date("2013-01-01"), end: new Date("2023-03-01")}
@@ -205,7 +217,7 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.BILLS}`))
+      element(by.text("1 Jan 2023 at 00:00  -  Bills"))
     ).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
 
@@ -217,9 +229,7 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £500.00"))).toBeVisible();
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
     await expect(
-      element(
-        by.text(`24 Feb 2013 at 14:00  -  ${TransactionCategory.EATING_OUT}`)
-      )
+      element(by.text("24 Feb 2013 at 14:00  -  Eating out"))
     ).toBeVisible();
     await expect(element(by.text("£36.71"))).toBeVisible();
   });
@@ -233,7 +243,7 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Bills",
           cap: 150,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -272,7 +282,7 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Fun",
           cap: 150,
-          categories: [TransactionCategory.SAVINGS]
+          categories: ["Savings"]
         }
       ],
       window: {start: new Date("2023-02-01"), end: new Date("2023-03-01")}
@@ -305,13 +315,13 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Bills",
           cap: 500,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         },
         {
           id: "item-2",
           name: "Savings",
           cap: 150,
-          categories: [TransactionCategory.SAVINGS]
+          categories: ["Savings"]
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -327,7 +337,7 @@ describe("Budget page", () => {
     await expect(transaction).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.BILLS}`))
+      element(by.text("1 Jan 2023 at 00:00  -  Bills"))
     ).toBeVisible();
 
     // click the transaction
@@ -336,7 +346,12 @@ describe("Budget page", () => {
     await expect(
       element(by.text("PAY OFF CREDIT CARD BILL")).atIndex(0)
     ).toBeVisible();
-    const savingsOption = element(by.text("SAVINGS"));
+    const savingsOption = element(by.text("Savings"));
+
+    await waitFor(savingsOption)
+      .toBeVisible()
+      .whileElement(by.id("categoryListScrollView"))
+      .scroll(400, "down");
     await expect(savingsOption).toBeVisible();
 
     // click the savings option
@@ -360,7 +375,7 @@ describe("Budget page", () => {
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${TransactionCategory.SAVINGS}`))
+      element(by.text("1 Jan 2023 at 00:00  -  Savings"))
     ).toBeVisible();
   });
 
@@ -373,7 +388,7 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Everything",
           cap: 30000,
-          categories: Object.values(TransactionCategory)
+          categories: Object.keys(INITIAL_CATEGORY_MAP)
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -402,7 +417,7 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Bills",
           cap: 150,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -441,7 +456,7 @@ describe("Budget page", () => {
           id: "item-1",
           name: "Bills",
           cap: 150,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Bills"]
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -478,14 +493,19 @@ describe("Budget page", () => {
     await nameField.tap(); // dismiss the modal
     await element(by.label("Item name")).atIndex(0).replaceText("Fun");
     await element(by.label("Cap")).atIndex(0).replaceText("500");
-    await element(
-      by.text(Object.keys(TransactionCategory)[TransactionCategory.BILLS])
-    ).tap();
-    await element(
-      by.text(
-        Object.keys(TransactionCategory)[TransactionCategory.ENTERTAINMENT]
-      )
-    ).tap();
+    // Bills is at index 1 below because the title "Bills" of the budget item
+    // is still beneath the modal
+    await element(by.label("Bills")).atIndex(1).tap();
+    await waitFor(element(by.text("Entertainment")))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(400, "down");
+    await element(by.label("Entertainment")).tap();
+    await waitFor(element(by.text("Shopping")))
+      .toBeVisible()
+      .whileElement(by.id("budgetFormScrollView"))
+      .scroll(400, "down");
+    await element(by.label("Shopping")).tap();
     await element(by.text("Save")).tap();
 
     // check the new values have taken effect
@@ -502,9 +522,9 @@ describe("Budget page", () => {
       items: [
         {
           id: "item-1",
-          name: "Bills",
+          name: "Fun",
           cap: 1000,
-          categories: [TransactionCategory.BILLS]
+          categories: ["Shopping"]
         }
       ],
       window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
@@ -515,11 +535,11 @@ describe("Budget page", () => {
     // twirl down the categories and check they all exist on the screen
     const categoriesButton = element(by.text("Categories"));
     await categoriesButton.tap();
-    const billsCategory = element(by.text("BILLS"));
-    await expect(billsCategory).toBeVisible();
+    const shoppingCategory = element(by.text("Shopping"));
+    await expect(shoppingCategory).toBeVisible();
 
     // twirl up the categories and check they are no longer visible
     await categoriesButton.tap();
-    await expect(billsCategory).not.toBeVisible();
+    await expect(shoppingCategory).not.toBeVisible();
   });
 });

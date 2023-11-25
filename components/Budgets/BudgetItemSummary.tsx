@@ -1,32 +1,30 @@
 import React, {useState} from "react";
 import {StyleSheet, View} from "react-native";
-import {
-  Chip,
-  IconButton,
-  ProgressBar,
-  Text,
-  useTheme
-} from "react-native-paper";
+import {Chip, IconButton, ProgressBar, Text} from "react-native-paper";
 
 import BudgetDialog from "./BudgetDialog";
 
+import {INITIAL_CATEGORY_MAP} from "../../constants";
+import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {Budget, BudgetItemWithTransactions} from "../../types/budget";
-import {TransactionCategory} from "../../types/transaction";
-import CategoryIcon, {categoryToIconMap} from "../ui/CategoryIcon";
+import {CategoryMap} from "../../types/transaction";
+import CategoryIcon from "../ui/CategoryIcon";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
 type BudgetItemSummaryProps = {
   item: BudgetItemWithTransactions;
   budget: Budget;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
+  categoryMap: CategoryMap;
 };
 
 const BudgetItemSummary = ({
   item,
   budget,
-  setSelectedBudget
+  setSelectedBudget,
+  categoryMap
 }: BudgetItemSummaryProps) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const [isBudgetDialogVisible, setIsBudgetDialogVisible] = useState(false);
   const showBudgetDialog = () => setIsBudgetDialogVisible(true);
@@ -91,15 +89,21 @@ const BudgetItemSummary = ({
       </View>
       <ExpandableAccordion title="Categories" headerStyle={styles.accordion}>
         <View style={styles.categoriesContainer}>
-          {item.categories.map(category => (
-            <Chip
-              key={category}
-              avatar={<CategoryIcon category={category} />}
-              textStyle={styles.categoryChip}
-              style={{backgroundColor: categoryToIconMap[category].color}}>
-              {Object.keys(TransactionCategory)[category]}
-            </Chip>
-          ))}
+          {item.categories.map(category => {
+            const isCategoryInMap = Boolean(categoryMap[category]);
+            const {icon, color} = isCategoryInMap
+              ? categoryMap[category]
+              : INITIAL_CATEGORY_MAP.Unknown;
+            return (
+              <Chip
+                key={category}
+                avatar={<CategoryIcon icon={icon} color={color} />}
+                textStyle={styles.categoryChip}
+                style={{backgroundColor: color}}>
+                {isCategoryInMap ? category : "Unknown"}
+              </Chip>
+            );
+          })}
         </View>
       </ExpandableAccordion>
     </>

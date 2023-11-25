@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {AppState, AppStateStatus, Platform} from "react-native";
-import {Portal, useTheme} from "react-native-paper";
+import {Portal} from "react-native-paper";
 import {
   LinkingOptions,
   NavigationContainer,
@@ -13,6 +13,9 @@ import RootScreens from "./components/RootScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
 import Toasts from "./components/ui/Toasts";
 import config from "./config.json";
+import {INITIAL_CATEGORY_MAP} from "./constants";
+import useStoreCategoryMap from "./hooks/transactions/useStoreCategoryMap";
+import {useAppTheme} from "./hooks/utils/useAppTheme";
 
 const App = () => {
   // refetch any queries anytime the user leaves the app and then returns
@@ -26,7 +29,16 @@ const App = () => {
     return () => subscription.remove();
   }, []);
 
-  const theme = useTheme();
+  // pre-populate async storage with pre-defined transaction categories
+  // TODO: Maybe find a better way to initially populate this data
+  const {mutate: storeTransactionCategory} = useStoreCategoryMap({
+    showWarningOnDuplicateCategory: false
+  });
+  useEffect(() => {
+    storeTransactionCategory(INITIAL_CATEGORY_MAP);
+  }, [storeTransactionCategory]);
+
+  const theme = useAppTheme();
 
   const linking: LinkingOptions<ParamListBase> = {
     prefixes: [config.uri],
@@ -41,17 +53,7 @@ const App = () => {
     <NavigationContainer
       linking={linking}
       fallback={<CenteredLoadingSpinner />}
-      theme={{
-        ...theme,
-        // TODO: Check these colors to see if they make sense for the react navigation theme
-        colors: {
-          ...theme.colors,
-          card: theme.colors.surface,
-          text: theme.colors.background,
-          border: theme.colors.surface,
-          notification: theme.colors.secondary
-        }
-      }}>
+      theme={theme}>
       <Portal.Host>
         <RootScreens />
         <Toasts />

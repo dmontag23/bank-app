@@ -3,12 +3,13 @@ import {MD3LightTheme} from "react-native-paper";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import Budget from "../../../components/Budgets/Budget";
 import config from "../../../config.json";
+import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {Budget as BudgetType} from "../../../types/budget";
-import {TransactionCategory} from "../../../types/transaction";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
@@ -150,9 +151,7 @@ describe("Budgets", () => {
     // Transactions
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
-    expect(
-      screen.getByText(`1 Jan 2023 at 00:00 - ${TransactionCategory.BILLS}`)
-    ).toBeVisible();
+    expect(screen.getByText("1 Jan 2023 at 00:00 - Bills")).toBeVisible();
   });
 
   test("switches between budget items", async () => {
@@ -179,6 +178,11 @@ describe("Budgets", () => {
   });
 
   test("can edit a budget", async () => {
+    await AsyncStorage.setItem(
+      "category-map",
+      JSON.stringify(INITIAL_CATEGORY_MAP)
+    );
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -228,9 +232,7 @@ describe("Budgets", () => {
     const endDateField = screen.getByLabelText("End date");
     const itemNameField = screen.getByLabelText("Item name");
     const capField = screen.getByLabelText("Cap");
-    const billsField = screen.getByLabelText(
-      Object.keys(TransactionCategory)[TransactionCategory.BILLS]
-    );
+    const billsField = screen.getByLabelText("Bills");
 
     expect(nameField).toBeVisible();
     expect(nameField.props).toMatchObject({
@@ -290,11 +292,7 @@ describe("Budgets", () => {
     fireEvent.changeText(itemNameField, "New item name");
     fireEvent.changeText(capField, "50");
     fireEvent.press(billsField);
-    fireEvent.press(
-      screen.getByLabelText(
-        Object.keys(TransactionCategory)[TransactionCategory.EATING_OUT]
-      )
-    );
+    fireEvent.press(screen.getByLabelText("Eating out"));
 
     fireEvent.press(screen.getByText("Save"));
 
@@ -312,7 +310,7 @@ describe("Budgets", () => {
           id: BUDGET_WITH_ONE_ITEM.items[0].id,
           name: "New item name",
           cap: 50,
-          categories: [TransactionCategory.EATING_OUT]
+          categories: ["Eating out"]
         }
       ]
     });

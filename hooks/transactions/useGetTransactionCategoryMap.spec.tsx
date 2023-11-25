@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
-import {TransactionCategory} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
@@ -22,7 +21,7 @@ describe("useGetTransactionCategoryMap", () => {
 
   test("returns a map where only some values are retrieved from storage", async () => {
     // setup AsyncStorage with mock data
-    await AsyncStorage.setItem("truelayer-id-2", TransactionCategory.BILLS);
+    await AsyncStorage.setItem("truelayer-id-2", "Bills");
 
     // setup error context mocks
     const mockRemoveError = jest.fn();
@@ -42,7 +41,7 @@ describe("useGetTransactionCategoryMap", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.data).toEqual({
       "id-1": null,
-      "id-2": TransactionCategory.BILLS
+      "id-2": "Bills"
     });
     expect(AsyncStorage.multiGet).toBeCalledTimes(1);
     expect(AsyncStorage.multiGet).toBeCalledWith([

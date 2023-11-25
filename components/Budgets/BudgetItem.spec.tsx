@@ -6,8 +6,9 @@ import {describe, expect, jest, test} from "@jest/globals";
 import BudgetItem from "./BudgetItem";
 import BudgetItemSummary from "./BudgetItemSummary";
 
+import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {BudgetItemWithTransactions} from "../../types/budget";
-import {Transaction, TransactionCategory} from "../../types/transaction";
+import {Transaction} from "../../types/transaction";
 import TransactionList from "../Transactions/TransactionList";
 
 jest.mock("lodash");
@@ -21,7 +22,7 @@ describe("BudgetItem component", () => {
       name: "Transaction 1",
       description: "Description",
       amount: 0,
-      category: TransactionCategory.SAVINGS,
+      category: "Savings",
       timestamp: new Date("2023-01-01")
     }
   ];
@@ -48,6 +49,7 @@ describe("BudgetItem component", () => {
         item={{...testItem, transactions: []}}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={{}}
       />
     );
 
@@ -61,7 +63,8 @@ describe("BudgetItem component", () => {
       {
         item: {...testItem, transactions: []},
         budget: mockBudget,
-        setSelectedBudget: mockSetSelectedBudget
+        setSelectedBudget: mockSetSelectedBudget,
+        categoryMap: {}
       },
       {}
     );
@@ -81,6 +84,7 @@ describe("BudgetItem component", () => {
         item={testItem}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={INITIAL_CATEGORY_MAP}
       />
     );
 
@@ -89,13 +93,14 @@ describe("BudgetItem component", () => {
       {
         item: testItem,
         budget: mockBudget,
-        setSelectedBudget: mockSetSelectedBudget
+        setSelectedBudget: mockSetSelectedBudget,
+        categoryMap: INITIAL_CATEGORY_MAP
       },
       {}
     );
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
-      {transactions: testTransactions},
+      {transactions: testTransactions, categoryMap: INITIAL_CATEGORY_MAP},
       {}
     );
   });
@@ -115,6 +120,7 @@ describe("BudgetItem component", () => {
         item={testItem}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={INITIAL_CATEGORY_MAP}
       />
     );
 
@@ -123,6 +129,7 @@ describe("BudgetItem component", () => {
         item={{...testItem, id: "2"}}
         budget={mockBudget}
         setSelectedBudget={mockSetSelectedBudget}
+        categoryMap={INITIAL_CATEGORY_MAP}
       />
     );
 
@@ -131,12 +138,14 @@ describe("BudgetItem component", () => {
       {
         item: testItem,
         budget: mockBudget,
-        setSelectedBudget: mockSetSelectedBudget
+        setSelectedBudget: mockSetSelectedBudget,
+        categoryMap: INITIAL_CATEGORY_MAP
       },
       {
         item: {...testItem, id: "2"},
         budget: mockBudget,
-        setSelectedBudget: mockSetSelectedBudget
+        setSelectedBudget: mockSetSelectedBudget,
+        categoryMap: INITIAL_CATEGORY_MAP
       }
     );
   });
