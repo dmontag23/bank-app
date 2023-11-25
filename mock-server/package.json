@@ -3,13 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run clean && npm run install",
-    "clean": "npm run clean-node-modules && npm run clean-mock-server",
     "clean-mock-server": "rm -rf dist",
-    "clean-node-modules": "rm -rf node_modules",
-    "install": "npm install && npm run mock-ts-compile",
     "mock-ts-compile": "npx tsc",
-    "start": "npm run build && node dist/mock-server/runMockServer.js"
+    "start": "npm run clean-mock-server && npm run mock-ts-compile && node dist/mock-server/runMockServer.js"
   },
   "dependencies": {
     "express": "^4.18.2"
