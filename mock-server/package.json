@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run clean-mock-server && npm run mock-ts-compile",
+    "build": "npm run clean-mock-server && npm run mock-ts-compile && cp package.json ./dist",
     "clean-mock-server": "rm -rf dist",
     "mock-ts-compile": "npx tsc",
     "start": "node dist/mock-server/runMockServer.js"
