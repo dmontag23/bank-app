@@ -13,6 +13,7 @@ import {
 } from "@testing-library/react-native";
 
 import {theme} from "../hooks/utils/useAppTheme";
+import {AddCategoryContextProvider} from "../store/add-category-context";
 import {ErrorContextProvider} from "../store/error-context";
 import {ToastContextProvider} from "../store/toast-context";
 import {TruelayerAuthContextProvider} from "../store/truelayer-auth-context";
@@ -26,7 +27,9 @@ const Providers = ({children}: ProvidersProps) => (
     <TruelayerAuthContextProvider>
       <ToastContextProvider>
         <ErrorContextProvider>
-          <PaperProvider theme={theme}>{children}</PaperProvider>
+          <AddCategoryContextProvider>
+            <PaperProvider theme={theme}>{children}</PaperProvider>
+          </AddCategoryContextProvider>
         </ErrorContextProvider>
       </ToastContextProvider>
     </TruelayerAuthContextProvider>

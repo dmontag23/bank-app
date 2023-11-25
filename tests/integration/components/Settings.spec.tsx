@@ -48,6 +48,7 @@ describe("Settings Screen", () => {
     );
 
     expect(screen.getByText("Settings")).toBeVisible();
+    expect(screen.getByText("Add category")).toBeVisible();
     expect(screen.getByText("Reconnect to Truelayer")).toBeVisible();
     expect(screen.getByText("Show Errors")).toBeVisible();
   });

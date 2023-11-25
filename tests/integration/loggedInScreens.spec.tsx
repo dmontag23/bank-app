@@ -2,7 +2,6 @@ import React from "react";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../components/LoggedInScreens";
@@ -11,11 +10,6 @@ import config from "../../config.json";
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
     // setup mocks
-    await AsyncStorage.setItem(
-      "truelayer-auth-token",
-      "dummy-truelayer-auth-token"
-    );
-
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards/1/transactions")
       .reply(200, {
