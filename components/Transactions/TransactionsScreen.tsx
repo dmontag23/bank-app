@@ -5,8 +5,8 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 import TransactionList from "./TransactionList";
 
+import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
-import useTransactions from "../../hooks/transactions/useTransactions";
 import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
@@ -18,7 +18,7 @@ const TransactionsScreen = () => {
     isLoading: isTransactionsLoading,
     transactions,
     refetch
-  } = useTransactions({enabled: false});
+  } = useGetAllMappedTruelayerTransactions({enabled: false});
 
   const {isLoading: isCategoryMapLoading, data: categoryMap} =
     useGetCategoryMap();

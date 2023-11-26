@@ -12,8 +12,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import Budget from "./Budget";
 import BudgetItem from "./BudgetItem";
 
+import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
-import useTransactions from "../../hooks/transactions/useTransactions";
 import {
   EATING_OUT_CARD_TRANSACTION,
   PAY_BILL_CARD_TRANSACTION,
@@ -27,8 +27,10 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 // here for a memoized component
 jest.mock("./BudgetItem", () => jest.fn());
 jest.mock("../ui/LoadingSpinner");
+jest.mock(
+  "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions"
+);
 jest.mock("../../hooks/transactions/useGetCategoryMap");
-jest.mock("../../hooks/transactions/useTransactions");
 
 describe("Budget component", () => {
   const emptyBudget = {
@@ -45,7 +47,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: true,
       transactions: []
     });
@@ -61,8 +65,8 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
       dateRange: {
         from: emptyBudget.window.start,
         to: emptyBudget.window.end
@@ -76,7 +80,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [EATING_OUT_CARD_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
     });
@@ -102,7 +108,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [EATING_OUT_CARD_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
     });
@@ -118,8 +126,8 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
       dateRange: {
         from: emptyBudget.window.start,
         to: emptyBudget.window.end
@@ -143,7 +151,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: []
     });
@@ -162,8 +172,8 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
       dateRange: {
         from: emptyBudget.window.start,
         to: emptyBudget.window.end
@@ -206,7 +216,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [
         PAY_RENT_TRANSACTION,
@@ -231,8 +243,8 @@ describe("Budget component", () => {
     );
 
     await waitFor(() => expect(BudgetItem).toBeCalledTimes(1));
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
       dateRange: {
         from: emptyBudget.window.start,
         to: emptyBudget.window.end
@@ -278,7 +290,9 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [
         PAY_RENT_TRANSACTION,
@@ -301,8 +315,8 @@ describe("Budget component", () => {
       </NavigationContainer>
     );
 
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
       dateRange: {
         from: emptyBudget.window.start,
         to: emptyBudget.window.end

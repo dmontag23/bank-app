@@ -1,26 +1,26 @@
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
-import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
-import useTransactions from "./useTransactions";
-
-import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../mock-server/truelayer/data/cardTransactionData";
-import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction
-} from "../integrations/truelayer/trueLayerMappings";
-import useGetAllTruelayerCards from "../integrations/truelayer/useGetAllTruelayerCards";
-import useGetAllTruelayerTransactions from "../integrations/truelayer/useGetAllTruelayerTransactions";
+} from "./trueLayerMappings";
+import useGetAllMappedTruelayerTransactions from "./useGetAllMappedTruelayerTransactions";
+import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
+import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
-jest.mock("../integrations/truelayer/trueLayerMappings");
-jest.mock("../integrations/truelayer/useGetAllTruelayerCards");
-jest.mock("../integrations/truelayer/useGetAllTruelayerTransactions");
-jest.mock("./useGetTransactionCategoryMap");
-jest.mock("./useStoreTransactionCategoryMap");
+import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../mock-server/truelayer/data/cardTransactionData";
+import {EATING_OUT_CARD_TRANSACTION} from "../../../tests/mocks/data/transactions";
+import useGetTransactionCategoryMap from "../../transactions/useGetTransactionCategoryMap";
+import useStoreTransactionCategoryMap from "../../transactions/useStoreTransactionCategoryMap";
 
-describe("useTransactions", () => {
+jest.mock("./trueLayerMappings");
+jest.mock("./useGetAllTruelayerCards");
+jest.mock("./useGetAllTruelayerTransactions");
+jest.mock("../../transactions/useGetTransactionCategoryMap");
+jest.mock("../../transactions/useStoreTransactionCategoryMap");
+
+describe("useGetAllMappedTruelayerTransactions", () => {
   test("can pass in date range", async () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
@@ -64,7 +64,7 @@ describe("useTransactions", () => {
     });
 
     renderHook(() =>
-      useTransactions({
+      useGetAllMappedTruelayerTransactions({
         dateRange: {
           from: new Date("01-01-2022"),
           to: new Date("01-01-2023")
@@ -128,7 +128,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -198,7 +198,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -268,7 +268,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -336,7 +336,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -404,7 +404,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     expect(result.current.isLoading).toBe(false);
@@ -484,7 +484,7 @@ describe("useTransactions", () => {
     ).mockReturnValueOnce(EATING_OUT_CARD_TRANSACTION);
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -568,7 +568,7 @@ describe("useTransactions", () => {
     ).mockReturnValueOnce(EATING_OUT_CARD_TRANSACTION);
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -639,7 +639,7 @@ describe("useTransactions", () => {
     });
 
     // run hook
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
 
     result.current.refetch();
 
@@ -691,7 +691,7 @@ describe("useTransactions", () => {
     });
 
     renderHook(() =>
-      useTransactions({
+      useGetAllMappedTruelayerTransactions({
         enabled: false
       })
     );

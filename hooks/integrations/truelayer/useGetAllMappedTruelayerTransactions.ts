@@ -1,19 +1,19 @@
 import {useEffect, useMemo} from "react";
 
-import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
-import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
+import {
+  mapTrueLayerCategoryToInternalCategory,
+  mapTrueLayerTransactionToInternalTransaction
+} from "./trueLayerMappings";
+import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
+import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
 import {
   Transaction,
   TransactionIDToCategoryMapping
-} from "../../types/transaction";
-import {CardTransaction} from "../../types/trueLayer/dataAPI/cards";
-import {
-  mapTrueLayerCategoryToInternalCategory,
-  mapTrueLayerTransactionToInternalTransaction
-} from "../integrations/truelayer/trueLayerMappings";
-import useGetAllTruelayerCards from "../integrations/truelayer/useGetAllTruelayerCards";
-import useGetAllTruelayerTransactions from "../integrations/truelayer/useGetAllTruelayerTransactions";
+} from "../../../types/transaction";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
+import useGetTransactionCategoryMap from "../../transactions/useGetTransactionCategoryMap";
+import useStoreTransactionCategoryMap from "../../transactions/useStoreTransactionCategoryMap";
 
 // TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
 const assignCategoriesToTransactions = (
@@ -67,7 +67,7 @@ type UseTransactionsProps = {
   enabled?: boolean;
 };
 
-const useTransactions = ({
+const useGetAllMappedTruelayerTransactions = ({
   dateRange,
   enabled = true
 }: UseTransactionsProps = {}) => {
@@ -148,4 +148,4 @@ const useTransactions = ({
   };
 };
 
-export default useTransactions;
+export default useGetAllMappedTruelayerTransactions;

@@ -4,7 +4,7 @@ import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import config from "../../config.json";
-import useTransactions from "../../hooks/transactions/useTransactions";
+import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import {TRUELAYER_MASTERCARD} from "../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -22,7 +22,7 @@ describe("useTransactions transaction flow", () => {
         status: "Succeeded"
       });
 
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.transactions).toEqual([]);
     expect(await AsyncStorage.getAllKeys()).toEqual([]);
@@ -49,7 +49,7 @@ describe("useTransactions transaction flow", () => {
         status: "Succeeded"
       });
 
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false), {
       timeout: 2000
     });
@@ -81,7 +81,7 @@ describe("useTransactions transaction flow", () => {
         status: "Succeeded"
       });
 
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false), {
       timeout: 2000
     });
@@ -148,7 +148,7 @@ describe("useTransactions transaction flow", () => {
       "Savings"
     );
 
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false), {
       timeout: 2000
     });
@@ -216,7 +216,7 @@ describe("useTransactions transaction flow", () => {
       "Savings"
     );
 
-    const {result} = renderHook(() => useTransactions());
+    const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
     await waitFor(() => expect(result.current.isLoading).toBe(false), {
       timeout: 2000
     });

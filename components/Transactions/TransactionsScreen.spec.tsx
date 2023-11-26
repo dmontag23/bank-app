@@ -6,8 +6,8 @@ import TransactionList from "./TransactionList";
 import TransactionsScreen from "./TransactionsScreen";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
+import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
-import useTransactions from "../../hooks/transactions/useTransactions";
 import useOnFocus from "../../hooks/utils/useOnFocus";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {Transaction} from "../../types/transaction";
@@ -15,8 +15,10 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 
 jest.mock("./TransactionList");
 jest.mock("../ui/LoadingSpinner");
+jest.mock(
+  "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions"
+);
 jest.mock("../../hooks/transactions/useGetCategoryMap");
-jest.mock("../../hooks/transactions/useTransactions");
 jest.mock("../../hooks/utils/useOnFocus");
 
 describe("TransactionsScreen component", () => {
@@ -26,7 +28,9 @@ describe("TransactionsScreen component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: true,
       transactions: [],
       refetch: mockRefetch
@@ -43,8 +47,10 @@ describe("TransactionsScreen component", () => {
     expect(LoadingSpinner).toBeCalledWith({}, {});
     expect(useOnFocus).toBeCalledTimes(1);
     expect(useOnFocus).toBeCalledWith(mockRefetch);
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({enabled: false});
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
+      enabled: false
+    });
   });
 
   test("renders a loading spinner when loading the category map", () => {
@@ -52,7 +58,9 @@ describe("TransactionsScreen component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [
         EATING_OUT_CARD_TRANSACTION,
@@ -100,7 +108,9 @@ describe("TransactionsScreen component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: testTransactions,
       refetch: mockRefetch
@@ -121,8 +131,10 @@ describe("TransactionsScreen component", () => {
       {transactions: testTransactions, categoryMap: {}},
       {}
     );
-    expect(useTransactions).toBeCalledTimes(1);
-    expect(useTransactions).toBeCalledWith({enabled: false});
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledTimes(1);
+    expect(useGetAllMappedTruelayerTransactions).toBeCalledWith({
+      enabled: false
+    });
   });
 
   test("passes category map to the transaction list component", () => {
@@ -130,7 +142,9 @@ describe("TransactionsScreen component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
-    (useTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
+    (
+      useGetAllMappedTruelayerTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
       isLoading: false,
       transactions: [],
       refetch: jest.fn()
