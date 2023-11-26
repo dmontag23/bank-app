@@ -1,4 +1,4 @@
-import {CardTransaction} from "../../../../../types/trueLayer/dataAPI/cards";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 export const TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS: CardTransaction = {
   transaction_id: "a15d8156569ba848d84c07c34d291bca",

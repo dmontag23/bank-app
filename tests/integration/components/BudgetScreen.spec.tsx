@@ -8,19 +8,19 @@ import {NavigationContainer} from "@react-navigation/native";
 import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
 import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
-import {
-  BUDGET_WITH_NO_ITEMS,
-  BUDGET_WITH_ONE_ITEM,
-  BUDGET_WITH_TWO_ITEMS
-} from "../../mocks/data/budgets";
-import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS,
   TRUELAYER_ENTERTAINMENT_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
+} from "../../../mock-server/truelayer/data/cardTransactionData";
+import {
+  BUDGET_WITH_NO_ITEMS,
+  BUDGET_WITH_ONE_ITEM,
+  BUDGET_WITH_TWO_ITEMS
+} from "../../mocks/data/budgets";
 
 describe("Budget screen", () => {
   test("renders the default home page with no selected budget", () => {

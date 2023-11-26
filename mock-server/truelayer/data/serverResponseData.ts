@@ -1,4 +1,4 @@
-import {DataAPIErrorResponse} from "../../../../../types/trueLayer/dataAPI/serverResponse";
+import {DataAPIErrorResponse} from "../../../types/trueLayer/dataAPI/serverResponse";
 
 export const ERROR_429_RESPONSE: DataAPIErrorResponse = {
   error_description:

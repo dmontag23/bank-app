@@ -9,16 +9,16 @@ import {NavigationContainer} from "@react-navigation/native";
 import Budget from "../../../components/Budgets/Budget";
 import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
+import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
+import {
+  TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+  TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
+} from "../../../mock-server/truelayer/data/cardTransactionData";
 import {Budget as BudgetType} from "../../../types/budget";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
 } from "../../mocks/data/budgets";
-import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
-import {
-  TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
-  TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
 
 describe("Budgets", () => {
   const EMPTY_BUDGET: BudgetType = {

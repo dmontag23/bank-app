@@ -8,13 +8,13 @@ import {NavigationContainer} from "@react-navigation/native";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
-import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
-import {TRUELAYER_MASTERCARD} from "../../mocks/trueLayer/dataAPI/data/cardData";
+import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
-} from "../../mocks/trueLayer/dataAPI/data/cardTransactionData";
+} from "../../../mock-server/truelayer/data/cardTransactionData";
+import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 describe("Transactions", () => {
   test("renders a loading spinner when loading", () => {

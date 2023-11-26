@@ -5,8 +5,8 @@ import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 import useTransactions from "./useTransactions";
 
+import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../mock-server/truelayer/data/cardTransactionData";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../tests/mocks/trueLayer/dataAPI/data/cardTransactionData";
 import {
   mapTrueLayerCategoryToInternalCategory,
   mapTrueLayerTransactionToInternalTransaction

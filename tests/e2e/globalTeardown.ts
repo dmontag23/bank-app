@@ -1,4 +1,4 @@
-import {close} from "../mocks/server/server";
+import {close} from "../../mock-server/server";
 
 export default async () => {
   try {
