@@ -1,5 +1,6 @@
 {
   "extends": ["@react-native", "prettier"],
+  "ignorePatterns": ["coverage", "mock-server/dist"],
   "plugins": ["import"],
   "rules": {
     "import/first": "error",
