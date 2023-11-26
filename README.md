@@ -20,11 +20,23 @@ Run `npm start` to start the development sever.
 
 ## Mock server
 
-A mock server has been created in order to facilitate development and testing without the need to call external APIs.
+A mock server has been created in order to facilitate development and testing without the need to call external APIs. The mock server is currently hosted at
 
-To start the mock server, open a new terminal in the root directory of the project and run `npm run mock-server`. This will start the mock server on port `9091`.
+https://calm-suspenders-dove.cyclic.app
 
-To configure the app to use the mock server instead of the external APIs, replace the contents of `config.json` in the root of the repo with the contents of `config-mock-server.json`.
+All the code to run the server (with the exception of types) is in the `mock-server` directory. Any changes to this directory automatically re-deploy to the hosted mock server.
+
+It is possible to run the mock server locally. To do so, follow these commands from the root of the repo:
+
+```
+cd mock-server
+npm install
+npm run mock-server
+```
+
+Note that, if the mock server has been run locally before, then `npm install` is not necessary in the steps above.
+
+This will run the mock server at http://localhost:3000.
 
 ## Testing
 
