@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
-import {TransactionIDToCategoryMapping} from "../../types/transaction";
+import {Source, TransactionIDToCategoryMapping} from "../../types/transaction";
 
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
@@ -29,7 +29,7 @@ describe("useStoreTransactionCategoryMap", () => {
     });
     result.current.mutate({
       transactionIdToCategoryMapping: {},
-      prefix: "truelayer"
+      source: Source.TRUELAYER
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -64,7 +64,7 @@ describe("useStoreTransactionCategoryMap", () => {
     });
     result.current.mutate({
       transactionIdToCategoryMapping: testData,
-      prefix: "truelayer"
+      source: Source.TRUELAYER
     });
 
     const expectedDataInAsyncStorage = [
@@ -127,7 +127,7 @@ describe("useStoreTransactionCategoryMap", () => {
     });
     result.current.mutate({
       transactionIdToCategoryMapping: testData,
-      prefix: "truelayer"
+      source: Source.TRUELAYER
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));

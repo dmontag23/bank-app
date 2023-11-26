@@ -80,7 +80,7 @@ const Transaction = ({transaction, categoryMap}: TransactionComponentProps) => {
               onItemPress={(category: string) => {
                 storeTransactionToCategoryMap({
                   transactionIdToCategoryMapping: {[transaction.id]: category},
-                  prefix: transaction.source
+                  source: transaction.source
                 });
                 hideDialog();
               }}

@@ -101,7 +101,7 @@ describe("Transaction component", () => {
       transactionIdToCategoryMapping: {
         [testTransaction.id]: "Savings"
       },
-      prefix: "truelayer"
+      source: Source.TRUELAYER
     });
   });
 

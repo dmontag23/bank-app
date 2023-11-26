@@ -11,6 +11,7 @@ import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
 import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../mock-server/truelayer/data/cardTransactionData";
 import {EATING_OUT_CARD_TRANSACTION} from "../../../tests/mocks/data/transactions";
+import {Source} from "../../../types/transaction";
 import useGetTransactionCategoryMap from "../../transactions/useGetTransactionCategoryMap";
 import useStoreTransactionCategoryMap from "../../transactions/useStoreTransactionCategoryMap";
 
@@ -144,7 +145,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -215,7 +216,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: false
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -284,7 +285,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -353,7 +354,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -422,7 +423,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: [],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -503,7 +504,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);
@@ -522,7 +523,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
       transactionIdToCategoryMapping: {
         "1234094-shocking-chipotle": "Eating out"
       },
-      prefix: "truelayer"
+      source: Source.TRUELAYER
     });
   });
 
@@ -591,7 +592,7 @@ describe("useGetAllMappedTruelayerTransactions", () => {
     expect(useGetTransactionCategoryMap).toBeCalledTimes(1);
     expect(useGetTransactionCategoryMap).toBeCalledWith({
       transactionIds: ["1234094-shocking-chipotle"],
-      prefix: "truelayer",
+      source: Source.TRUELAYER,
       enabled: true
     });
     expect(useStoreTransactionCategoryMap).toBeCalledTimes(1);

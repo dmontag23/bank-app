@@ -6,11 +6,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
+import {Source} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
     const {result} = renderHook(() =>
-      useGetTransactionCategoryMap({transactionIds: [], prefix: "truelayer"})
+      useGetTransactionCategoryMap({
+        transactionIds: [],
+        source: Source.TRUELAYER
+      })
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -37,7 +41,7 @@ describe("useGetTransactionCategoryMap", () => {
       () =>
         useGetTransactionCategoryMap({
           transactionIds: ["id-1", "id-2"],
-          prefix: "truelayer"
+          source: Source.TRUELAYER
         }),
       {customWrapper}
     );
@@ -61,7 +65,7 @@ describe("useGetTransactionCategoryMap", () => {
     const {result} = renderHook(() =>
       useGetTransactionCategoryMap({
         transactionIds: [],
-        prefix: "truelayer",
+        source: Source.TRUELAYER,
         enabled: false
       })
     );
@@ -93,7 +97,10 @@ describe("useGetTransactionCategoryMap", () => {
 
     const {result} = renderHook(
       () =>
-        useGetTransactionCategoryMap({transactionIds: [], prefix: "truelayer"}),
+        useGetTransactionCategoryMap({
+          transactionIds: [],
+          source: Source.TRUELAYER
+        }),
       {customWrapper}
     );
 

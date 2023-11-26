@@ -3,20 +3,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 import ErrorContext from "../../store/error-context";
-import {TransactionIDToCategoryMapping} from "../../types/transaction";
+import {Source, TransactionIDToCategoryMapping} from "../../types/transaction";
 
 type StoreTransactionCategoryMappingArgs = {
   transactionIdToCategoryMapping: TransactionIDToCategoryMapping;
-  prefix: string;
+  source: Source;
 };
 
 const storeTransactionCategoryMapping = async ({
   transactionIdToCategoryMapping,
-  prefix
+  source
 }: StoreTransactionCategoryMappingArgs) => {
   const mappingArray = Object.keys(transactionIdToCategoryMapping).map(
     id =>
-      [`${prefix}-${id}`, transactionIdToCategoryMapping[id]] as [
+      [`${source}-${id}`, transactionIdToCategoryMapping[id]] as [
         string,
         string
       ]

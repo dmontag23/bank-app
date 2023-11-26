@@ -8,6 +8,7 @@ import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
 import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
 import {
+  Source,
   Transaction,
   TransactionIDToCategoryMapping
 } from "../../../types/transaction";
@@ -100,7 +101,7 @@ const useGetAllMappedTruelayerTransactions = ({
     data: trueLayerTransactionToCategoryMap
   } = useGetTransactionCategoryMap({
     transactionIds: trueLayerTransactionIds,
-    prefix: "truelayer",
+    source: Source.TRUELAYER,
     enabled: isTruelayerTransactionsSuccess
   });
 
@@ -127,7 +128,7 @@ const useGetAllMappedTruelayerTransactions = ({
     if (Object.keys(unsavedTransactionsToCategoryMap).length)
       storeTransactionCategoryMap({
         transactionIdToCategoryMapping: unsavedTransactionsToCategoryMap,
-        prefix: "truelayer"
+        source: Source.TRUELAYER
       });
   }, [storeTransactionCategoryMap, unsavedTransactionsToCategoryMap]);
 

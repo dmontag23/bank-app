@@ -3,20 +3,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useQuery} from "@tanstack/react-query";
 
 import ErrorContext from "../../store/error-context";
-import {TransactionIDToCategoryMapping} from "../../types/transaction";
+import {Source, TransactionIDToCategoryMapping} from "../../types/transaction";
 
 const getTransactionCategoryMapFromStorage = async (
   transactionIds: string[],
-  prefix: string
+  source: Source
 ) =>
   (
     await AsyncStorage.multiGet(
-      transactionIds.map(transactionId => `${prefix}-${transactionId}`)
+      transactionIds.map(transactionId => `${source}-${transactionId}`)
     )
   ).reduce<TransactionIDToCategoryMapping>(
     (mapping, currentTransactionToCategoryKeyValuePair) => ({
       ...mapping,
-      [currentTransactionToCategoryKeyValuePair[0].replace(`${prefix}-`, "")]:
+      [currentTransactionToCategoryKeyValuePair[0].replace(`${source}-`, "")]:
         currentTransactionToCategoryKeyValuePair[1]
     }),
     {}
@@ -24,20 +24,20 @@ const getTransactionCategoryMapFromStorage = async (
 
 type UseGetTransactionCategoryMappingProps = {
   transactionIds: string[];
-  prefix: string;
+  source: Source;
   enabled?: boolean;
 };
 
 const useGetTransactionCategoryMap = ({
   transactionIds,
-  prefix,
+  source,
   enabled = true
 }: UseGetTransactionCategoryMappingProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery({
-    queryKey: ["transactionCategoryMapping", ...transactionIds, prefix],
-    queryFn: () => getTransactionCategoryMapFromStorage(transactionIds, prefix),
+    queryKey: ["transactionCategoryMapping", ...transactionIds, source],
+    queryFn: () => getTransactionCategoryMapFromStorage(transactionIds, source),
     enabled,
     onError: error =>
       addError({
