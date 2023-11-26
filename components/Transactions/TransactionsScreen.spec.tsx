@@ -10,7 +10,7 @@ import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truel
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import useOnFocus from "../../hooks/utils/useOnFocus";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {Transaction} from "../../types/transaction";
+import {Source, Transaction} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 jest.mock("./TransactionList");
@@ -99,7 +99,8 @@ describe("TransactionsScreen component", () => {
         description: "This is my second transaction",
         amount: 12.29,
         category: "Savings",
-        timestamp: new Date("2023-01-01")
+        timestamp: new Date("2023-01-01"),
+        source: Source.TRUELAYER
       }
     ];
 

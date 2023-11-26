@@ -11,6 +11,7 @@ import {
   TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../mock-server/truelayer/data/cardTransactionData";
+import {Source} from "../../types/transaction";
 
 describe("useTransactions transaction flow", () => {
   test("returns empty values when no truelayer cards exist", async () => {
@@ -94,7 +95,8 @@ describe("useTransactions transaction flow", () => {
         category: "Bills",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       },
       {
         id: "1234094-shocking-chipotle",
@@ -104,7 +106,8 @@ describe("useTransactions transaction flow", () => {
         category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       }
     ]);
     expect(
@@ -161,7 +164,8 @@ describe("useTransactions transaction flow", () => {
         category: "Savings",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       },
       {
         id: "1234094-shocking-chipotle",
@@ -171,7 +175,8 @@ describe("useTransactions transaction flow", () => {
         category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       }
     ]);
     expect(
@@ -229,7 +234,8 @@ describe("useTransactions transaction flow", () => {
         category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       },
       {
         id: "a15d8156569ba848d84c07c34d291bca",
@@ -239,7 +245,8 @@ describe("useTransactions transaction flow", () => {
         category: "Savings",
         timestamp: new Date(
           TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       },
       {
         id: "1234094-shocking-chipotle",
@@ -249,7 +256,8 @@ describe("useTransactions transaction flow", () => {
         category: "Eating out",
         timestamp: new Date(
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        )
+        ),
+        source: Source.TRUELAYER
       }
     ]);
     expect(

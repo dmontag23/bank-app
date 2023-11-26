@@ -1,3 +1,8 @@
+export enum Source {
+  STARLING = "starling",
+  TRUELAYER = "truelayer"
+}
+
 export type Transaction = {
   id: string;
   name: string;
@@ -5,6 +10,7 @@ export type Transaction = {
   amount: number;
   category: string;
   timestamp: Date;
+  source: Source;
 };
 
 export type TransactionIDToCategoryMapping = {

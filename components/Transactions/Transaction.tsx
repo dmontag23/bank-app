@@ -79,7 +79,8 @@ const Transaction = ({transaction, categoryMap}: TransactionComponentProps) => {
             <CategoryList
               onItemPress={(category: string) => {
                 storeTransactionToCategoryMap({
-                  [transaction.id]: category
+                  transactionIdToCategoryMapping: {[transaction.id]: category},
+                  prefix: transaction.source
                 });
                 hideDialog();
               }}

@@ -100,6 +100,7 @@ const useGetAllMappedTruelayerTransactions = ({
     data: trueLayerTransactionToCategoryMap
   } = useGetTransactionCategoryMap({
     transactionIds: trueLayerTransactionIds,
+    prefix: "truelayer",
     enabled: isTruelayerTransactionsSuccess
   });
 
@@ -124,7 +125,10 @@ const useGetAllMappedTruelayerTransactions = ({
 
   useEffect(() => {
     if (Object.keys(unsavedTransactionsToCategoryMap).length)
-      storeTransactionCategoryMap(unsavedTransactionsToCategoryMap);
+      storeTransactionCategoryMap({
+        transactionIdToCategoryMapping: unsavedTransactionsToCategoryMap,
+        prefix: "truelayer"
+      });
   }, [storeTransactionCategoryMap, unsavedTransactionsToCategoryMap]);
 
   const sortedTransactions = useMemo(

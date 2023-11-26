@@ -10,7 +10,7 @@ import ErrorContext, {defaultErrorContext} from "../../store/error-context";
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
     const {result} = renderHook(() =>
-      useGetTransactionCategoryMap({transactionIds: []})
+      useGetTransactionCategoryMap({transactionIds: [], prefix: "truelayer"})
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -34,7 +34,11 @@ describe("useGetTransactionCategoryMap", () => {
     );
 
     const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
+      () =>
+        useGetTransactionCategoryMap({
+          transactionIds: ["id-1", "id-2"],
+          prefix: "truelayer"
+        }),
       {customWrapper}
     );
 
@@ -55,7 +59,11 @@ describe("useGetTransactionCategoryMap", () => {
 
   test("does not fetch from storage when disabled", async () => {
     const {result} = renderHook(() =>
-      useGetTransactionCategoryMap({transactionIds: [], enabled: false})
+      useGetTransactionCategoryMap({
+        transactionIds: [],
+        prefix: "truelayer",
+        enabled: false
+      })
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -84,7 +92,8 @@ describe("useGetTransactionCategoryMap", () => {
     );
 
     const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: []}),
+      () =>
+        useGetTransactionCategoryMap({transactionIds: [], prefix: "truelayer"}),
       {customWrapper}
     );
 

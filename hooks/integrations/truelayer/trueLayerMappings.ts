@@ -1,4 +1,4 @@
-import {Transaction} from "../../../types/transaction";
+import {Source, Transaction} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 export const mapTrueLayerCategoryToInternalCategory = (
@@ -21,5 +21,6 @@ export const mapTrueLayerTransactionToInternalTransaction = (
   description: trueLayerTransaction.transaction_classification[0],
   amount: trueLayerTransaction.amount,
   category,
-  timestamp: new Date(trueLayerTransaction.timestamp)
+  timestamp: new Date(trueLayerTransaction.timestamp),
+  source: Source.TRUELAYER
 });

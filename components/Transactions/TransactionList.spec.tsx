@@ -7,7 +7,7 @@ import TransactionList from "./TransactionList";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
-import {Transaction as TransactionType} from "../../types/transaction";
+import {Source, Transaction as TransactionType} from "../../types/transaction";
 
 jest.mock("./Transaction");
 
@@ -21,7 +21,8 @@ describe("TransactionList component", () => {
         description: "This is my second transaction",
         amount: 12.29,
         category: "Savings",
-        timestamp: new Date("2023-01-01")
+        timestamp: new Date("2023-01-01"),
+        source: Source.TRUELAYER
       }
     ];
 

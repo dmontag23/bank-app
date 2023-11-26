@@ -6,6 +6,7 @@ import {
 } from "./trueLayerMappings";
 
 import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../mock-server/trueLayer/data/cardTransactionData";
+import {Source} from "../../../types/transaction";
 
 describe("mapTrueLayerCategoryToInternalCategory", () => {
   const categoryData = [
@@ -54,7 +55,8 @@ describe("mapTrueLayerTransactionToInternalTransaction", () => {
       category: "Bills",
       timestamp: new Date(
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
-      )
+      ),
+      source: Source.TRUELAYER
     });
   });
 });

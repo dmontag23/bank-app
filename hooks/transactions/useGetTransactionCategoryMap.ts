@@ -5,33 +5,39 @@ import {useQuery} from "@tanstack/react-query";
 import ErrorContext from "../../store/error-context";
 import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
-const getTransactionCategoryMapFromStorage = async (transactionIds: string[]) =>
+const getTransactionCategoryMapFromStorage = async (
+  transactionIds: string[],
+  prefix: string
+) =>
   (
     await AsyncStorage.multiGet(
-      transactionIds.map(transactionId => `truelayer-${transactionId}`)
+      transactionIds.map(transactionId => `${prefix}-${transactionId}`)
     )
   ).reduce<TransactionIDToCategoryMapping>(
     (mapping, currentTransactionToCategoryKeyValuePair) => ({
       ...mapping,
-      [currentTransactionToCategoryKeyValuePair[0].replace("truelayer-", "")]:
+      [currentTransactionToCategoryKeyValuePair[0].replace(`${prefix}-`, "")]:
         currentTransactionToCategoryKeyValuePair[1]
     }),
     {}
   );
 
-interface UseGetTransactionCategoryMappingProps {
+type UseGetTransactionCategoryMappingProps = {
   transactionIds: string[];
+  prefix: string;
   enabled?: boolean;
-}
+};
+
 const useGetTransactionCategoryMap = ({
   transactionIds,
+  prefix,
   enabled = true
 }: UseGetTransactionCategoryMappingProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery({
-    queryKey: ["transactionCategoryMapping", ...transactionIds],
-    queryFn: () => getTransactionCategoryMapFromStorage(transactionIds),
+    queryKey: ["transactionCategoryMapping", ...transactionIds, prefix],
+    queryFn: () => getTransactionCategoryMapFromStorage(transactionIds, prefix),
     enabled,
     onError: error =>
       addError({

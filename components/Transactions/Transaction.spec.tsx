@@ -13,7 +13,7 @@ import Transaction from "./Transaction";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
-import {Transaction as TransactionType} from "../../types/transaction";
+import {Source, Transaction as TransactionType} from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
 
 jest.mock("./CategoryList");
@@ -27,7 +27,8 @@ describe("Transaction component", () => {
     description: "This is a test transaction",
     amount: 12.7,
     category: "Entertainment",
-    timestamp: new Date("2023-01-01T00:00:00Z")
+    timestamp: new Date("2023-01-01T00:00:00Z"),
+    source: Source.TRUELAYER
   };
 
   test("renders a transaction correctly", () => {
@@ -97,7 +98,10 @@ describe("Transaction component", () => {
     expect(screen.getAllByText(testTransaction.name)).toHaveLength(1);
     expect(updateStore).toBeCalledTimes(1);
     expect(updateStore).toBeCalledWith({
-      [testTransaction.id]: "Savings"
+      transactionIdToCategoryMapping: {
+        [testTransaction.id]: "Savings"
+      },
+      prefix: "truelayer"
     });
   });
 

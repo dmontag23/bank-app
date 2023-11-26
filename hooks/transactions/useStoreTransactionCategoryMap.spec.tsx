@@ -27,7 +27,10 @@ describe("useStoreTransactionCategoryMap", () => {
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
       customWrapper
     });
-    result.current.mutate({});
+    result.current.mutate({
+      transactionIdToCategoryMapping: {},
+      prefix: "truelayer"
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({});
@@ -59,7 +62,10 @@ describe("useStoreTransactionCategoryMap", () => {
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
       queryClient
     });
-    result.current.mutate(testData);
+    result.current.mutate({
+      transactionIdToCategoryMapping: testData,
+      prefix: "truelayer"
+    });
 
     const expectedDataInAsyncStorage = [
       ["truelayer-id-1", "Savings"],
@@ -119,7 +125,10 @@ describe("useStoreTransactionCategoryMap", () => {
       queryClient,
       customWrapper
     });
-    result.current.mutate(testData);
+    result.current.mutate({
+      transactionIdToCategoryMapping: testData,
+      prefix: "truelayer"
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBe("Cannot connect to async storage");

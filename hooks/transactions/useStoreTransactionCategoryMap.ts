@@ -5,12 +5,18 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import ErrorContext from "../../store/error-context";
 import {TransactionIDToCategoryMapping} from "../../types/transaction";
 
-const storeTransactionCategoryMapping = async (
-  transactionIdToCategoryMapping: TransactionIDToCategoryMapping
-) => {
+type StoreTransactionCategoryMappingArgs = {
+  transactionIdToCategoryMapping: TransactionIDToCategoryMapping;
+  prefix: string;
+};
+
+const storeTransactionCategoryMapping = async ({
+  transactionIdToCategoryMapping,
+  prefix
+}: StoreTransactionCategoryMappingArgs) => {
   const mappingArray = Object.keys(transactionIdToCategoryMapping).map(
     id =>
-      [`truelayer-${id}`, transactionIdToCategoryMapping[id]] as [
+      [`${prefix}-${id}`, transactionIdToCategoryMapping[id]] as [
         string,
         string
       ]
