@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm run clean-mock-server && npm run mock-ts-compile",
     "clean-mock-server": "rm -rf dist",
+    "mock-server": "npm run build && npm start",
     "mock-ts-compile": "npx tsc",
     "start": "node dist/mock-server/runMockServer.js"
   },
