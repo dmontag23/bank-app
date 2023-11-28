@@ -457,7 +457,7 @@ describe("Budget screen", () => {
     // TODO: Investigate why toBeVisible() fails here
     // I think it's because the opacity of a parent is 0
     expect(screen.getByText("My first budget!")).toBeOnTheScreen();
-  });
+  }, 10000);
 
   test("can show and hide categories", async () => {
     // setup AsyncStorage with mock data

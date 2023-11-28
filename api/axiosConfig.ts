@@ -1,13 +1,21 @@
+// TODO: Create a unit test for this file?
 import axios from "axios";
 
-import {handleTrueLayerAuthAPIResponse} from "./truelayer/authAPIInterceptors";
 import {
-  handleTrueLayerDataApiRequest,
+  handleApiRequest,
+  handleTrueLayerAuthAPIResponse,
   handleTrueLayerDataApiResponse
-} from "./truelayer/dataAPIInterceptors";
+} from "./axiosInterceptors";
 import {handleTruelayerError} from "./truelayer/truelayerAPIUtils";
 
 import config from "../config.json";
+
+export const starlingApi = axios.create({
+  baseURL: config.integrations.starling.sandboxUrl,
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
 
 export const trueLayerAuthApi = axios.create({
   baseURL: config.integrations.trueLayer.sandboxAuthUrl,
@@ -26,7 +34,11 @@ export const trueLayerDataApi = axios.create({
 });
 
 // create request interceptors
-trueLayerDataApi.interceptors.request.use(handleTrueLayerDataApiRequest);
+starlingApi.interceptors.request.use(handleApiRequest("starling-auth-token"));
+
+trueLayerDataApi.interceptors.request.use(
+  handleApiRequest("truelayer-auth-token")
+);
 
 // create response interceptors
 trueLayerAuthApi.interceptors.response.use(

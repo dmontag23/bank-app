@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as truelayerAPIUtils from "./truelayerAPIUtils";
 import {
   getNewToken,
-  getTokenFromStorage,
   handleTruelayerError,
   storeNewTokens
 } from "./truelayerAPIUtils";
@@ -21,8 +20,10 @@ import {
 import {AuthAPIErrorResponse} from "../../types/trueLayer/authAPI/serverResponse";
 import {DataAPIErrorResponse} from "../../types/trueLayer/dataAPI/serverResponse";
 import {trueLayerAuthApi} from "../axiosConfig";
+import {getTokenFromStorage} from "../utils";
 
 jest.mock("../axiosConfig");
+jest.mock("../utils");
 
 describe("Truelayer API Utils", () => {
   describe("handleTruelayerError", () => {
@@ -464,9 +465,9 @@ describe("Truelayer API Utils", () => {
   describe("getNewToken", () => {
     test("returns a rejection if no refresh token is in storage", async () => {
       const consoleLog = jest.spyOn(console, "log");
-      const mockGetTokenFromStorage = jest
-        .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockResolvedValueOnce(null);
+      (
+        getTokenFromStorage as jest.MockedFunction<typeof getTokenFromStorage>
+      ).mockResolvedValueOnce(null);
 
       await expect(getNewToken()).rejects.toEqual({
         error: "No refresh token found",
@@ -475,17 +476,15 @@ describe("Truelayer API Utils", () => {
 
       expect(consoleLog).toBeCalledTimes(1);
       expect(consoleLog).toBeCalledWith("Attempting to fetch a new token...");
-      expect(mockGetTokenFromStorage).toBeCalledTimes(1);
-      expect(mockGetTokenFromStorage).toBeCalledWith("truelayer-refresh-token");
-
-      mockGetTokenFromStorage.mockRestore();
+      expect(getTokenFromStorage).toBeCalledTimes(1);
+      expect(getTokenFromStorage).toBeCalledWith("truelayer-refresh-token");
     });
 
     test("stores new access and refresh tokens", async () => {
       const consoleLog = jest.spyOn(console, "log");
-      const mockGetTokenFromStorage = jest
-        .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockImplementationOnce(async () => "refresh-token");
+      (
+        getTokenFromStorage as jest.MockedFunction<typeof getTokenFromStorage>
+      ).mockResolvedValueOnce("refresh-token");
       const mockStoreNewTokens = jest
         .spyOn(truelayerAPIUtils, "storeNewTokens")
         .mockImplementationOnce(async () => {});
@@ -514,8 +513,8 @@ describe("Truelayer API Utils", () => {
       );
       console.log("Successfully stored new tokens.");
 
-      expect(mockGetTokenFromStorage).toBeCalledTimes(1);
-      expect(mockGetTokenFromStorage).toBeCalledWith("truelayer-refresh-token");
+      expect(getTokenFromStorage).toBeCalledTimes(1);
+      expect(getTokenFromStorage).toBeCalledWith("truelayer-refresh-token");
 
       expect(trueLayerAuthApi.post).toBeCalledTimes(1);
       expect(trueLayerAuthApi.post).toBeCalledWith("connect/token", {
@@ -531,14 +530,13 @@ describe("Truelayer API Utils", () => {
         "new-refresh-token"
       );
 
-      mockGetTokenFromStorage.mockRestore();
       mockStoreNewTokens.mockRestore();
     });
 
     test("stores new access token without refresh token", async () => {
-      const mockGetTokenFromStorage = jest
-        .spyOn(truelayerAPIUtils, "getTokenFromStorage")
-        .mockImplementationOnce(async () => "refresh-token");
+      (
+        getTokenFromStorage as jest.MockedFunction<typeof getTokenFromStorage>
+      ).mockResolvedValueOnce("refresh-token");
       const mockStoreNewTokens = jest
         .spyOn(truelayerAPIUtils, "storeNewTokens")
         .mockImplementationOnce(async () => {});
@@ -561,7 +559,6 @@ describe("Truelayer API Utils", () => {
       expect(mockStoreNewTokens).toBeCalledTimes(1);
       expect(mockStoreNewTokens).toBeCalledWith("new-access-token", "");
 
-      mockGetTokenFromStorage.mockRestore();
       mockStoreNewTokens.mockRestore();
     });
   });
@@ -596,27 +593,6 @@ describe("Truelayer API Utils", () => {
 
       expect(await AsyncStorage.getItem("truelayer-auth-token")).toBeNull();
       expect(await AsyncStorage.getItem("truelayer-refresh-token")).toBeNull();
-    });
-  });
-
-  describe("getTokenFromStorage", () => {
-    test("gets the item correctly", async () => {
-      await AsyncStorage.setItem("test-token", "a cool token");
-      expect(await getTokenFromStorage("test-token")).toBe("a cool token");
-    });
-
-    test("returns rejection on AsyncStorage failure", async () => {
-      (
-        AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>
-      ).mockImplementationOnce(async () =>
-        Promise.reject("Error with getItem")
-      );
-
-      await expect(getTokenFromStorage("test-token")).rejects.toEqual({
-        name: "Cannot fetch AsyncStorage test-token token",
-        message:
-          "An error occurred when trying to fetch the token from storage: Error with getItem"
-      });
     });
   });
 });

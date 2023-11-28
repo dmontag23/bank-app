@@ -1,4 +1,3 @@
-// TODO: COME BACK AND USE SECURE STORAGE FOR STORING TOKENS!!!
 import {AxiosError, isAxiosError} from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -19,6 +18,7 @@ import {AuthAPIErrorResponse} from "../../types/trueLayer/authAPI/serverResponse
 import {isCommonTruelayerAPIError} from "../../types/trueLayer/common";
 import {DataAPIErrorResponse} from "../../types/trueLayer/dataAPI/serverResponse";
 import {trueLayerAuthApi} from "../axiosConfig";
+import {getTokenFromStorage} from "../utils";
 
 // TODO: Cleanup this function as all the conditions are confusing
 export const handleTruelayerError =
@@ -98,9 +98,7 @@ export const handleTruelayerError =
 export const getNewToken = async () => {
   console.log("Attempting to fetch a new token...");
 
-  const refreshToken = await truelayerAPIUtils.getTokenFromStorage(
-    "truelayer-refresh-token"
-  );
+  const refreshToken = await getTokenFromStorage("truelayer-refresh-token");
   if (!refreshToken)
     return Promise.reject({
       error: "No refresh token found",
@@ -138,17 +136,6 @@ export const storeNewTokens = async (
     return Promise.reject({
       error: "Cannot store new tokens in AsyncStorage",
       errorMessage: `An error occurred when trying to store the access and refresh tokens in storage: ${error}`
-    });
-  }
-};
-
-export const getTokenFromStorage = async (tokenName: string) => {
-  try {
-    return await AsyncStorage.getItem(tokenName);
-  } catch (error: unknown) {
-    return Promise.reject({
-      name: `Cannot fetch AsyncStorage ${tokenName} token`,
-      message: `An error occurred when trying to fetch the token from storage: ${error}`
     });
   }
 };
