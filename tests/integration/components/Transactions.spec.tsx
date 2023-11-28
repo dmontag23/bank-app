@@ -116,10 +116,7 @@ describe("Transactions", () => {
         screen.getByText("24 Feb 2013 at 14:00 - Eating out")
       ).toBeVisible()
     );
-    expect(await AsyncStorage.getAllKeys()).toEqual([
-      "category-map",
-      testTransactionId
-    ]);
+    expect(await AsyncStorage.getAllKeys()).toEqual(["category-map"]);
 
     // press the transaction to bring up the dialog
     fireEvent.press(screen.getByText("24 Feb 2013 at 14:00 - Eating out"));

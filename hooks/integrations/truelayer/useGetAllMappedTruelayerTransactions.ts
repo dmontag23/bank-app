@@ -1,62 +1,8 @@
-import {useEffect, useMemo} from "react";
-
-import {
-  mapTrueLayerCategoryToInternalCategory,
-  mapTrueLayerTransactionToInternalTransaction
-} from "./trueLayerMappings";
+import {mapTrueLayerTransactionToInternalTransaction} from "./trueLayerMappings";
 import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
 import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
-import {
-  Source,
-  Transaction,
-  TransactionIDToCategoryMapping
-} from "../../../types/transaction";
-import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
-import useGetTransactionCategoryMap from "../../transactions/useGetTransactionCategoryMap";
-import useStoreTransactionCategoryMap from "../../transactions/useStoreTransactionCategoryMap";
-
-// TODO: Consider moving this to trueLayerMappings? Maybe when adding Starling data
-const assignCategoriesToTransactions = (
-  trueLayerCardTransactions: CardTransaction[],
-  trueLayerTransactionIdToCategoryMap: TransactionIDToCategoryMapping
-) =>
-  trueLayerCardTransactions.reduce<{
-    unsavedTransactionsToCategoryMap: TransactionIDToCategoryMapping;
-    transactions: Transaction[];
-  }>(
-    ({unsavedTransactionsToCategoryMap, transactions}, currentTransaction) => {
-      const transactionId = currentTransaction.transaction_id;
-
-      const savedCategory =
-        trueLayerTransactionIdToCategoryMap?.[transactionId];
-      const category =
-        savedCategory ??
-        mapTrueLayerCategoryToInternalCategory(
-          currentTransaction.transaction_classification
-        );
-
-      return {
-        unsavedTransactionsToCategoryMap: savedCategory
-          ? unsavedTransactionsToCategoryMap
-          : {
-              ...unsavedTransactionsToCategoryMap,
-              [transactionId]: category
-            },
-        transactions: [
-          ...transactions,
-          mapTrueLayerTransactionToInternalTransaction(
-            currentTransaction,
-            category
-          )
-        ]
-      };
-    },
-    {
-      unsavedTransactionsToCategoryMap: {},
-      transactions: []
-    }
-  );
+import useMapTransactionsToInternalTransactions from "../../transactions/useMapTransactionsToInternalTransactions";
 
 type UseTransactionsDateRangeProp = {
   from: Date;
@@ -83,7 +29,6 @@ const useGetAllMappedTruelayerTransactions = ({
 
   const {
     isLoading: isTruelayerTransactionsLoading,
-    isSuccess: isTruelayerTransactionsSuccess,
     data: truelayerTransactions
   } = useGetAllTruelayerTransactions({
     cardIds,
@@ -91,61 +36,22 @@ const useGetAllMappedTruelayerTransactions = ({
     enabled: !isTruelayerCardsLoading && !isTruelayerCardsRefetching
   });
 
-  const trueLayerTransactionIds = truelayerTransactions.map(
-    transaction => transaction.transaction_id
-  );
+  const isMapEnabled = Boolean(truelayerTransactions.length);
 
-  const {
-    isLoading: isTransactionToCategoryMapLoading,
-    isSuccess: isTransactionToCategoryMapSuccess,
-    data: trueLayerTransactionToCategoryMap
-  } = useGetTransactionCategoryMap({
-    transactionIds: trueLayerTransactionIds,
-    source: Source.TRUELAYER,
-    enabled: isTruelayerTransactionsSuccess
-  });
-
-  const {mutate: storeTransactionCategoryMap} =
-    useStoreTransactionCategoryMap();
-
-  const {unsavedTransactionsToCategoryMap, transactions} = useMemo(
-    () =>
-      !isTruelayerTransactionsSuccess || !isTransactionToCategoryMapSuccess
-        ? {unsavedTransactionsToCategoryMap: {}, transactions: []}
-        : assignCategoriesToTransactions(
-            truelayerTransactions,
-            trueLayerTransactionToCategoryMap
-          ),
-    [
-      truelayerTransactions,
-      trueLayerTransactionToCategoryMap,
-      isTruelayerTransactionsSuccess,
-      isTransactionToCategoryMapSuccess
-    ]
-  );
-
-  useEffect(() => {
-    if (Object.keys(unsavedTransactionsToCategoryMap).length)
-      storeTransactionCategoryMap({
-        transactionIdToCategoryMapping: unsavedTransactionsToCategoryMap,
-        source: Source.TRUELAYER
-      });
-  }, [storeTransactionCategoryMap, unsavedTransactionsToCategoryMap]);
-
-  const sortedTransactions = useMemo(
-    () =>
-      transactions.sort(
-        (a, b) => b.timestamp.valueOf() - a.timestamp.valueOf()
-      ),
-    [transactions]
-  );
+  const {transactions, isLoading: isMapLoading} =
+    useMapTransactionsToInternalTransactions({
+      transactions: truelayerTransactions,
+      mapTransactionToInternalTransaction:
+        mapTrueLayerTransactionToInternalTransaction,
+      enabled: isMapEnabled
+    });
 
   return {
     isLoading:
       isTruelayerCardsLoading ||
       isTruelayerTransactionsLoading ||
-      isTransactionToCategoryMapLoading,
-    transactions: sortedTransactions,
+      (isMapLoading && isMapEnabled),
+    transactions,
     // only refetchCardData is called here because, as soon as the card data is refetched,
     // the transaction queries are disabled. After the card query is finished, the transaction
     // query is enabled again, which triggers an automatic refetch of the transaction data

@@ -1,6 +1,7 @@
 export enum Source {
   STARLING = "starling",
-  TRUELAYER = "truelayer"
+  TRUELAYER = "truelayer",
+  UNKNOWN = "unknown"
 }
 
 export type Transaction = {

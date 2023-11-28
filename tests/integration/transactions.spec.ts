@@ -58,7 +58,7 @@ describe("useTransactions transaction flow", () => {
     expect(await AsyncStorage.getAllKeys()).toEqual([]);
   });
 
-  test("stores default category values", async () => {
+  test("uses default category values - no categories are put in storage", async () => {
     // setup mocks
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
@@ -110,15 +110,7 @@ describe("useTransactions transaction flow", () => {
         source: Source.TRUELAYER
       }
     ]);
-    expect(
-      await AsyncStorage.multiGet([
-        "truelayer-a15d8156569ba848d84c07c34d291bca",
-        "truelayer-1234094-shocking-chipotle"
-      ])
-    ).toEqual([
-      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Bills"],
-      ["truelayer-1234094-shocking-chipotle", "Eating out"]
-    ]);
+    expect(await AsyncStorage.getAllKeys()).toEqual([]);
   });
 
   test("merges transaction categories from storage", async () => {
@@ -186,7 +178,7 @@ describe("useTransactions transaction flow", () => {
       ])
     ).toEqual([
       ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
-      ["truelayer-1234094-shocking-chipotle", "Eating out"]
+      ["truelayer-1234094-shocking-chipotle", null]
     ]);
   });
 
@@ -227,17 +219,6 @@ describe("useTransactions transaction flow", () => {
     });
     expect(result.current.transactions).toEqual([
       {
-        id: "1234000-chai-pot",
-        name: "CHAI POT YUM",
-        description: "Food & Dining",
-        amount: 3.3,
-        category: "Eating out",
-        timestamp: new Date(
-          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
-        ),
-        source: Source.TRUELAYER
-      },
-      {
         id: "a15d8156569ba848d84c07c34d291bca",
         name: "PAY OFF CREDIT CARD BILL",
         description: "Bills and Utilities",
@@ -258,6 +239,17 @@ describe("useTransactions transaction flow", () => {
           TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
         ),
         source: Source.TRUELAYER
+      },
+      {
+        id: "1234000-chai-pot",
+        name: "CHAI POT YUM",
+        description: "Food & Dining",
+        amount: 3.3,
+        category: "Eating out",
+        timestamp: new Date(
+          TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS.timestamp
+        ),
+        source: Source.TRUELAYER
       }
     ]);
     expect(
@@ -268,8 +260,8 @@ describe("useTransactions transaction flow", () => {
       ])
     ).toEqual([
       ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
-      ["truelayer-1234094-shocking-chipotle", "Eating out"],
-      ["truelayer-1234000-chai-pot", "Eating out"]
+      ["truelayer-1234094-shocking-chipotle", null],
+      ["truelayer-1234000-chai-pot", null]
     ]);
   });
 });

@@ -59,24 +59,14 @@ describe("App component", () => {
 
     // navigate to the transactions screen
     // TODO: investigate why fireEvent.press does not work here
-    fireEvent(
-      screen.getByRole("button", {
-        name: "Transactions"
-      }),
-      "click"
-    );
+    fireEvent(screen.getByRole("button", {name: "Transactions"}), "click");
 
     // check the badge on the settings button displays the correct value
     await waitFor(() => expect(screen.getByText("1")).toBeVisible());
 
     // navigate to the settings screen
     // TODO: investigate why fireEvent.press does not work here
-    fireEvent(
-      screen.getByRole("button", {
-        name: "Settings"
-      }),
-      "click"
-    );
+    fireEvent(screen.getByRole("button", {name: "Settings"}), "click");
     expect(screen.getAllByText("Settings").length).toBe(3);
 
     // check the badge appears on the settings page
@@ -85,12 +75,7 @@ describe("App component", () => {
     // navigate back to the transactions page to trigger the second
     // (successful) call to the api
     // TODO: investigate why fireEvent.press does not work here
-    fireEvent(
-      screen.getByRole("button", {
-        name: "Transactions"
-      }),
-      "click"
-    );
+    fireEvent(screen.getByRole("button", {name: "Transactions"}), "click");
 
     await waitFor(() =>
       expect(screen.getAllByText("Transactions").length).toBe(3)
@@ -100,12 +85,7 @@ describe("App component", () => {
 
     // ensure the badge on the settings screen is also gone
     // TODO: investigate why fireEvent.press does not work here
-    fireEvent(
-      screen.getByRole("button", {
-        name: "Settings"
-      }),
-      "click"
-    );
+    fireEvent(screen.getByRole("button", {name: "Settings"}), "click");
     expect(screen.getAllByText("Settings").length).toBe(3);
     expect(screen.queryByText("1")).toBeNull();
   }, 70000);
