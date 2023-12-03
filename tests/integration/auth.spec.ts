@@ -2,8 +2,18 @@ import nock from "nock";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {trueLayerAuthApi, trueLayerDataApi} from "../../api/axiosConfig";
+import {
+  starlingApi,
+  trueLayerAuthApi,
+  trueLayerDataApi
+} from "../../api/axiosConfig";
 import config from "../../config.json";
+import {
+  Currency,
+  StarlingAccount,
+  StarlingAccountType
+} from "../../types/starling/accounts";
+import {StarlingErrorResponse} from "../../types/starling/error";
 import {ConnectTokenPostResponse} from "../../types/trueLayer/authAPI/auth";
 import {AuthAPIErrorResponse} from "../../types/trueLayer/authAPI/serverResponse";
 import {
@@ -11,7 +21,7 @@ import {
   DataAPISuccessResponse
 } from "../../types/trueLayer/dataAPI/serverResponse";
 
-describe("authentication flow", () => {
+describe("truelayer authentication flow", () => {
   test("correctly gets new access tokens on a 401 response", async () => {
     // setup mocks
     await AsyncStorage.setItem("truelayer-refresh-token", "good-refresh-token");
@@ -250,6 +260,65 @@ describe("basic success and error response from Truelayer APIs", () => {
         mockErrorResponse.error_details
       )}`,
       service: "Truelayer Data API",
+      status: 404,
+      url: "test"
+    });
+  });
+});
+
+describe("basic success and error response from Starling API", () => {
+  test("returns success response", async () => {
+    // setup mocks
+    await AsyncStorage.setItem(
+      "starling-auth-token",
+      "good-starling-auth-token"
+    );
+
+    const mockStarlingAccount: StarlingAccount = {
+      accountUid: "uuid",
+      accountType: StarlingAccountType.PRIMARY,
+      defaultCategory: "category",
+      currency: Currency.EUR,
+      createdAt: "2020-01-01",
+      name: "name"
+    };
+    nock(config.integrations.starling.sandboxUrl, {
+      reqheaders: {
+        Authorization: "Bearer good-starling-auth-token"
+      }
+    })
+      .get("/v2/accounts")
+      .reply(200, {accounts: [mockStarlingAccount]});
+
+    expect(await starlingApi.get("v2/accounts")).toEqual({
+      accounts: [mockStarlingAccount]
+    });
+  });
+
+  test("returns error response", async () => {
+    // setup mocks
+    await AsyncStorage.setItem(
+      "starling-auth-token",
+      "good-starling-auth-token"
+    );
+
+    const mockErrorResponse: StarlingErrorResponse = {
+      error: "Not found",
+      error_description: "Cannot find this item"
+    };
+
+    nock(config.integrations.starling.sandboxUrl, {
+      reqheaders: {
+        Authorization: "Bearer good-starling-auth-token"
+      }
+    })
+      .get("/test")
+      .reply(404, mockErrorResponse);
+
+    await expect(starlingApi.get("test")).rejects.toEqual({
+      error: "Not found",
+      errorMessage: "Cannot find this item",
+      service: "Starling API",
       status: 404,
       url: "test"
     });

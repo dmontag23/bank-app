@@ -2,50 +2,61 @@
 import axios from "axios";
 
 import {
-  handleApiRequest,
-  handleTrueLayerAuthAPIResponse,
-  handleTrueLayerDataApiResponse
+  handleAxiosApiRequest,
+  handleAxiosApiResponse
 } from "./axiosInterceptors";
+import {handleStarlingError} from "./starling/starlingAPIUtils";
 import {handleTruelayerError} from "./truelayer/truelayerAPIUtils";
 
 import config from "../config.json";
+import {DataAPISuccessResponse} from "../types/trueLayer/dataAPI/serverResponse";
+
+const baseHeaders = {
+  "Content-Type": "application/json"
+};
 
 export const starlingApi = axios.create({
   baseURL: config.integrations.starling.sandboxUrl,
-  headers: {
-    "Content-Type": "application/json"
-  }
+  headers: baseHeaders
 });
 
 export const trueLayerAuthApi = axios.create({
   baseURL: config.integrations.trueLayer.sandboxAuthUrl,
-  headers: {
-    "Content-Type": "application/json"
-  }
+  headers: baseHeaders
 });
-
 export const trueLayerDataApi = axios.create({
   baseURL: config.integrations.trueLayer.sandboxDataUrl,
   headers: {
-    "Content-Type": "application/json",
-    // ensures TrueLayer's cache is not used
+    ...baseHeaders,
+    // ensures Truelayer's cache is not used
     "Cache-Control": "max-age=0"
   }
 });
 
 // create request interceptors
-starlingApi.interceptors.request.use(handleApiRequest("starling-auth-token"));
+starlingApi.interceptors.request.use(
+  handleAxiosApiRequest("starling-auth-token")
+);
 
 trueLayerDataApi.interceptors.request.use(
-  handleApiRequest("truelayer-auth-token")
+  handleAxiosApiRequest("truelayer-auth-token")
 );
 
 // create response interceptors
+starlingApi.interceptors.response.use(
+  handleAxiosApiResponse,
+  handleStarlingError
+);
+
 trueLayerAuthApi.interceptors.response.use(
-  handleTrueLayerAuthAPIResponse,
+  handleAxiosApiResponse,
   handleTruelayerError("Auth API")
 );
+// TODO: Note that forcing this function to return type any is to get past a type error in
+// axiosConfig.ts, because the response from interceptors needs to be of type AxiosResponse
+// see https://github.com/axios/axios/issues/5117
 trueLayerDataApi.interceptors.response.use(
-  handleTrueLayerDataApiResponse,
+  (response): any =>
+    handleAxiosApiResponse<DataAPISuccessResponse<any>>(response).results,
   handleTruelayerError("Data API")
 );

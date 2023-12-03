@@ -1,4 +1,4 @@
-import {AxiosError, isAxiosError} from "axios";
+import {AxiosResponse} from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // TODO: this is needed in order to be able to unit test these functions
@@ -8,7 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as truelayerAPIUtils from "./truelayerAPIUtils";
 
 import config from "../../config.json";
-import {IntegrationErrorResponse} from "../../types/errors";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -18,82 +17,37 @@ import {AuthAPIErrorResponse} from "../../types/trueLayer/authAPI/serverResponse
 import {isCommonTruelayerAPIError} from "../../types/trueLayer/common";
 import {DataAPIErrorResponse} from "../../types/trueLayer/dataAPI/serverResponse";
 import {trueLayerAuthApi} from "../axiosConfig";
+import {handleAxiosApiErrorResponse} from "../axiosInterceptors";
 import {getTokenFromStorage} from "../utils";
 
-// TODO: Cleanup this function as all the conditions are confusing
-export const handleTruelayerError =
-  (apiName: string) => async (error: Error | AxiosError) => {
-    console.error(
-      `A Truelayer ${apiName} error has occurred: `,
-      isAxiosError(error) ? JSON.stringify(error) : error
-    );
+export const handleTruelayerError = (apiName: string) => {
+  const extractError = async (
+    response: AxiosResponse<AuthAPIErrorResponse | DataAPIErrorResponse>
+  ) => {
+    if (response.status === 401 && apiName === "Data API")
+      await truelayerAPIUtils.getNewToken();
 
-    const errorToReturn: IntegrationErrorResponse = {
-      error: "",
-      // TODO: Make the service name an enum?
-      service: `Truelayer ${apiName}`
-    };
-
-    if (isAxiosError<AuthAPIErrorResponse | DataAPIErrorResponse>(error)) {
-      const errorResponse = error.response;
-
-      if (errorResponse?.data) {
-        if (errorResponse.status === 401 && apiName === "Data API")
-          await truelayerAPIUtils.getNewToken();
-
-        if (isCommonTruelayerAPIError(errorResponse.data))
-          return Promise.reject({
-            ...errorToReturn,
-            error: errorResponse.data.error,
-            errorMessage:
-              errorResponse.data.error_description ||
-              errorResponse.data.error_details
-                ? `${errorResponse.data.error_description ?? ""} ${
-                    Object.keys(errorResponse.data.error_details ?? {}).length
-                      ? JSON.stringify(errorResponse.data.error_details)
-                      : ""
-                  }`.trim()
-                : error.message,
-            status: errorResponse.status,
-            ...(errorResponse.config.url
-              ? {url: errorResponse.config.url}
-              : error.config?.url
-              ? {url: error.config.url}
-              : {})
-          });
-
-        // the only other type the error can possibly be here is
+    return isCommonTruelayerAPIError(response.data)
+      ? {
+          error: response.data.error,
+          errorMessage: `${response.data.error_description ?? ""} ${
+            Object.keys(response.data.error_details ?? {}).length
+              ? JSON.stringify(response.data.error_details)
+              : ""
+          }`.trim()
+        }
+      : // the only other type the error can possibly be here is
         // DataAPIErrorResponseWithType
-        return Promise.reject({
-          ...errorToReturn,
-          error: errorResponse.data.title,
-          errorMessage: `${errorResponse.data.detail ?? ""} see ${
-            errorResponse.data.type
-          }`.trim(),
-          status: errorResponse.data.status,
-          ...(errorResponse.config.url
-            ? {url: errorResponse.config.url}
-            : error.config?.url
-            ? {url: error.config.url}
-            : {})
-        });
-      }
-
-      return Promise.reject({
-        ...errorToReturn,
-        error: error.name,
-        errorMessage: error.message,
-        ...(error.status ? {status: error.status} : {}),
-        ...(error.config?.url ? {url: error.config.url} : {})
-      });
-    }
-
-    return Promise.reject({
-      ...errorToReturn,
-      error: error.name,
-      errorMessage: error.message
-    });
+        {
+          error: response.data.title,
+          errorMessage: `${response.data.detail ?? ""} see ${
+            response.data.type
+          }`.trim()
+        };
   };
+
+  return handleAxiosApiErrorResponse(`Truelayer ${apiName}`, extractError);
+};
 
 export const getNewToken = async () => {
   console.log("Attempting to fetch a new token...");
