@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useStoreTransactionCategoryMap from "./useStoreTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
-import {Source, TransactionIDToCategoryMapping} from "../../types/transaction";
+import {Category, Source, TransactionIDToCategoryMapping} from "../../types/transaction";
 
 describe("useStoreTransactionCategoryMap", () => {
   test("does not store anything when called with an empty map", async () => {
@@ -55,8 +55,8 @@ describe("useStoreTransactionCategoryMap", () => {
     );
 
     const testData: TransactionIDToCategoryMapping = {
-      "id-1": "Savings",
-      "id-2": "Unknown"
+      "id-1": Category.SAVINGS,
+      "id-2": Category.UNKNOWN
     };
 
     const {result} = renderHook(() => useStoreTransactionCategoryMap(), {
@@ -68,8 +68,8 @@ describe("useStoreTransactionCategoryMap", () => {
     });
 
     const expectedDataInAsyncStorage = [
-      ["truelayer-id-1", "Savings"],
-      ["truelayer-id-2", "Unknown"]
+      ["Truelayer-id-1", Category.SAVINGS],
+      ["Truelayer-id-2", Category.UNKNOWN]
     ];
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(testData);
@@ -77,7 +77,7 @@ describe("useStoreTransactionCategoryMap", () => {
     expect(AsyncStorage.multiSet).toBeCalledWith(expectedDataInAsyncStorage);
     expect(
       await AsyncStorage.multiGet(
-        Object.keys(testData).map(key => `truelayer-${key}`)
+        Object.keys(testData).map(key => `Truelayer-${key}`)
       )
     ).toEqual(expectedDataInAsyncStorage);
     expect(queryClient.getQueryState(queryKey)?.isInvalidated).toBe(true);

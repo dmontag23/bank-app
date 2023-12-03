@@ -15,6 +15,10 @@ describe("Error", () => {
       .get("/v1/cards")
       .reply(400, {error: "invalid_token"});
 
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     render(
       <NavigationContainer>
         <TransactionsScreen />
@@ -39,6 +43,10 @@ describe("Error", () => {
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(400, {error: "invalid_token"});
+
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
 
     render(
       <NavigationContainer>

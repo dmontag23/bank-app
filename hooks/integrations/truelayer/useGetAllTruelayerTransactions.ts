@@ -3,14 +3,11 @@ import {useMemo} from "react";
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
 import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
-type TransactionDateRangeQuery = {
-  from: Date;
-  to: Date;
-};
+import {DateRange} from "../../../types/transaction";
 
 type UseGetAllTruelayerTransactionsProps = {
   cardIds: string[];
-  dateRange?: TransactionDateRangeQuery;
+  dateRange?: DateRange;
   enabled?: boolean;
 };
 

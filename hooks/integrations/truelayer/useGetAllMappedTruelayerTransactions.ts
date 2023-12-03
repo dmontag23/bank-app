@@ -2,22 +2,18 @@ import {mapTrueLayerTransactionToInternalTransaction} from "./trueLayerMappings"
 import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
 import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 
+import {DateRange} from "../../../types/transaction";
 import useMapTransactionsToInternalTransactions from "../../transactions/useMapTransactionsToInternalTransactions";
 
-type UseTransactionsDateRangeProp = {
-  from: Date;
-  to: Date;
-};
-
-type UseTransactionsProps = {
-  dateRange?: UseTransactionsDateRangeProp;
+type UseGetAllMappedTruelayerTransactionsProps = {
+  dateRange?: DateRange;
   enabled?: boolean;
 };
 
 const useGetAllMappedTruelayerTransactions = ({
   dateRange,
   enabled = true
-}: UseTransactionsProps = {}) => {
+}: UseGetAllMappedTruelayerTransactionsProps = {}) => {
   const {
     isLoading: isTruelayerCardsLoading,
     isRefetching: isTruelayerCardsRefetching,

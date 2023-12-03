@@ -25,7 +25,7 @@ describe("useGetTransactionCategoryMap", () => {
 
   test("returns a map where only some values are retrieved from storage", async () => {
     // setup AsyncStorage with mock data
-    await AsyncStorage.setItem("truelayer-id-2", "Bills");
+    await AsyncStorage.setItem("Truelayer-id-2", "Bills");
 
     // setup error context mocks
     const mockRemoveError = jest.fn();
@@ -53,8 +53,8 @@ describe("useGetTransactionCategoryMap", () => {
     });
     expect(AsyncStorage.multiGet).toBeCalledTimes(1);
     expect(AsyncStorage.multiGet).toBeCalledWith([
-      "truelayer-id-1",
-      "truelayer-id-2"
+      "Truelayer-id-1",
+      "Truelayer-id-2"
     ]);
 
     expect(mockRemoveError).toBeCalledTimes(1);

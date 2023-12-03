@@ -13,7 +13,7 @@ import {
 } from "../../mock-server/truelayer/data/cardTransactionData";
 import {Source} from "../../types/transaction";
 
-describe("useTransactions transaction flow", () => {
+describe("useGetAllMappedTruelayerTransactions transaction flow", () => {
   test("returns empty values when no truelayer cards exist", async () => {
     // setup mocks
     nock(config.integrations.trueLayer.sandboxDataUrl)
@@ -139,7 +139,7 @@ describe("useTransactions transaction flow", () => {
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
-      "truelayer-a15d8156569ba848d84c07c34d291bca",
+      "Truelayer-a15d8156569ba848d84c07c34d291bca",
       "Savings"
     );
 
@@ -173,12 +173,12 @@ describe("useTransactions transaction flow", () => {
     ]);
     expect(
       await AsyncStorage.multiGet([
-        "truelayer-a15d8156569ba848d84c07c34d291bca",
-        "truelayer-1234094-shocking-chipotle"
+        "Truelayer-a15d8156569ba848d84c07c34d291bca",
+        "Truelayer-1234094-shocking-chipotle"
       ])
     ).toEqual([
-      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
-      ["truelayer-1234094-shocking-chipotle", null]
+      ["Truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
+      ["Truelayer-1234094-shocking-chipotle", null]
     ]);
   });
 
@@ -209,7 +209,7 @@ describe("useTransactions transaction flow", () => {
 
     // setup data in Async Storage
     await AsyncStorage.setItem(
-      "truelayer-a15d8156569ba848d84c07c34d291bca",
+      "Truelayer-a15d8156569ba848d84c07c34d291bca",
       "Savings"
     );
 
@@ -254,14 +254,14 @@ describe("useTransactions transaction flow", () => {
     ]);
     expect(
       await AsyncStorage.multiGet([
-        "truelayer-a15d8156569ba848d84c07c34d291bca",
-        "truelayer-1234094-shocking-chipotle",
-        "truelayer-1234000-chai-pot"
+        "Truelayer-a15d8156569ba848d84c07c34d291bca",
+        "Truelayer-1234094-shocking-chipotle",
+        "Truelayer-1234000-chai-pot"
       ])
     ).toEqual([
-      ["truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
-      ["truelayer-1234094-shocking-chipotle", null],
-      ["truelayer-1234000-chai-pot", null]
+      ["Truelayer-a15d8156569ba848d84c07c34d291bca", "Savings"],
+      ["Truelayer-1234094-shocking-chipotle", null],
+      ["Truelayer-1234000-chai-pot", null]
     ]);
   });
 });

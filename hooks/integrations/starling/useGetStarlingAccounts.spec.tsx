@@ -2,26 +2,23 @@ import React, {ReactNode} from "react";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
-import useGetAllTruelayerCards from "./useGetAllTruelayerCards";
+import useGetStarlingAccounts from "./useGetStarlingAccounts";
 
-import {trueLayerDataApi} from "../../../api/axiosConfig";
-import {
-  TRUELAYER_MASTERCARD,
-  TRUELAYER_VISA
-} from "../../../mock-server/truelayer/data/cardData";
+import {starlingApi, trueLayerDataApi} from "../../../api/axiosConfig";
+import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {AppError} from "../../../types/errors";
-import {Card} from "../../../types/trueLayer/dataAPI/cards";
+import {StarlingAccount} from "../../../types/starling/accounts";
 
 jest.mock("../../../api/axiosConfig");
 
-describe("useGetAllTruelayerCards", () => {
-  test("returns a correct list of cards", async () => {
+describe("useGetStarlingAccounts", () => {
+  test("returns a correct list of accounts", async () => {
     (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[]>
+      starlingApi.get as jest.MockedFunction<
+        typeof starlingApi.get<{accounts: StarlingAccount[]}>
       >
-    ).mockResolvedValueOnce([TRUELAYER_MASTERCARD, TRUELAYER_VISA]);
+    ).mockResolvedValueOnce({accounts: [STARLING_ACCOUNT_1]});
 
     const mockRemoveError = jest.fn();
 
@@ -32,23 +29,23 @@ describe("useGetAllTruelayerCards", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useGetAllTruelayerCards(), {
+    const {result} = renderHook(() => useGetStarlingAccounts(), {
       customWrapper
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toEqual([TRUELAYER_MASTERCARD, TRUELAYER_VISA]);
+    expect(result.current.data).toEqual([STARLING_ACCOUNT_1]);
     expect(result.current.error).toBeNull();
 
     expect(mockRemoveError).toBeCalledTimes(1);
-    expect(mockRemoveError).toBeCalledWith("useGetAllTruelayerCards");
+    expect(mockRemoveError).toBeCalledWith("useGetStarlingAccounts");
   });
 
   test("returns an error message", async () => {
     const mockError: AppError = {id: "idToOverride", error: "error"};
     (
-      trueLayerDataApi.get as jest.MockedFunction<
-        typeof trueLayerDataApi.get<Card[]>
+      starlingApi.get as jest.MockedFunction<
+        typeof starlingApi.get<{accounts: []}>
       >
     ).mockRejectedValueOnce(mockError);
 
@@ -61,7 +58,7 @@ describe("useGetAllTruelayerCards", () => {
       </ErrorContext.Provider>
     );
 
-    const {result} = renderHook(() => useGetAllTruelayerCards(), {
+    const {result} = renderHook(() => useGetStarlingAccounts(), {
       customWrapper
     });
 
@@ -72,14 +69,12 @@ describe("useGetAllTruelayerCards", () => {
     expect(mockAddError).toBeCalledTimes(1);
     expect(mockAddError).toBeCalledWith({
       error: "error",
-      id: "useGetAllTruelayerCards"
+      id: "useGetStarlingAccounts"
     });
   });
 
   test("can disable the query", async () => {
-    const {result} = renderHook(() =>
-      useGetAllTruelayerCards({enabled: false})
-    );
+    const {result} = renderHook(() => useGetStarlingAccounts({enabled: false}));
 
     await waitFor(() => expect(result.current.isSuccess).toBe(false));
     expect(result.current.data).toBeUndefined();

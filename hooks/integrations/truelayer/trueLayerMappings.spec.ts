@@ -3,44 +3,58 @@ import {describe, expect, test} from "@jest/globals";
 import {mapTrueLayerTransactionToInternalTransaction} from "./trueLayerMappings";
 
 import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../mock-server/trueLayer/data/cardTransactionData";
-import {Source} from "../../../types/transaction";
+import {Category, Source} from "../../../types/transaction";
+import {TruelayerTransactionClassification} from "../../../types/trueLayer/dataAPI/cards";
 
 describe("mapTrueLayerTransactionToInternalTransaction", () => {
+  // TODO: maybe all tests for all categories here?
   const categoryData = [
     {
       transaction: {
         ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        transaction_classification: ["Bills and Utilities"]
+        transaction_classification: [
+          TruelayerTransactionClassification.BILLS_AND_UTILITIES
+        ]
       },
-      expectedTransCategory: "Bills"
+      expectedTransCategory: Category.BILLS
     },
     {
       transaction: {
         ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        transaction_classification: ["Food & Dining"]
+        transaction_classification: [
+          TruelayerTransactionClassification.FOOD_AND_DINING
+        ]
       },
-      expectedTransCategory: "Eating out"
+      expectedTransCategory: Category.EATING_OUT
     },
     {
       transaction: {
         ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        transaction_classification: ["Shopping"]
+        transaction_classification: [
+          TruelayerTransactionClassification.SHOPPING
+        ]
       },
-      expectedTransCategory: "Shopping"
+      expectedTransCategory: Category.SHOPPING
     },
     {
       transaction: {
         ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        transaction_classification: ["Entertainment", "Movies & DVDs"]
+        transaction_classification: [
+          TruelayerTransactionClassification.ENTERTAINMENT,
+          "Movies & DVDs"
+        ]
       },
-      expectedTransCategory: "Entertainment"
+      expectedTransCategory: Category.ENTERTAINMENT
     },
     {
       transaction: {
         ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-        transaction_classification: ["I don't know what this is", "Shopping"]
+        transaction_classification: [
+          "I don't know what this is",
+          Category.SHOPPING
+        ]
       },
-      expectedTransCategory: "Unknown"
+      expectedTransCategory: Category.UNKNOWN
     }
   ];
   test.each(categoryData)(

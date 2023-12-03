@@ -16,14 +16,14 @@ import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 jest.mock("../../../api/axiosConfig");
 
-describe("useGetTruelayerTransactions", () => {
+describe("useGetTruelayerSettledTransactions", () => {
   describe("with only 1 id", () => {
     test("returns a correct list of card transactions on a 200 status code", async () => {
       (
         trueLayerDataApi.get as jest.MockedFunction<
           typeof trueLayerDataApi.get<CardTransaction[]>
         >
-      ).mockImplementation(async () => [
+      ).mockResolvedValueOnce([
         TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
         TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
       ]);
@@ -52,8 +52,11 @@ describe("useGetTruelayerTransactions", () => {
 
       expect(mockRemoveError).toBeCalledTimes(1);
       expect(mockRemoveError).toBeCalledWith(
-        "useGetTruelayerTransactions-id_1"
+        "useGetTruelayerSettledTransactions-id_1"
       );
+
+      expect(trueLayerDataApi.get).toBeCalledTimes(1);
+      expect(trueLayerDataApi.get).toBeCalledWith("v1/cards/id_1/transactions");
     });
 
     test("uses past dates for transactions query", async () => {
@@ -61,7 +64,7 @@ describe("useGetTruelayerTransactions", () => {
         trueLayerDataApi.get as jest.MockedFunction<
           typeof trueLayerDataApi.get<CardTransaction[]>
         >
-      ).mockImplementation(async () => []);
+      ).mockResolvedValueOnce([]);
 
       const {result} = renderHook(() =>
         useGetTruelayerSettledTransactions({
@@ -89,7 +92,7 @@ describe("useGetTruelayerTransactions", () => {
         trueLayerDataApi.get as jest.MockedFunction<
           typeof trueLayerDataApi.get<CardTransaction[]>
         >
-      ).mockImplementation(async () => []);
+      ).mockResolvedValueOnce([]);
 
       // the time element of this test could be precarious because
       // new Date() is also called in the hook in order to get the current time
@@ -120,7 +123,7 @@ describe("useGetTruelayerTransactions", () => {
         trueLayerDataApi.get as jest.MockedFunction<
           typeof trueLayerDataApi.get<CardTransaction[]>
         >
-      ).mockImplementation(async () => Promise.reject(mockError));
+      ).mockRejectedValueOnce(mockError);
 
       const mockAddError = jest.fn();
 
@@ -141,7 +144,7 @@ describe("useGetTruelayerTransactions", () => {
       await waitFor(() => expect(mockAddError).toBeCalledTimes(1));
       expect(mockAddError).toBeCalledWith({
         error: "error",
-        id: "useGetTruelayerTransactions-id_1"
+        id: "useGetTruelayerSettledTransactions-id_1"
       });
       expect(result.current.data).toEqual([]);
     });
@@ -188,10 +191,10 @@ describe("useGetTruelayerTransactions", () => {
 
       expect(mockRemoveError).toBeCalledTimes(2);
       expect(mockRemoveError).toBeCalledWith(
-        "useGetTruelayerTransactions-id_1"
+        "useGetTruelayerSettledTransactions-id_1"
       );
       expect(mockRemoveError).toBeCalledWith(
-        "useGetTruelayerTransactions-id_2"
+        "useGetTruelayerSettledTransactions-id_2"
       );
     });
 
@@ -264,12 +267,12 @@ describe("useGetTruelayerTransactions", () => {
 
       expect(mockRemoveError).toBeCalledTimes(1);
       expect(mockRemoveError).toBeCalledWith(
-        "useGetTruelayerTransactions-id_1"
+        "useGetTruelayerSettledTransactions-id_1"
       );
       expect(mockAddError).toBeCalledTimes(1);
       expect(mockAddError).toBeCalledWith({
         error: mockError.error,
-        id: "useGetTruelayerTransactions-id_2"
+        id: "useGetTruelayerSettledTransactions-id_2"
       });
     });
   });

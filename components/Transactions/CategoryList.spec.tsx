@@ -48,7 +48,9 @@ describe("CategoryList component", () => {
 
     render(<CategoryList />);
 
-    const categoryList = Object.keys(INITIAL_CATEGORY_MAP);
+    const categoryList = Object.keys(
+      INITIAL_CATEGORY_MAP
+    ) as (keyof typeof INITIAL_CATEGORY_MAP)[];
     categoryList.map(category => {
       expect(screen.getByText(category)).toBeVisible();
       expect(CategoryIcon).toBeCalledWith(INITIAL_CATEGORY_MAP[category], {});
@@ -91,10 +93,10 @@ describe("CategoryList component", () => {
     });
 
     render(<CategoryList />);
-    // credit card should be 5th on the list
+    // credit card should be 7th on the list
     expect(
       (CategoryIcon as jest.MockedFunction<typeof CategoryIcon>).mock
-        .calls[5][0]
+        .calls[6][0]
     ).toEqual(creditCardCategoryAssociation);
   });
 });

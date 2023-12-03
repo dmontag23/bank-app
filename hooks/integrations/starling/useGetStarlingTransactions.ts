@@ -1,60 +1,58 @@
 import {useContext, useMemo} from "react";
 import {useQueries, UseQueryOptions} from "@tanstack/react-query";
 
-import {trueLayerDataApi} from "../../../api/axiosConfig";
+import {starlingApi} from "../../../api/axiosConfig";
 import ErrorContext from "../../../store/error-context";
 import {IntegrationErrorResponse} from "../../../types/errors";
+import {StarlingFeedItem} from "../../../types/starling/feedItems";
 import {DateRange} from "../../../types/transaction";
-import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
-const getTransactions = async (cardId: string, dateRange?: DateRange) => {
-  // the Truelayer API does not accept timestamps in the future
-  // so if any query date range timestamps are provided, they need to be
-  // before the current time
-  const today = new Date();
-  const queryParams = dateRange
-    ? `?from=${
-        dateRange.from < today
-          ? dateRange.from.toISOString()
-          : today.toISOString()
-      }&to=${
-        dateRange.to < today ? dateRange.to.toISOString() : today.toISOString()
-      }`
-    : "";
+const getTransactions = async (
+  accountId: string,
+  categoryId: string,
+  dateRange?: DateRange
+) => {
+  // Starling was founded in 2014, so there will not be any transactions before 2014
+  const queryParams = `?minTransactionTimestamp=${
+    dateRange?.from?.toISOString() ?? new Date("2014-01-01").toISOString()
+  }&maxTransactionTimestamp=${
+    dateRange?.to?.toISOString() ?? new Date().toISOString()
+  }`;
 
-  return await trueLayerDataApi.get<CardTransaction[]>(
-    `v1/cards/${cardId}/transactions${queryParams}`
+  const items = await starlingApi.get<{feedItems: StarlingFeedItem[]}>(
+    `v2/feed/account/${accountId}/category/${categoryId}/transactions-between${queryParams}`
   );
+  return items.feedItems;
 };
 
-type UseGetTruelayerTransactionsProps = {
-  cardIds: string[];
+type UseGetStarlingTransactionsProps = {
+  ids: {accountId: string; categoryId: string}[];
   dateRange?: DateRange;
   enabled?: boolean;
 };
 
-const useGetTruelayerSettledTransactions = ({
-  cardIds,
+const useGetStarlingTransactions = ({
+  ids,
   dateRange,
   enabled = true
-}: UseGetTruelayerTransactionsProps) => {
+}: UseGetStarlingTransactionsProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   // TODO: use combine option when upgrading to Tanstack Query v5
 
   const combinedQueries = useQueries({
-    queries: cardIds.map<
-      UseQueryOptions<CardTransaction[], IntegrationErrorResponse>
-    >(cardId => ({
-      queryKey: ["truelayerSettledTransactions", cardId, dateRange],
-      queryFn: () => getTransactions(cardId, dateRange),
+    queries: ids.map<
+      UseQueryOptions<StarlingFeedItem[], IntegrationErrorResponse>
+    >(({accountId, categoryId}) => ({
+      queryKey: ["starlingTransactions", accountId, categoryId, dateRange],
+      queryFn: () => getTransactions(accountId, categoryId, dateRange),
       onError: error =>
         addError({
           ...error,
-          id: `useGetTruelayerSettledTransactions-${cardId}`
+          id: `useGetStarlingTransactions-${accountId}-${categoryId}`
         }),
       onSuccess: () =>
-        removeError(`useGetTruelayerSettledTransactions-${cardId}`),
+        removeError(`useGetStarlingTransactions-${accountId}-${categoryId}`),
       enabled
     }))
   });
@@ -65,7 +63,7 @@ const useGetTruelayerSettledTransactions = ({
   const allData = combinedQueries.map(query => query.data);
   const combinedData = useMemo(
     () =>
-      allData.reduce<CardTransaction[]>(
+      allData.reduce<StarlingFeedItem[]>(
         (acc, cur) => [...(cur ?? []), ...acc],
         []
       ),
@@ -82,4 +80,4 @@ const useGetTruelayerSettledTransactions = ({
   };
 };
 
-export default useGetTruelayerSettledTransactions;
+export default useGetStarlingTransactions;
