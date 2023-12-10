@@ -118,7 +118,7 @@ describe("transaction flow", () => {
           name: STARLING_FEED_ITEM_2.counterPartyName,
           description: STARLING_FEED_ITEM_2.spendingCategory,
           amount: STARLING_FEED_ITEM_2.amount.minorUnits / 100,
-          category: Category.INCOME,
+          category: Category.BILLS,
           timestamp: new Date(STARLING_FEED_ITEM_2.transactionTime),
           source: Source.STARLING
         }

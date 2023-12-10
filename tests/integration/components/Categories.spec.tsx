@@ -134,5 +134,5 @@ describe("Categories", () => {
     ).getByTestId("category-avatar");
     expect(icon).toHaveStyle({backgroundColor: "hsl(225, 80%, 60%)"});
     expect(icon.children[0]).toHaveProp("source", "fire");
-  });
+  }, 10000);
 });

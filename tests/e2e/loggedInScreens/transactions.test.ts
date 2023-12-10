@@ -1,6 +1,7 @@
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
+import {STARLING_FEED_ITEM_1} from "../../../mock-server/starling/data/feedData";
 import {
   EATING_OUT_CARD_TRANSACTION,
   PAY_BILL_CARD_TRANSACTION
@@ -17,6 +18,13 @@ describe("Transactions page", () => {
 
   it("should show all transactions", async () => {
     await expect(element(by.text("Transactions")).atIndex(0)).toBeVisible();
+
+    // starling transactions
+    await expect(
+      element(by.text(STARLING_FEED_ITEM_1.counterPartyName))
+    ).toBeVisible();
+
+    // truelayer transactions
     await expect(
       element(by.text(EATING_OUT_CARD_TRANSACTION.name))
     ).toBeVisible();
