@@ -23,6 +23,10 @@ import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../moc
 
 describe("Categories", () => {
   test("can add a category", async () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {

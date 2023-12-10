@@ -23,9 +23,9 @@ export const STARLING_FEED_ITEM_1: StarlingFeedItem = {
     minorUnits: 999
   },
   direction: Direction.OUT,
-  updatedAt: new Date("2023-12-01").toISOString(),
-  transactionTime: new Date("2023-11-30").toISOString(),
-  settlementTime: new Date("2023-12-01").toISOString(),
+  updatedAt: new Date("2020-12-01").toISOString(),
+  transactionTime: new Date("2020-11-30").toISOString(),
+  settlementTime: new Date("2020-12-01").toISOString(),
   retryAllocationUntilTime: "",
   source: Source.MASTER_CARD,
   sourceSubType: SubSource.CONTACTLESS,
@@ -96,7 +96,7 @@ export const STARLING_FEED_ITEM_2: StarlingFeedItem = {
   },
   reference: "reference",
   country: Country.IT,
-  spendingCategory: SpendingCategory.INCOME,
+  spendingCategory: SpendingCategory.BILLS_AND_SERVICES,
   userNote: "",
   roundUp: {
     goalCategoryUid: "goal-category-uuid-2",

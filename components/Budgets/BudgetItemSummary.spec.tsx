@@ -8,6 +8,7 @@ import BudgetItemSummary from "./BudgetItemSummary";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {BudgetItemWithTransactions} from "../../types/budget";
+import {Category} from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
@@ -188,7 +189,7 @@ describe("BudgetItemSummary component", () => {
     ).mock.calls[0][0].children as JSX.Element;
     render(categories);
 
-    expect(screen.getByText("Unknown")).toBeVisible();
+    expect(screen.getByText(Category.UNKNOWN)).toBeVisible();
     expect(screen.getByTestId("chip-container")).toHaveStyle({
       backgroundColor: INITIAL_CATEGORY_MAP.Unknown.color
     });

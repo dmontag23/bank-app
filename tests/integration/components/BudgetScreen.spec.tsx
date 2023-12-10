@@ -45,6 +45,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -84,6 +88,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -125,6 +133,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -177,6 +189,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -275,6 +291,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transactions
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -472,6 +492,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {

@@ -10,8 +10,12 @@ import config from "../../config.json";
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
     // setup mocks
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards/1/transactions")
+      .get("/v1/cards")
       .reply(200, {
         results: [],
         status: "Succeeded"

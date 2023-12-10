@@ -8,6 +8,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
+import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
+import {STARLING_FEED_ITEM_1} from "../../../mock-server/starling/data/feedData";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -17,7 +19,33 @@ import {
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 describe("Transactions", () => {
-  test("renders a loading spinner when loading", () => {
+  test("renders a loading spinner when loading starling transactions", () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .delayConnection(2000)
+      .reply(200, {accounts: []});
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      });
+
+    render(
+      <NavigationContainer>
+        <TransactionsScreen />
+      </NavigationContainer>
+    );
+
+    expect(screen.getByTestId("loadingSpinner")).toBeVisible();
+  });
+
+  test("renders a loading spinner when loading truelayer transactions", () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .delayConnection(5000)
@@ -43,6 +71,15 @@ describe("Transactions", () => {
     const testPendingTransactions: CardTransaction[] = [
       TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
     ];
+
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: [STARLING_ACCOUNT_1]})
+      // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
@@ -70,6 +107,11 @@ describe("Transactions", () => {
     );
 
     await waitFor(() => expect(screen.getByText("Transactions")).toBeVisible());
+    // starling transactions
+    expect(
+      screen.getByText(STARLING_FEED_ITEM_1.counterPartyName)
+    ).toBeVisible();
+    // truelayer transactions
     [...testTransactions, ...testPendingTransactions].map(transaction => {
       expect(screen.getByText(transaction.description)).toBeVisible();
     });
@@ -80,6 +122,10 @@ describe("Transactions", () => {
       "category-map",
       JSON.stringify(INITIAL_CATEGORY_MAP)
     );
+
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
@@ -100,7 +146,7 @@ describe("Transactions", () => {
         status: "Succeeded"
       });
 
-    const testTransactionId = `truelayer-${TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.transaction_id}`;
+    const testTransactionId = `Truelayer-${TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.transaction_id}`;
     const testTransactionName =
       TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS.description;
 

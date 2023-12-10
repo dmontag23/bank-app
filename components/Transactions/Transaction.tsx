@@ -8,6 +8,7 @@ import CategoryList from "./CategoryList";
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import useStoreTransactionCategoryMap from "../../hooks/transactions/useStoreTransactionCategoryMap";
 import {
+  Category,
   CategoryMap,
   Transaction as TransactionType
 } from "../../types/transaction";
@@ -96,7 +97,8 @@ const Transaction = ({transaction, categoryMap}: TransactionComponentProps) => {
         description={createDescriptionString(transaction)}
         left={() =>
           ListIcon(
-            categoryMap[transaction.category] ?? INITIAL_CATEGORY_MAP.Unknown
+            categoryMap[transaction.category] ??
+              INITIAL_CATEGORY_MAP[Category.UNKNOWN]
           )
         }
         right={() =>

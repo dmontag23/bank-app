@@ -9,6 +9,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import Budget from "../../../components/Budgets/Budget";
 import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
+import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
+import {STARLING_FEED_ITEM_2} from "../../../mock-server/starling/data/feedData";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -32,6 +34,10 @@ describe("Budgets", () => {
   };
 
   test("renders a loading spinner", () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -49,6 +55,10 @@ describe("Budgets", () => {
   });
 
   test("renders a budget with no items", async () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -70,6 +80,10 @@ describe("Budgets", () => {
   });
 
   test("renders a budget item with no transactions", async () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -102,6 +116,15 @@ describe("Budgets", () => {
   });
 
   test("renders a budget item with transactions over cap", async () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: [STARLING_ACCOUNT_1]})
+      // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_2]});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -138,7 +161,7 @@ describe("Budgets", () => {
 
     // Budget summary
     await waitFor(() => expect(screen.getByText("Bill Item")).toBeVisible());
-    expect(screen.getByText("£-42.52")).toBeVisible();
+    expect(screen.getByText("£-43.02")).toBeVisible();
     expect(screen.getByText("left of £150.00")).toBeVisible();
     const progressBar = screen.getByTestId("budgetItemSummaryProgressBar");
     expect(progressBar).toBeVisible();
@@ -152,9 +175,18 @@ describe("Budgets", () => {
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
     expect(screen.getByText("1 Jan 2023 at 00:00 - Bills")).toBeVisible();
+    expect(
+      screen.getByText(STARLING_FEED_ITEM_2.counterPartyName)
+    ).toBeVisible();
+    expect(screen.getByText("£0.50")).toBeVisible();
+    expect(screen.getByText("1 Jan 2020 at 00:00 - Bills")).toBeVisible();
   });
 
   test("switches between budget items", async () => {
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -182,6 +214,9 @@ describe("Budgets", () => {
       "category-map",
       JSON.stringify(INITIAL_CATEGORY_MAP)
     );
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
 
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")

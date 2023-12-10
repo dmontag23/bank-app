@@ -11,13 +11,13 @@ import config from "../../../config.json";
 
 describe("Error", () => {
   test("displays and closes toast", async () => {
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(400, {error: "invalid_token"});
-
     nock(config.integrations.starling.sandboxUrl)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(400, {error: "invalid_token"});
 
     render(
       <NavigationContainer>
@@ -39,14 +39,14 @@ describe("Error", () => {
     expect(toast).not.toBeOnTheScreen();
   });
 
-  test("can navigate error modal", async () => {
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(400, {error: "invalid_token"});
-
+  test("can navigate to the error modal", async () => {
     nock(config.integrations.starling.sandboxUrl)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
+
+    nock(config.integrations.trueLayer.sandboxDataUrl)
+      .get("/v1/cards")
+      .reply(400, {error: "invalid_token"});
 
     render(
       <NavigationContainer>
