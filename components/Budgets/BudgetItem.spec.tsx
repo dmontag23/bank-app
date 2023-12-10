@@ -8,7 +8,7 @@ import BudgetItemSummary from "./BudgetItemSummary";
 
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {BudgetItemWithTransactions} from "../../types/budget";
-import {Transaction} from "../../types/transaction";
+import {Source, Transaction} from "../../types/transaction";
 import TransactionList from "../Transactions/TransactionList";
 
 jest.mock("lodash");
@@ -23,7 +23,8 @@ describe("BudgetItem component", () => {
       description: "Description",
       amount: 0,
       category: "Savings",
-      timestamp: new Date("2023-01-01")
+      timestamp: new Date("2023-01-01"),
+      source: Source.TRUELAYER
     }
   ];
   const testItem: BudgetItemWithTransactions = {

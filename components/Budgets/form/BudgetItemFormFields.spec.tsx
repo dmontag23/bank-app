@@ -8,6 +8,7 @@ import BudgetItemFormFields from "./BudgetItemFormFields";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import useGetCategoryMap from "../../../hooks/transactions/useGetCategoryMap";
 import {BudgetInput} from "../../../types/budget";
+import {Category} from "../../../types/transaction";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 jest.mock("../../../hooks/transactions/useGetCategoryMap");
@@ -74,7 +75,7 @@ describe("BudgetItemFormFields component", () => {
     expect(screen.getByLabelText("Item name")).toBeVisible();
     expect(screen.getByLabelText("Cap")).toBeVisible();
     expect(screen.getByText("Select categories")).toBeVisible();
-    expect(screen.queryByText("Unknown")).toBeNull();
+    expect(screen.queryByText(Category.UNKNOWN)).toBeNull();
   });
 
   test("renders form fields with categories", async () => {
@@ -126,8 +127,8 @@ describe("BudgetItemFormFields component", () => {
       />
     );
 
-    // credit card should be the 6th item in the list based on the initial category map
-    expect(screen.getAllByRole("checkbox")[5]).toHaveProp(
+    // credit card should be the 7th item in the list based on the initial category map
+    expect(screen.getAllByRole("checkbox")[6]).toHaveProp(
       "accessibilityLabel",
       "Credit card"
     );

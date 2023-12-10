@@ -1,60 +1,78 @@
 import {describe, expect, test} from "@jest/globals";
 
-import {
-  mapTrueLayerCategoryToInternalCategory,
-  mapTrueLayerTransactionToInternalTransaction
-} from "./trueLayerMappings";
+import {mapTrueLayerTransactionToInternalTransaction} from "./trueLayerMappings";
 
 import {TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS} from "../../../mock-server/trueLayer/data/cardTransactionData";
+import {Category, Source} from "../../../types/transaction";
+import {TruelayerTransactionClassification} from "../../../types/trueLayer/dataAPI/cards";
 
-describe("mapTrueLayerCategoryToInternalCategory", () => {
+describe("mapTrueLayerTransactionToInternalTransaction", () => {
+  // TODO: maybe all tests for all categories here?
   const categoryData = [
     {
-      categoryList: ["Bills and Utilities"],
-      expectedTransCategory: "Bills"
+      transaction: {
+        ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        transaction_classification: [
+          TruelayerTransactionClassification.BILLS_AND_UTILITIES
+        ]
+      },
+      expectedTransCategory: Category.BILLS
     },
     {
-      categoryList: ["Food & Dining"],
-      expectedTransCategory: "Eating out"
+      transaction: {
+        ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        transaction_classification: [
+          TruelayerTransactionClassification.FOOD_AND_DINING
+        ]
+      },
+      expectedTransCategory: Category.EATING_OUT
     },
     {
-      categoryList: ["Shopping"],
-      expectedTransCategory: "Shopping"
+      transaction: {
+        ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        transaction_classification: [
+          TruelayerTransactionClassification.SHOPPING
+        ]
+      },
+      expectedTransCategory: Category.SHOPPING
     },
     {
-      categoryList: ["Entertainment", "Movies & DVDs"],
-      expectedTransCategory: "Entertainment"
+      transaction: {
+        ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        transaction_classification: [
+          TruelayerTransactionClassification.ENTERTAINMENT,
+          "Movies & DVDs"
+        ]
+      },
+      expectedTransCategory: Category.ENTERTAINMENT
     },
     {
-      categoryList: ["I don't know what this is", "Shopping"],
-      expectedTransCategory: "Unknown"
+      transaction: {
+        ...TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
+        transaction_classification: [
+          "I don't know what this is",
+          Category.SHOPPING
+        ]
+      },
+      expectedTransCategory: Category.UNKNOWN
     }
   ];
   test.each(categoryData)(
-    `correctly maps categories`,
-    async ({categoryList, expectedTransCategory}) => {
-      const result = mapTrueLayerCategoryToInternalCategory(categoryList);
+    `correctly maps transactions`,
+    ({transaction, expectedTransCategory}) => {
+      const result = mapTrueLayerTransactionToInternalTransaction(transaction);
 
-      expect(result).toEqual(expectedTransCategory);
+      expect(result).toEqual({
+        id: "a15d8156569ba848d84c07c34d291bca",
+        name: "PAY OFF CREDIT CARD BILL",
+        description: transaction.transaction_classification[0],
+        amount: 192.52,
+        category: expectedTransCategory,
+        timestamp: new Date(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
+        ),
+        source: Source.TRUELAYER
+      });
     }
   );
-});
-
-describe("mapTrueLayerTransactionToInternalTransaction", () => {
-  test("correctly maps a TrueLayer transaction to an internal transaction", async () => {
-    const result = mapTrueLayerTransactionToInternalTransaction(
-      TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS,
-      "Bills"
-    );
-    expect(result).toEqual({
-      id: "a15d8156569ba848d84c07c34d291bca",
-      name: "PAY OFF CREDIT CARD BILL",
-      description: "Bills and Utilities",
-      amount: 192.52,
-      category: "Bills",
-      timestamp: new Date(
-        TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.timestamp
-      )
-    });
-  });
 });

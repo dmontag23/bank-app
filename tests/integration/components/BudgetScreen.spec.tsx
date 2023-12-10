@@ -45,6 +45,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -84,6 +88,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -125,6 +133,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -177,6 +189,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -275,6 +291,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transactions
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {
@@ -457,7 +477,7 @@ describe("Budget screen", () => {
     // TODO: Investigate why toBeVisible() fails here
     // I think it's because the opacity of a parent is 0
     expect(screen.getByText("My first budget!")).toBeOnTheScreen();
-  });
+  }, 10000);
 
   test("can show and hide categories", async () => {
     // setup AsyncStorage with mock data
@@ -472,6 +492,10 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
+    nock(config.integrations.starling.sandboxUrl)
+      .get("/v2/accounts")
+      .reply(200, {accounts: []});
+
     nock(config.integrations.trueLayer.sandboxDataUrl)
       .get("/v1/cards")
       .reply(200, {

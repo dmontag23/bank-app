@@ -6,7 +6,7 @@ import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs
 import BudgetItem from "./BudgetItem";
 
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
-import useTransactions from "../../hooks/transactions/useTransactions";
+import useGetTransactions from "../../hooks/transactions/useGetTransactions";
 import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {
   BudgetItem as BudgetItemType,
@@ -59,7 +59,7 @@ type BudgetProps = {
 const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
   const theme = useAppTheme();
 
-  const {isLoading: isTransactionsLoading, transactions} = useTransactions({
+  const {isLoading: isTransactionsLoading, transactions} = useGetTransactions({
     dateRange: {
       from: budget.window.start,
       to: budget.window.end

@@ -14,6 +14,6 @@ export type CommonAPIErrorResponse = {
 // the structure of this error is only different in that the
 // auth api has specific enum values for the "error" field
 export const isCommonTruelayerAPIError = (
-  response: DataAPIErrorResponse | AuthAPIErrorResponse
+  response: AuthAPIErrorResponse | DataAPIErrorResponse
 ): response is CommonAPIErrorResponse =>
   (response as CommonAPIErrorResponse)?.error !== undefined;

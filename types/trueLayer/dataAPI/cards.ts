@@ -43,6 +43,31 @@ type Metadata = {
   location?: string;
 };
 
+// Note that Truelayer breaks down classifications into categories and subcategories
+// Only the categories are represented in this enum for simplicity, so the transaction_classification
+// field below is still a string[]. See https://docs.truelayer.com/docs/transaction-data-reference
+export enum TruelayerTransactionClassification {
+  AUTO_AND_TRANSPORT = " Auto & Transport",
+  BILLS_AND_UTILITIES = "Bills and Utilities",
+  BUSINESS_SERVICES = "Business Services",
+  EDUCATION = "Education",
+  ENTERTAINMENT = "Entertainment",
+  FEES_AND_CHARGES = "Fees & Charges",
+  FOOD_AND_DINING = "Food & Dining",
+  GAMBLING = "Gambling",
+  GIFTS_AND_DONATIONS = "Gifts & Donations",
+  HEALTH_AND_FITNESS = "Health & Fitness",
+  HOME = "Home",
+  INVESTMENTS = "Investments",
+  PENSIONS_AND_INSURANCES = "Pensions and insurances",
+  PERSONAL_CARE = "Personal Care",
+  PERSONAL_SERVICES = "Personal Services",
+  SHOPPING = "Shopping",
+  TAXES = "Taxes",
+  TRAVEL = "Travel",
+  UNCATEGORIZED = "Uncategorized"
+}
+
 export type CardTransaction = {
   transaction_id: string;
   normalised_provider_transaction_id?: string;

@@ -4,20 +4,13 @@ import {useQueries, UseQueryOptions} from "@tanstack/react-query";
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext from "../../../store/error-context";
 import {IntegrationErrorResponse} from "../../../types/errors";
+import {DateRange} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
-
-type TransactionDateRangeQuery = {
-  from: Date;
-  to: Date;
-};
 
 // Note that the pending transactions endpoint cannot filter
 // pending transactions by a date range, so we have to do that
 // manually here
-const getPendingTransactions = async (
-  cardId: string,
-  dateRange?: TransactionDateRangeQuery
-) =>
+const getPendingTransactions = async (cardId: string, dateRange?: DateRange) =>
   (
     await trueLayerDataApi.get<CardTransaction[]>(
       `v1/cards/${cardId}/transactions/pending`
@@ -33,7 +26,7 @@ const getPendingTransactions = async (
 
 type UseGetTruelayerPendingTransactionsProps = {
   cardIds: string[];
-  dateRange?: TransactionDateRangeQuery;
+  dateRange?: DateRange;
   enabled?: boolean;
 };
 

@@ -1,7 +1,12 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: ["**/*.{ts,tsx}", "!**/tests/**", "!**/types/**"],
+  collectCoverageFrom: [
+    "**/*.{ts,tsx}",
+    "!mock-server/**",
+    "!**/tests/**",
+    "!**/types/**"
+  ],
   globalSetup: "<rootDir>/tests/globalSetup.ts",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   moduleNameMapper: {

@@ -6,11 +6,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useGetTransactionCategoryMap from "./useGetTransactionCategoryMap";
 
 import ErrorContext, {defaultErrorContext} from "../../store/error-context";
+import {Source} from "../../types/transaction";
 
 describe("useGetTransactionCategoryMap", () => {
   test("returns an empty map when called with no transactions", async () => {
     const {result} = renderHook(() =>
-      useGetTransactionCategoryMap({transactionIds: []})
+      useGetTransactionCategoryMap({
+        transactionIds: [],
+        source: Source.TRUELAYER
+      })
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -21,7 +25,7 @@ describe("useGetTransactionCategoryMap", () => {
 
   test("returns a map where only some values are retrieved from storage", async () => {
     // setup AsyncStorage with mock data
-    await AsyncStorage.setItem("truelayer-id-2", "Bills");
+    await AsyncStorage.setItem("Truelayer-id-2", "Bills");
 
     // setup error context mocks
     const mockRemoveError = jest.fn();
@@ -34,7 +38,11 @@ describe("useGetTransactionCategoryMap", () => {
     );
 
     const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: ["id-1", "id-2"]}),
+      () =>
+        useGetTransactionCategoryMap({
+          transactionIds: ["id-1", "id-2"],
+          source: Source.TRUELAYER
+        }),
       {customWrapper}
     );
 
@@ -45,8 +53,8 @@ describe("useGetTransactionCategoryMap", () => {
     });
     expect(AsyncStorage.multiGet).toBeCalledTimes(1);
     expect(AsyncStorage.multiGet).toBeCalledWith([
-      "truelayer-id-1",
-      "truelayer-id-2"
+      "Truelayer-id-1",
+      "Truelayer-id-2"
     ]);
 
     expect(mockRemoveError).toBeCalledTimes(1);
@@ -55,7 +63,11 @@ describe("useGetTransactionCategoryMap", () => {
 
   test("does not fetch from storage when disabled", async () => {
     const {result} = renderHook(() =>
-      useGetTransactionCategoryMap({transactionIds: [], enabled: false})
+      useGetTransactionCategoryMap({
+        transactionIds: [],
+        source: Source.TRUELAYER,
+        enabled: false
+      })
     );
 
     await waitFor(() => expect(result.current.isLoading).toBe(true));
@@ -84,7 +96,11 @@ describe("useGetTransactionCategoryMap", () => {
     );
 
     const {result} = renderHook(
-      () => useGetTransactionCategoryMap({transactionIds: []}),
+      () =>
+        useGetTransactionCategoryMap({
+          transactionIds: [],
+          source: Source.TRUELAYER
+        }),
       {customWrapper}
     );
 

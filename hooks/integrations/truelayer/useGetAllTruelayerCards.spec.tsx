@@ -50,7 +50,7 @@ describe("useGetAllTruelayerCards", () => {
       trueLayerDataApi.get as jest.MockedFunction<
         typeof trueLayerDataApi.get<Card[]>
       >
-    ).mockImplementation(async () => Promise.reject(mockError));
+    ).mockRejectedValueOnce(mockError);
 
     const mockAddError = jest.fn();
 

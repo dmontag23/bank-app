@@ -3,6 +3,7 @@ import {beforeEach, describe, it} from "@jest/globals";
 
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {Budget} from "../../../types/budget";
+import {Category} from "../../../types/transaction";
 import {logIn} from "../utils/utils";
 
 /* TODO: find a way to remove this function
@@ -163,7 +164,7 @@ describe("Budget page", () => {
       .toBeVisible()
       .whileElement(by.id("budgetFormScrollView"))
       .scroll(400, "down");
-    const firstCategoryButton = await element(by.text("Entertainment"));
+    const firstCategoryButton = await element(by.text(Category.ENTERTAINMENT));
     await expect(firstCategoryButton).toBeVisible();
     await firstCategoryButton.tap();
 
@@ -172,7 +173,7 @@ describe("Budget page", () => {
       .toBeVisible()
       .whileElement(by.id("budgetFormScrollView"))
       .scroll(100, "down");
-    const secondCategoryButton = await element(by.text("Unknown"));
+    const secondCategoryButton = await element(by.text(Category.UNKNOWN));
     await expect(secondCategoryButton).toBeVisible();
     await secondCategoryButton.tap();
 
@@ -213,13 +214,18 @@ describe("Budget page", () => {
     await createBudget(budget);
 
     await expect(element(by.text("Bills"))).toBeVisible();
-    await expect(element(by.text("£-42.52"))).toBeVisible();
+    await expect(element(by.text("£-43.02"))).toBeVisible();
     await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(
-      element(by.text("1 Jan 2023 at 00:00  -  Bills"))
+      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.BILLS}`))
     ).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
+    await expect(element(by.text("Starling Bank"))).toBeVisible();
+    await expect(
+      element(by.text(`1 Jan 2020 at 00:00  -  ${Category.BILLS}`))
+    ).toBeVisible();
+    await expect(element(by.text("£0.50"))).toBeVisible();
 
     // swipe to next budget item
     await element(by.text("Bills")).swipe("left");
@@ -229,7 +235,7 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £500.00"))).toBeVisible();
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
     await expect(
-      element(by.text("24 Feb 2013 at 14:00  -  Eating out"))
+      element(by.text(`24 Feb 2013 at 14:00  -  ${Category.EATING_OUT}`))
     ).toBeVisible();
     await expect(element(by.text("£36.71"))).toBeVisible();
   });
@@ -337,7 +343,7 @@ describe("Budget page", () => {
     await expect(transaction).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text("1 Jan 2023 at 00:00  -  Bills"))
+      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.BILLS}`))
     ).toBeVisible();
 
     // click the transaction
@@ -375,7 +381,7 @@ describe("Budget page", () => {
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text("1 Jan 2023 at 00:00  -  Savings"))
+      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.SAVINGS}`))
     ).toBeVisible();
   });
 
@@ -535,7 +541,7 @@ describe("Budget page", () => {
     // twirl down the categories and check they all exist on the screen
     const categoriesButton = element(by.text("Categories"));
     await categoriesButton.tap();
-    const shoppingCategory = element(by.text("Shopping"));
+    const shoppingCategory = element(by.text(Category.SHOPPING));
     await expect(shoppingCategory).toBeVisible();
 
     // twirl up the categories and check they are no longer visible

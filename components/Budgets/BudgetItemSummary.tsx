@@ -7,7 +7,7 @@ import BudgetDialog from "./BudgetDialog";
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {useAppTheme} from "../../hooks/utils/useAppTheme";
 import {Budget, BudgetItemWithTransactions} from "../../types/budget";
-import {CategoryMap} from "../../types/transaction";
+import {Category, CategoryMap} from "../../types/transaction";
 import CategoryIcon from "../ui/CategoryIcon";
 import ExpandableAccordion from "../ui/ExpandableAccordion";
 
@@ -93,14 +93,14 @@ const BudgetItemSummary = ({
             const isCategoryInMap = Boolean(categoryMap[category]);
             const {icon, color} = isCategoryInMap
               ? categoryMap[category]
-              : INITIAL_CATEGORY_MAP.Unknown;
+              : INITIAL_CATEGORY_MAP[Category.UNKNOWN];
             return (
               <Chip
                 key={category}
                 avatar={<CategoryIcon icon={icon} color={color} />}
                 textStyle={styles.categoryChip}
                 style={{backgroundColor: color}}>
-                {isCategoryInMap ? category : "Unknown"}
+                {isCategoryInMap ? category : Category.UNKNOWN}
               </Chip>
             );
           })}

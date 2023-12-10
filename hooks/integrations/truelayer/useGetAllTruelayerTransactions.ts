@@ -3,14 +3,11 @@ import {useMemo} from "react";
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
 import useGetTruelayerSettledTransactions from "./useGetTruelayerSettledTransactions";
 
-type TransactionDateRangeQuery = {
-  from: Date;
-  to: Date;
-};
+import {DateRange} from "../../../types/transaction";
 
 type UseGetAllTruelayerTransactionsProps = {
   cardIds: string[];
-  dateRange?: TransactionDateRangeQuery;
+  dateRange?: DateRange;
   enabled?: boolean;
 };
 
@@ -18,9 +15,9 @@ const useGetAllTruelayerTransactions = (
   props: UseGetAllTruelayerTransactionsProps
 ) => {
   const {
-    isLoading: isTransactionsLoading,
-    isSuccess: isTransactionsSuccess,
-    data: transactions
+    isLoading: isSettledTransactionsLoading,
+    isSuccess: isSettledTransactionsSuccess,
+    data: settledTransactions
   } = useGetTruelayerSettledTransactions(props);
 
   const {
@@ -30,14 +27,15 @@ const useGetAllTruelayerTransactions = (
   } = useGetTruelayerPendingTransactions(props);
 
   const data = useMemo(
-    () => [...(transactions ?? []), ...(pendingTransactions ?? [])],
-    [transactions, pendingTransactions]
+    () => [...(settledTransactions ?? []), ...(pendingTransactions ?? [])],
+    [settledTransactions, pendingTransactions]
   );
 
-  const isSuccess = isTransactionsSuccess && isPendingTransactionsSuccess;
+  const isSuccess =
+    isSettledTransactionsSuccess && isPendingTransactionsSuccess;
 
   return {
-    isLoading: isTransactionsLoading || isPendingTransactionsLoading,
+    isLoading: isSettledTransactionsLoading || isPendingTransactionsLoading,
     isSuccess,
     data: isSuccess ? data : []
   };

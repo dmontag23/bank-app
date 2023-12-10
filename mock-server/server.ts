@@ -3,12 +3,14 @@ import {AddressInfo} from "net";
 
 import express from "express";
 
+import starlingRouter from "./starling/router/starlingRouter";
 import truelayerAuthRouter from "./truelayer/routers/authRouter";
 import truelayerDataRouter from "./truelayer/routers/dataRouter";
 
 const app = express();
 let server: Server;
 
+app.use("/starling", starlingRouter);
 app.use("/truelayer/auth", truelayerAuthRouter);
 app.use("/truelayer/data", truelayerDataRouter);
 

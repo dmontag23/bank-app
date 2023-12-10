@@ -4,17 +4,10 @@ import {useQueries, UseQueryOptions} from "@tanstack/react-query";
 import {trueLayerDataApi} from "../../../api/axiosConfig";
 import ErrorContext from "../../../store/error-context";
 import {IntegrationErrorResponse} from "../../../types/errors";
+import {DateRange} from "../../../types/transaction";
 import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
-type TransactionDateRangeQuery = {
-  from: Date;
-  to: Date;
-};
-
-const getTransactions = async (
-  cardId: string,
-  dateRange?: TransactionDateRangeQuery
-) => {
+const getTransactions = async (cardId: string, dateRange?: DateRange) => {
   // the Truelayer API does not accept timestamps in the future
   // so if any query date range timestamps are provided, they need to be
   // before the current time
@@ -36,7 +29,7 @@ const getTransactions = async (
 
 type UseGetTruelayerTransactionsProps = {
   cardIds: string[];
-  dateRange?: TransactionDateRangeQuery;
+  dateRange?: DateRange;
   enabled?: boolean;
 };
 
@@ -53,11 +46,15 @@ const useGetTruelayerSettledTransactions = ({
     queries: cardIds.map<
       UseQueryOptions<CardTransaction[], IntegrationErrorResponse>
     >(cardId => ({
-      queryKey: ["truelayerTransactions", cardId, dateRange],
+      queryKey: ["truelayerSettledTransactions", cardId, dateRange],
       queryFn: () => getTransactions(cardId, dateRange),
       onError: error =>
-        addError({...error, id: `useGetTruelayerTransactions-${cardId}`}),
-      onSuccess: () => removeError(`useGetTruelayerTransactions-${cardId}`),
+        addError({
+          ...error,
+          id: `useGetTruelayerSettledTransactions-${cardId}`
+        }),
+      onSuccess: () =>
+        removeError(`useGetTruelayerSettledTransactions-${cardId}`),
       enabled
     }))
   });

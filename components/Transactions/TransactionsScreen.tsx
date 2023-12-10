@@ -6,7 +6,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import TransactionList from "./TransactionList";
 
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
-import useTransactions from "../../hooks/transactions/useTransactions";
+import useGetTransactions from "../../hooks/transactions/useGetTransactions";
 import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
@@ -18,7 +18,7 @@ const TransactionsScreen = () => {
     isLoading: isTransactionsLoading,
     transactions,
     refetch
-  } = useTransactions({enabled: false});
+  } = useGetTransactions({enabled: false});
 
   const {isLoading: isCategoryMapLoading, data: categoryMap} =
     useGetCategoryMap();
