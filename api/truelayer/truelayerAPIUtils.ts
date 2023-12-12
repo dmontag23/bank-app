@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import {AxiosResponse} from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -7,7 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // see https://stackoverflow.com/questions/45111198/how-to-mock-functions-in-the-same-module-using-jest
 import * as truelayerAPIUtils from "./truelayerAPIUtils";
 
-import config from "../../config.json";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -64,8 +64,8 @@ export const getNewToken = async () => {
     ConnectTokenPostResponse
   >("connect/token", {
     grant_type: GrantType.REFRESH,
-    client_id: config.integrations.trueLayer.clientId,
-    client_secret: config.integrations.trueLayer.clientSecret,
+    client_id: Config.TRUELAYER_CLIENT_ID,
+    client_secret: Config.TRUELAYER_CLIENT_SECRET,
     refresh_token: refreshToken
   });
   console.log("Successfully got new tokens.");

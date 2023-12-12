@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import {AppState, AppStateStatus, Platform} from "react-native";
+import Config from "react-native-config";
 import {Portal} from "react-native-paper";
 import {
   LinkingOptions,
@@ -12,7 +13,6 @@ import ErrorModal from "./components/errors/ErrorModal";
 import RootScreens from "./components/RootScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
 import Toasts from "./components/ui/Toasts";
-import config from "./config.json";
 import {INITIAL_CATEGORY_MAP} from "./constants";
 import useStoreCategoryMap from "./hooks/transactions/useStoreCategoryMap";
 import {useAppTheme} from "./hooks/utils/useAppTheme";
@@ -34,6 +34,7 @@ const App = () => {
   const {mutate: storeTransactionCategory} = useStoreCategoryMap({
     showWarningOnDuplicateCategory: false
   });
+
   useEffect(() => {
     storeTransactionCategory(INITIAL_CATEGORY_MAP);
   }, [storeTransactionCategory]);
@@ -41,10 +42,10 @@ const App = () => {
   const theme = useAppTheme();
 
   const linking: LinkingOptions<ParamListBase> = {
-    prefixes: [config.uri],
+    prefixes: [Config.URI],
     config: {
       screens: {
-        TruelayerAuthValidation: config.integrations.trueLayer.callbackEndpoint
+        TruelayerAuthValidation: Config.TRUELAYER_CALLBACK_ENDPOINT
       }
     }
   };

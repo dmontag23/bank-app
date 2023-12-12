@@ -1,25 +1,23 @@
 import React from "react";
+import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../components/LoggedInScreens";
-import config from "../../config.json";
 
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {
     // setup mocks
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(200, {
-        results: [],
-        status: "Succeeded"
-      });
+    nock(Config.TRUELAYER_DATA_API_URL).get("/v1/cards").reply(200, {
+      results: [],
+      status: "Succeeded"
+    });
 
     render(
       <NavigationContainer>

@@ -1,4 +1,5 @@
 // TODO: Create a unit test for this file?
+import Config from "react-native-config";
 import axios from "axios";
 
 import {
@@ -8,7 +9,6 @@ import {
 import {handleStarlingError} from "./starling/starlingAPIUtils";
 import {handleTruelayerError} from "./truelayer/truelayerAPIUtils";
 
-import config from "../config.json";
 import {DataAPISuccessResponse} from "../types/trueLayer/dataAPI/serverResponse";
 
 const baseHeaders = {
@@ -16,16 +16,16 @@ const baseHeaders = {
 };
 
 export const starlingApi = axios.create({
-  baseURL: config.integrations.starling.sandboxUrl,
+  baseURL: Config.STARLING_API_URL,
   headers: baseHeaders
 });
 
 export const trueLayerAuthApi = axios.create({
-  baseURL: config.integrations.trueLayer.sandboxAuthUrl,
+  baseURL: Config.TRUELAYER_AUTH_API_URL,
   headers: baseHeaders
 });
 export const trueLayerDataApi = axios.create({
-  baseURL: config.integrations.trueLayer.sandboxDataUrl,
+  baseURL: Config.TRUELAYER_DATA_API_URL,
   headers: {
     ...baseHeaders,
     // ensures Truelayer's cache is not used
@@ -35,11 +35,11 @@ export const trueLayerDataApi = axios.create({
 
 // create request interceptors
 starlingApi.interceptors.request.use(
-  handleAxiosApiRequest("starling-auth-token")
+  handleAxiosApiRequest({authToken: Config.STARLING_API_AUTH_TOKEN})
 );
 
 trueLayerDataApi.interceptors.request.use(
-  handleAxiosApiRequest("truelayer-auth-token")
+  handleAxiosApiRequest({storageAuthTokenKey: "truelayer-auth-token"})
 );
 
 // create response interceptors

@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import nock from "nock";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,7 +8,6 @@ import {
   trueLayerAuthApi,
   trueLayerDataApi
 } from "../../api/axiosConfig";
-import config from "../../config.json";
 import {
   Currency,
   StarlingAccount,
@@ -33,7 +33,7 @@ describe("truelayer authentication flow", () => {
       token_type: "Bearer",
       scope: "info"
     };
-    nock(config.integrations.trueLayer.sandboxAuthUrl)
+    nock(Config.TRUELAYER_AUTH_API_URL)
       .post("/connect/token")
       .reply(200, mockConnectTokenResponse);
 
@@ -42,7 +42,7 @@ describe("truelayer authentication flow", () => {
       error: "invalid_token"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
@@ -70,7 +70,7 @@ describe("truelayer authentication flow", () => {
     const mockConnectTokenResponse: AuthAPIErrorResponse = {
       error: "invalid_grant"
     };
-    nock(config.integrations.trueLayer.sandboxAuthUrl)
+    nock(Config.TRUELAYER_AUTH_API_URL)
       .post("/connect/token")
       .reply(400, mockConnectTokenResponse);
 
@@ -79,7 +79,7 @@ describe("truelayer authentication flow", () => {
       error: "invalid_token"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
@@ -105,7 +105,7 @@ describe("truelayer authentication flow", () => {
       error: "invalid_token"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
@@ -130,7 +130,7 @@ describe("truelayer authentication flow", () => {
       error: "invalid_token"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
@@ -164,7 +164,7 @@ describe("truelayer authentication flow", () => {
       token_type: "Bearer",
       scope: "info"
     };
-    nock(config.integrations.trueLayer.sandboxAuthUrl)
+    nock(Config.TRUELAYER_AUTH_API_URL)
       .post("/connect/token")
       .reply(200, mockConnectTokenResponse);
 
@@ -173,7 +173,7 @@ describe("truelayer authentication flow", () => {
       error: "invalid_token"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards/1/transactions")
       .reply(401, mockUnauthenticatedResponse);
 
@@ -201,7 +201,7 @@ describe("basic success and error response from Truelayer APIs", () => {
       token_type: "Bearer",
       scope: "info"
     };
-    nock(config.integrations.trueLayer.sandboxAuthUrl)
+    nock(Config.TRUELAYER_AUTH_API_URL)
       .post("/test")
       .reply(200, mockConnectTokenResponse);
 
@@ -222,7 +222,7 @@ describe("basic success and error response from Truelayer APIs", () => {
       status: "Succeeded"
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl, {
+    nock(Config.TRUELAYER_DATA_API_URL, {
       reqheaders: {
         Authorization: "Bearer good-truelayer-auth-token"
       }
@@ -246,7 +246,7 @@ describe("basic success and error response from Truelayer APIs", () => {
       error_details: {details: "More details"}
     };
 
-    nock(config.integrations.trueLayer.sandboxDataUrl, {
+    nock(Config.TRUELAYER_DATA_API_URL, {
       reqheaders: {
         Authorization: "Bearer good-truelayer-auth-token"
       }
@@ -268,12 +268,6 @@ describe("basic success and error response from Truelayer APIs", () => {
 
 describe("basic success and error response from Starling API", () => {
   test("returns success response", async () => {
-    // setup mocks
-    await AsyncStorage.setItem(
-      "starling-auth-token",
-      "good-starling-auth-token"
-    );
-
     const mockStarlingAccount: StarlingAccount = {
       accountUid: "uuid",
       accountType: StarlingAccountType.PRIMARY,
@@ -282,7 +276,8 @@ describe("basic success and error response from Starling API", () => {
       createdAt: "2020-01-01",
       name: "name"
     };
-    nock(config.integrations.starling.sandboxUrl, {
+
+    nock(Config.STARLING_API_URL, {
       reqheaders: {
         Authorization: "Bearer good-starling-auth-token"
       }
@@ -296,18 +291,12 @@ describe("basic success and error response from Starling API", () => {
   });
 
   test("returns error response", async () => {
-    // setup mocks
-    await AsyncStorage.setItem(
-      "starling-auth-token",
-      "good-starling-auth-token"
-    );
-
     const mockErrorResponse: StarlingErrorResponse = {
       error: "Not found",
       error_description: "Cannot find this item"
     };
 
-    nock(config.integrations.starling.sandboxUrl, {
+    nock(Config.STARLING_API_URL, {
       reqheaders: {
         Authorization: "Bearer good-starling-auth-token"
       }

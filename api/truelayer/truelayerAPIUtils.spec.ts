@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import {AxiosHeaders, AxiosResponse} from "axios";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,7 +11,6 @@ import {
   storeNewTokens
 } from "./truelayerAPIUtils";
 
-import config from "../../config.json";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -278,8 +278,8 @@ describe("Truelayer API Utils", () => {
       expect(trueLayerAuthApi.post).toBeCalledTimes(1);
       expect(trueLayerAuthApi.post).toBeCalledWith("connect/token", {
         grant_type: GrantType.REFRESH,
-        client_id: config.integrations.trueLayer.clientId,
-        client_secret: config.integrations.trueLayer.clientSecret,
+        client_id: Config.TRUELAYER_CLIENT_ID,
+        client_secret: Config.TRUELAYER_CLIENT_SECRET,
         refresh_token: "refresh-token"
       });
 

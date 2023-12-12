@@ -14,12 +14,53 @@ import {DataAPIErrorResponse} from "../types/trueLayer/dataAPI/serverResponse";
 jest.mock("./utils");
 
 describe("handleAxiosApiRequest", () => {
-  test("adds a token to the headers", async () => {
+  test("adds passed in auth token to headers", async () => {
+    const response = await handleAxiosApiRequest({authToken: "dummy-token"})({
+      headers: new AxiosHeaders({header1: "header-1"}),
+      baseURL: "dummy-url"
+    });
+
+    expect(response).toEqual({
+      baseURL: "dummy-url",
+      headers: new AxiosHeaders({
+        header1: "header-1",
+        Authorization: `Bearer dummy-token`
+      })
+    });
+
+    expect(getTokenFromStorage).not.toBeCalled();
+  });
+
+  test("does not add token to headers if it does not exist in storage", async () => {
+    (
+      getTokenFromStorage as jest.MockedFunction<typeof getTokenFromStorage>
+    ).mockResolvedValueOnce("");
+
+    const response = await handleAxiosApiRequest({})({
+      headers: new AxiosHeaders({header1: "header-1"}),
+      baseURL: "dummy-url"
+    });
+
+    expect(response).toEqual({
+      baseURL: "dummy-url",
+      headers: new AxiosHeaders({
+        header1: "header-1",
+        Authorization: `Bearer `
+      })
+    });
+
+    expect(getTokenFromStorage).toBeCalledTimes(1);
+    expect(getTokenFromStorage).toBeCalledWith("");
+  });
+
+  test("adds a token to the headers from storage", async () => {
     (
       getTokenFromStorage as jest.MockedFunction<typeof getTokenFromStorage>
     ).mockResolvedValueOnce("mock-auth-token");
 
-    const response = await handleAxiosApiRequest("mock-auth-token")({
+    const response = await handleAxiosApiRequest({
+      storageAuthTokenKey: "mock-auth-token"
+    })({
       headers: new AxiosHeaders({header1: "header-1"}),
       baseURL: "dummy-url"
     });

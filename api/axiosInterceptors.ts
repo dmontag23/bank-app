@@ -11,14 +11,21 @@ import {getTokenFromStorage} from "./utils";
 import {IntegrationErrorResponse} from "../types/errors";
 
 export const handleAxiosApiRequest =
-  (storageAuthTokenKey: string) =>
+  ({
+    authToken,
+    storageAuthTokenKey
+  }: {
+    authToken?: string;
+    storageAuthTokenKey?: string;
+  }) =>
   async (request: InternalAxiosRequestConfig) => {
-    const authToken = await getTokenFromStorage(storageAuthTokenKey);
+    const authTokenForRequest =
+      authToken ?? (await getTokenFromStorage(storageAuthTokenKey ?? ""));
     return {
       ...request,
       headers: new AxiosHeaders({
         ...request.headers,
-        Authorization: `Bearer ${authToken}`
+        Authorization: `Bearer ${authTokenForRequest}`
       })
     };
   };

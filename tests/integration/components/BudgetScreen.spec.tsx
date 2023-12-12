@@ -1,4 +1,5 @@
 import React from "react";
+import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
@@ -6,7 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import BudgetsScreen from "../../../components/Budgets/BudgetsScreen";
-import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
@@ -45,16 +45,14 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(200, {
-        results: [],
-        status: "Succeeded"
-      });
+    nock(Config.TRUELAYER_DATA_API_URL).get("/v1/cards").reply(200, {
+      results: [],
+      status: "Succeeded"
+    });
 
     render(
       <NavigationContainer>
@@ -88,16 +86,14 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(200, {
-        results: [],
-        status: "Succeeded"
-      });
+    nock(Config.TRUELAYER_DATA_API_URL).get("/v1/cards").reply(200, {
+      results: [],
+      status: "Succeeded"
+    });
 
     render(
       <NavigationContainer>
@@ -133,16 +129,14 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
-      .get("/v1/cards")
-      .reply(200, {
-        results: [],
-        status: "Succeeded"
-      });
+    nock(Config.TRUELAYER_DATA_API_URL).get("/v1/cards").reply(200, {
+      results: [],
+      status: "Succeeded"
+    });
 
     render(
       <NavigationContainer>
@@ -189,11 +183,11 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
@@ -291,11 +285,11 @@ describe("Budget screen", () => {
     );
 
     // setup mock transactions
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
@@ -492,11 +486,11 @@ describe("Budget screen", () => {
     );
 
     // setup mock transaction data
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],

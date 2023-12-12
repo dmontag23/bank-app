@@ -1,9 +1,9 @@
+import Config from "react-native-config";
 import nock from "nock";
 import {act, renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import config from "../../config.json";
 import useGetAllMappedStarlingTransactions from "../../hooks/integrations/starling/useGetAllMappedStarlingTransactions";
 import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import useGetTransactions from "../../hooks/transactions/useGetTransactions";
@@ -24,7 +24,7 @@ describe("transaction flow", () => {
   describe("useGetAllMappedStarlingTransactions", () => {
     test("returns empty values when no accounts exist", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: []});
 
@@ -36,7 +36,7 @@ describe("transaction flow", () => {
 
     test("returns empty values when no starling transactions exist", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -55,7 +55,7 @@ describe("transaction flow", () => {
 
     test("uses default category values - no categories are put in storage", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -84,7 +84,7 @@ describe("transaction flow", () => {
 
     test("merges transaction categories from storage", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -138,12 +138,10 @@ describe("transaction flow", () => {
   describe("useGetAllMappedTruelayerTransactions", () => {
     test("returns empty values when no truelayer cards exist", async () => {
       // setup mocks
-      nock(config.integrations.trueLayer.sandboxDataUrl)
-        .get("/v1/cards")
-        .reply(200, {
-          results: [],
-          status: "Succeeded"
-        });
+      nock(Config.TRUELAYER_DATA_API_URL).get("/v1/cards").reply(200, {
+        results: [],
+        status: "Succeeded"
+      });
 
       const {result} = renderHook(() => useGetAllMappedTruelayerTransactions());
       await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -153,7 +151,7 @@ describe("transaction flow", () => {
 
     test("returns empty values when no truelayer transactions exist", async () => {
       // setup mocks
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -182,7 +180,7 @@ describe("transaction flow", () => {
 
     test("uses default category values - no categories are put in storage", async () => {
       // setup mocks
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -237,7 +235,7 @@ describe("transaction flow", () => {
 
     test("merges transaction categories from storage", async () => {
       // setup mocks
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -307,7 +305,7 @@ describe("transaction flow", () => {
     test("merges transactions from separate api calls correctly", async () => {
       // setup mocks
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -391,7 +389,7 @@ describe("transaction flow", () => {
   describe("useGetTransactions", () => {
     test("returns loading if loading starling transactions", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .delay(2000)
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
@@ -401,7 +399,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -457,7 +455,7 @@ describe("transaction flow", () => {
 
     test("returns loading if loading truelayer transactions", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -466,7 +464,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .delay(2000)
         .reply(200, {
@@ -505,7 +503,7 @@ describe("transaction flow", () => {
 
     test("combines transactions and sorts by timestamp", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -514,7 +512,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -579,7 +577,7 @@ describe("transaction flow", () => {
 
     test("refetches all transactions", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // second call
@@ -591,7 +589,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -654,7 +652,7 @@ describe("transaction flow", () => {
 
     test("can get transactions by date", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -663,7 +661,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: []});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],
@@ -711,7 +709,7 @@ describe("transaction flow", () => {
 
     test("can disable transactions", async () => {
       // setup mocks
-      nock(config.integrations.starling.sandboxUrl)
+      nock(Config.STARLING_API_URL)
         .get("/v2/accounts")
         .reply(200, {accounts: [STARLING_ACCOUNT_1]})
         // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -720,7 +718,7 @@ describe("transaction flow", () => {
         )
         .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-      nock(config.integrations.trueLayer.sandboxDataUrl)
+      nock(Config.TRUELAYER_DATA_API_URL)
         .get("/v1/cards")
         .reply(200, {
           results: [TRUELAYER_MASTERCARD],

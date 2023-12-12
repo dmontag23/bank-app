@@ -1,5 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+// needed for react-native-config
+// see https://github.com/lugg/react-native-config
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 

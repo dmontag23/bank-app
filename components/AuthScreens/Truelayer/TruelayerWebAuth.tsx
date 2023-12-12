@@ -1,13 +1,12 @@
 import React from "react";
 import {SafeAreaView, StyleSheet} from "react-native";
+import Config from "react-native-config";
 import WebView from "react-native-webview";
-
-import config from "../../../config.json";
 
 const TruelayerWebAuth = () => (
   <SafeAreaView style={styles.container}>
     <WebView
-      source={{uri: config.integrations.trueLayer.authLink}}
+      source={{uri: Config.TRUELAYER_OAUTH_URL}}
       hideKeyboardAccessoryView={true}
     />
   </SafeAreaView>

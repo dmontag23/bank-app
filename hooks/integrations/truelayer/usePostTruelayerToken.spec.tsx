@@ -1,11 +1,11 @@
 import React, {ReactNode} from "react";
+import Config from "react-native-config";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import usePostTruelayerToken from "./usePostTruelayerToken";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
-import config from "../../../config.json";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   ConnectTokenPostRequest,
@@ -52,9 +52,9 @@ describe("usePostTruelayerToken", () => {
     expect(trueLayerAuthApi.post).toBeCalledTimes(1);
     expect(trueLayerAuthApi.post).toBeCalledWith("connect/token", {
       grant_type: GrantType.AUTHORIZATION_CODE,
-      client_id: config.integrations.trueLayer.clientId,
-      client_secret: config.integrations.trueLayer.clientSecret,
-      redirect_uri: `${config.uri}${config.integrations.trueLayer.callbackEndpoint}`,
+      client_id: Config.TRUELAYER_CLIENT_ID,
+      client_secret: Config.TRUELAYER_CLIENT_SECRET,
+      redirect_uri: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}`,
       code: "dummy-code"
     });
     expect(result.current.error).toBeNull();
@@ -93,9 +93,9 @@ describe("usePostTruelayerToken", () => {
     expect(trueLayerAuthApi.post).toBeCalledTimes(1);
     expect(trueLayerAuthApi.post).toBeCalledWith("connect/token", {
       grant_type: GrantType.AUTHORIZATION_CODE,
-      client_id: config.integrations.trueLayer.clientId,
-      client_secret: config.integrations.trueLayer.clientSecret,
-      redirect_uri: `${config.uri}${config.integrations.trueLayer.callbackEndpoint}`,
+      client_id: Config.TRUELAYER_CLIENT_ID,
+      client_secret: Config.TRUELAYER_CLIENT_SECRET,
+      redirect_uri: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}`,
       code: "error-code"
     });
     expect(result.current.data).toBeUndefined();

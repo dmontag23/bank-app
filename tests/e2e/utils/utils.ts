@@ -1,10 +1,9 @@
+import Config from "react-native-config";
 import {device} from "detox";
-
-import config from "../../../config.json";
 
 export const logIn = async () => {
   await device.launchApp({
     newInstance: true,
-    url: `${config.uri}/${config.integrations.trueLayer.callbackEndpoint}?code=dummy-truelayer-code&scope=accounts`
+    url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?code=dummy-truelayer-code&scope=accounts`
   });
 };

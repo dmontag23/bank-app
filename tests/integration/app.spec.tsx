@@ -1,11 +1,11 @@
 import React from "react";
+import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import App from "../../App";
-import config from "../../config.json";
 
 describe("App component", () => {
   test("shows the auth screens if not logged in", async () => {
@@ -41,12 +41,12 @@ describe("App component", () => {
       "dummy-truelayer-auth-token"
     );
 
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .twice()
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(400, {error: "invalid_token"})
       .get("/v1/cards")

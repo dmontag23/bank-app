@@ -1,8 +1,8 @@
 import {useContext} from "react";
+import Config from "react-native-config";
 import {useMutation} from "@tanstack/react-query";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
-import config from "../../../config.json";
 import ErrorContext from "../../../store/error-context";
 import {IntegrationErrorResponse} from "../../../types/errors";
 import {
@@ -17,9 +17,9 @@ const exchangeCodeForAccessToken = async (code: string) =>
     ConnectTokenPostResponse
   >("connect/token", {
     grant_type: GrantType.AUTHORIZATION_CODE,
-    client_id: config.integrations.trueLayer.clientId,
-    client_secret: config.integrations.trueLayer.clientSecret,
-    redirect_uri: `${config.uri}${config.integrations.trueLayer.callbackEndpoint}`,
+    client_id: Config.TRUELAYER_CLIENT_ID,
+    client_secret: Config.TRUELAYER_CLIENT_SECRET,
+    redirect_uri: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}`,
     code
   });
 

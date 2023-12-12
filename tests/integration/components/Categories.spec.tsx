@@ -1,4 +1,5 @@
 import React from "react";
+import Config from "react-native-config";
 import {PanGesture} from "react-native-gesture-handler";
 import nock from "nock";
 import {
@@ -17,17 +18,16 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../../components/LoggedInScreens";
-import config from "../../../config.json";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../mock-server/truelayer/data/cardTransactionData";
 
 describe("Categories", () => {
   test("can add a category", async () => {
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],

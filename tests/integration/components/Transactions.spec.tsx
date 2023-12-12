@@ -1,4 +1,5 @@
 import React from "react";
+import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
@@ -6,7 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
-import config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
 import {STARLING_FEED_ITEM_1} from "../../../mock-server/starling/data/feedData";
@@ -20,12 +20,12 @@ import {CardTransaction} from "../../../types/trueLayer/dataAPI/cards";
 
 describe("Transactions", () => {
   test("renders a loading spinner when loading starling transactions", () => {
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .delayConnection(2000)
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
@@ -42,11 +42,11 @@ describe("Transactions", () => {
   });
 
   test("renders a loading spinner when loading truelayer transactions", () => {
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .delayConnection(5000)
       .reply(200, {
@@ -72,7 +72,7 @@ describe("Transactions", () => {
       TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS
     ];
 
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: [STARLING_ACCOUNT_1]})
       // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
@@ -81,7 +81,7 @@ describe("Transactions", () => {
       )
       .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
@@ -123,11 +123,11 @@ describe("Transactions", () => {
       JSON.stringify(INITIAL_CATEGORY_MAP)
     );
 
-    nock(config.integrations.starling.sandboxUrl)
+    nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
 
-    nock(config.integrations.trueLayer.sandboxDataUrl)
+    nock(Config.TRUELAYER_DATA_API_URL)
       .get("/v1/cards")
       .reply(200, {
         results: [TRUELAYER_MASTERCARD],
