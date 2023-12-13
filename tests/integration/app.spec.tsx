@@ -1,7 +1,13 @@
 import React from "react";
 import Config from "react-native-config";
 import nock from "nock";
-import {fireEvent, render, screen, waitFor} from "testing-library/extension";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor
+} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -85,6 +91,15 @@ describe("App component", () => {
     await waitFor(() =>
       expect(screen.getAllByText("Transactions").length).toBe(3)
     );
+
+    // refetch transactions
+    const transactionList = screen.getByLabelText("Transaction list");
+    expect(transactionList).toBeDefined();
+    const {refreshControl} = transactionList.props;
+    await act(async () => {
+      refreshControl.props.onRefresh();
+    });
+
     // ensure the badge on the settings icon has disappeared
     await waitFor(() => expect(screen.queryByText("1")).toBeNull());
 
@@ -93,5 +108,5 @@ describe("App component", () => {
     fireEvent(screen.getByRole("button", {name: "Settings"}), "click");
     expect(screen.getAllByText("Settings").length).toBe(3);
     expect(screen.queryByText("1")).toBeNull();
-  }, 70000);
+  }, 20000);
 });

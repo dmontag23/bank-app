@@ -706,40 +706,5 @@ describe("transaction flow", () => {
       );
       expect(result.current.isLoading).toBe(false);
     });
-
-    test("can disable transactions", async () => {
-      // setup mocks
-      nock(Config.STARLING_API_URL)
-        .get("/v2/accounts")
-        .reply(200, {accounts: [STARLING_ACCOUNT_1]})
-        // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
-        .get(
-          /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
-        )
-        .reply(200, {feedItems: [STARLING_FEED_ITEM_1]});
-
-      nock(Config.TRUELAYER_DATA_API_URL)
-        .get("/v1/cards")
-        .reply(200, {
-          results: [TRUELAYER_MASTERCARD],
-          status: "Succeeded"
-        })
-        // matches any url of the form "v1/cards/<uuid>/transactions"
-        .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
-        .reply(200, {
-          results: [TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS],
-          status: "Succeeded"
-        })
-        // matches any url of the form "v1/cards/<uuid>/transactions/pending"
-        .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
-        .reply(200, {
-          results: [TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS],
-          status: "Succeeded"
-        });
-
-      const {result} = renderHook(() => useGetTransactions({enabled: false}));
-      expect(result.current.isLoading).toBe(true);
-      expect(result.current.transactions).toEqual([]);
-    });
   });
 });

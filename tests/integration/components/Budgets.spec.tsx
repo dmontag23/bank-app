@@ -2,7 +2,13 @@ import React from "react";
 import Config from "react-native-config";
 import {MD3LightTheme} from "react-native-paper";
 import nock from "nock";
-import {fireEvent, render, screen, waitFor} from "testing-library/extension";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor
+} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
@@ -10,13 +16,17 @@ import {NavigationContainer} from "@react-navigation/native";
 import Budget from "../../../components/Budgets/Budget";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
-import {STARLING_FEED_ITEM_2} from "../../../mock-server/starling/data/feedData";
+import {
+  STARLING_FEED_ITEM_1,
+  STARLING_FEED_ITEM_2
+} from "../../../mock-server/starling/data/feedData";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
   TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
 } from "../../../mock-server/truelayer/data/cardTransactionData";
 import {Budget as BudgetType} from "../../../types/budget";
+import {Category} from "../../../types/transaction";
 import {
   BUDGET_WITH_ONE_ITEM,
   BUDGET_WITH_TWO_ITEMS
@@ -206,6 +216,7 @@ describe("Budgets", () => {
       "category-map",
       JSON.stringify(INITIAL_CATEGORY_MAP)
     );
+
     nock(Config.STARLING_API_URL)
       .get("/v2/accounts")
       .reply(200, {accounts: []});
@@ -342,4 +353,92 @@ describe("Budgets", () => {
       ]
     });
   }, 10000);
+
+  test("can refetch transactions", async () => {
+    nock(Config.STARLING_API_URL)
+      .get("/v2/accounts")
+      .twice()
+      .reply(200, {accounts: [STARLING_ACCOUNT_1]})
+      // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_1]})
+      // second call
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_2]});
+
+    nock(Config.TRUELAYER_DATA_API_URL)
+      .get("/v1/cards")
+      .twice()
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // second call
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS],
+        status: "Succeeded"
+      });
+
+    render(
+      <NavigationContainer>
+        <Budget
+          budget={{
+            ...BUDGET_WITH_ONE_ITEM,
+            items: [
+              {
+                ...BUDGET_WITH_ONE_ITEM.items[0],
+                categories: [Category.BILLS, Category.TRANSPORT]
+              }
+            ]
+          }}
+          setSelectedBudget={jest.fn()}
+        />
+      </NavigationContainer>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByLabelText("Transaction list")).toBeVisible()
+    );
+
+    // refetch transactions
+    const transactionList = screen.getByLabelText("Transaction list");
+    expect(transactionList).toBeDefined();
+    const {refreshControl} = transactionList.props;
+    await act(async () => {
+      refreshControl.props.onRefresh();
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.description
+        )
+      ).toBeVisible()
+    );
+    expect(
+      screen.getByText(STARLING_FEED_ITEM_2.counterPartyName)
+    ).toBeVisible();
+  });
 });

@@ -1,7 +1,13 @@
 import React from "react";
 import Config from "react-native-config";
 import nock from "nock";
-import {fireEvent, render, screen, waitFor} from "testing-library/extension";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor
+} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
@@ -9,7 +15,10 @@ import {NavigationContainer} from "@react-navigation/native";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
-import {STARLING_FEED_ITEM_1} from "../../../mock-server/starling/data/feedData";
+import {
+  STARLING_FEED_ITEM_1,
+  STARLING_FEED_ITEM_2
+} from "../../../mock-server/starling/data/feedData";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {
   TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -183,5 +192,82 @@ describe("Transactions", () => {
     await waitFor(() => expect(selectCategoryText).not.toBeOnTheScreen());
     expect(screen.getByText("24 Feb 2013 at 14:00 - Savings")).toBeVisible();
     expect(await AsyncStorage.getItem(testTransactionId)).toBe("Savings");
+  });
+
+  test("can refetch transactions", async () => {
+    nock(Config.STARLING_API_URL)
+      .get("/v2/accounts")
+      .twice()
+      .reply(200, {accounts: [STARLING_ACCOUNT_1]})
+      // matches any url of the form "v2/feed/account/<uuid>/category/<uuid>/transactions-between"
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_1]})
+      // second call
+      .get(
+        /\/v2\/feed\/account\/([0-9a-z-]+)\/category\/([0-9a-z-]+)\/transactions-between/
+      )
+      .reply(200, {feedItems: [STARLING_FEED_ITEM_2]});
+
+    nock(Config.TRUELAYER_DATA_API_URL)
+      .get("/v1/cards")
+      .twice()
+      .reply(200, {
+        results: [TRUELAYER_MASTERCARD],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // matches any url of the form "v1/cards/<uuid>/transactions/pending"
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      // second call
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions/)
+      .reply(200, {
+        results: [],
+        status: "Succeeded"
+      })
+      .get(/\/v1\/cards\/([0-9a-z-]+)\/transactions\/pending/)
+      .reply(200, {
+        results: [TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS],
+        status: "Succeeded"
+      });
+
+    render(
+      <NavigationContainer>
+        <TransactionsScreen />
+      </NavigationContainer>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByLabelText("Transaction list")).toBeVisible()
+    );
+
+    // refetch transactions
+    const transactionList = screen.getByLabelText("Transaction list");
+    expect(transactionList).toBeDefined();
+    const {refreshControl} = transactionList.props;
+    await act(async () => {
+      refreshControl.props.onRefresh();
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS.description
+        )
+      ).toBeVisible()
+    );
+    expect(
+      screen.getByText(STARLING_FEED_ITEM_2.counterPartyName)
+    ).toBeVisible();
   });
 });
