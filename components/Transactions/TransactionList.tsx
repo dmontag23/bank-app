@@ -14,6 +14,7 @@ type TransactionListProps = {
 };
 
 const TransactionList = ({transactions, categoryMap}: TransactionListProps) => (
+  // TODO: Improve performance of this list
   <FlatList
     data={transactions}
     renderItem={({item}) => (
