@@ -27,7 +27,7 @@ const getTransactions = async (cardId: string, dateRange?: DateRange) => {
   );
 };
 
-type UseGetTruelayerTransactionsProps = {
+type UseGetTruelayerSettledTransactionsProps = {
   cardIds: string[];
   dateRange?: DateRange;
   enabled?: boolean;
@@ -37,7 +37,7 @@ const useGetTruelayerSettledTransactions = ({
   cardIds,
   dateRange,
   enabled = true
-}: UseGetTruelayerTransactionsProps) => {
+}: UseGetTruelayerSettledTransactionsProps) => {
   const {addError, removeError} = useContext(ErrorContext);
 
   // TODO: use combine option when upgrading to Tanstack Query v5
@@ -78,6 +78,7 @@ const useGetTruelayerSettledTransactions = ({
     // from this hook even if 1 of the calls fails
     data: combinedData,
     isLoading: combinedQueries.some(query => query.isLoading),
+    isRefetching: combinedQueries.some(query => query.isRefetching),
     isSuccess: combinedQueries.every(query => query.isSuccess)
   };
 };

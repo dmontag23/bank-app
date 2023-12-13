@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react";
-import {renderHook, waitFor} from "testing-library/extension";
+import {act, renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import useGetStarlingTransactions from "./useGetStarlingTransactions";
@@ -162,6 +162,7 @@ describe("useGetStarlingTransactions", () => {
       );
 
       await waitFor(() => expect(result.current.isLoading).toBe(false));
+      expect(result.current.isRefetching).toBe(false);
       expect(result.current.isSuccess).toBe(true);
       expect(result.current.data).toEqual([
         STARLING_FEED_ITEM_2,
@@ -200,6 +201,62 @@ describe("useGetStarlingTransactions", () => {
       );
       expect(result.current.isLoading).toBe(true);
       expect(result.current.isSuccess).toBe(false);
+    });
+
+    test("returns refetching status if 1 call is still refetching", async () => {
+      (
+        starlingApi.get as jest.MockedFunction<
+          typeof starlingApi.get<{feedItems: StarlingFeedItem[]}>
+        >
+      )
+        .mockResolvedValueOnce({feedItems: [STARLING_FEED_ITEM_1]})
+        .mockResolvedValueOnce({feedItems: []})
+        .mockResolvedValueOnce({feedItems: [STARLING_FEED_ITEM_2]})
+        .mockImplementationOnce(async () => new Promise(() => {}));
+
+      const {result, rerender} = renderHook(
+        props => useGetStarlingTransactions(props),
+        {
+          options: {
+            initialProps: {
+              ids: [
+                {accountId: "account-id-1", categoryId: "category-id-1"},
+                {accountId: "account-id-2", categoryId: "category-id-2"}
+              ],
+              enabled: true
+            }
+          }
+        }
+      );
+
+      await waitFor(() =>
+        expect(result.current.data).toEqual([STARLING_FEED_ITEM_1])
+      );
+
+      act(() =>
+        rerender({
+          ids: [
+            {accountId: "account-id-1", categoryId: "category-id-1"},
+            {accountId: "account-id-2", categoryId: "category-id-2"}
+          ],
+          enabled: false
+        })
+      );
+
+      act(() =>
+        rerender({
+          ids: [
+            {accountId: "account-id-1", categoryId: "category-id-1"},
+            {accountId: "account-id-2", categoryId: "category-id-2"}
+          ],
+          enabled: true
+        })
+      );
+
+      await waitFor(() =>
+        expect(result.current.data).toEqual([STARLING_FEED_ITEM_2])
+      );
+      expect(result.current.isRefetching).toBe(true);
     });
 
     test("returns an error if 1 call fails", async () => {

@@ -5,26 +5,23 @@ import useGetAllTruelayerTransactions from "./useGetAllTruelayerTransactions";
 import {DateRange} from "../../../types/transaction";
 import useMapTransactionsToInternalTransactions from "../../transactions/useMapTransactionsToInternalTransactions";
 
-type UseGetAllMappedTruelayerTransactionsProps = {
-  dateRange?: DateRange;
-  enabled?: boolean;
-};
+type UseGetAllMappedTruelayerTransactionsProps = {dateRange?: DateRange};
 
 const useGetAllMappedTruelayerTransactions = ({
-  dateRange,
-  enabled = true
+  dateRange
 }: UseGetAllMappedTruelayerTransactionsProps = {}) => {
   const {
     isLoading: isTruelayerCardsLoading,
     isRefetching: isTruelayerCardsRefetching,
     data: truelayerCardData,
     refetch: refetchCardData
-  } = useGetAllTruelayerCards({enabled});
+  } = useGetAllTruelayerCards();
 
   const cardIds = truelayerCardData?.map(card => card.account_id) ?? [];
 
   const {
     isLoading: isTruelayerTransactionsLoading,
+    isRefetching: isTruelayerTransactionsRefetching,
     data: truelayerTransactions
   } = useGetAllTruelayerTransactions({
     cardIds,
@@ -47,6 +44,8 @@ const useGetAllMappedTruelayerTransactions = ({
       isTruelayerCardsLoading ||
       isTruelayerTransactionsLoading ||
       (isMapLoading && isMapEnabled),
+    isRefetching:
+      isTruelayerCardsRefetching || isTruelayerTransactionsRefetching,
     transactions,
     // only refetchCardData is called here because, as soon as the card data is refetched,
     // the transaction queries are disabled. After the card query is finished, the transaction

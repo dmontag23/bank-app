@@ -9,6 +9,7 @@ import {
   render,
   renderHook,
   RenderHookOptions,
+  RenderHookResult,
   RenderOptions
 } from "@testing-library/react-native";
 
@@ -77,9 +78,9 @@ type CustomRenderHookOptionsProps<Result> = {
 };
 
 const customRenderHook = <Result, Props>(
-  renderCallback: () => Props,
-  options?: CustomRenderHookOptionsProps<Result>
-) =>
+  renderCallback: (props: Props) => Result,
+  options?: CustomRenderHookOptionsProps<Props>
+): RenderHookResult<Result, Props> =>
   renderHook(renderCallback, {
     wrapper: ({children}) =>
       HookWrapper(children, options?.queryClient, options?.customWrapper),

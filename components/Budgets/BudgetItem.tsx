@@ -14,13 +14,17 @@ type BudgetItemProps = {
   budget: Budget;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
   categoryMap: CategoryMap;
+  onRefetchTransactions?: () => void;
+  isRefetchingTransactions?: boolean;
 };
 
 const BudgetItem = ({
   item,
   budget,
   setSelectedBudget,
-  categoryMap
+  categoryMap,
+  onRefetchTransactions,
+  isRefetchingTransactions
 }: BudgetItemProps) => (
   <View style={styles.container}>
     <BudgetItemSummary
@@ -37,6 +41,8 @@ const BudgetItem = ({
       <TransactionList
         transactions={item.transactions}
         categoryMap={categoryMap}
+        onRefetchTransactions={onRefetchTransactions}
+        isRefetchingTransactions={isRefetchingTransactions}
       />
     )}
   </View>

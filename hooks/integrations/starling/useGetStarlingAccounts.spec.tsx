@@ -4,7 +4,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 
 import useGetStarlingAccounts from "./useGetStarlingAccounts";
 
-import {starlingApi, trueLayerDataApi} from "../../../api/axiosConfig";
+import {starlingApi} from "../../../api/axiosConfig";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {AppError} from "../../../types/errors";
@@ -71,14 +71,5 @@ describe("useGetStarlingAccounts", () => {
       error: "error",
       id: "useGetStarlingAccounts"
     });
-  });
-
-  test("can disable the query", async () => {
-    const {result} = renderHook(() => useGetStarlingAccounts({enabled: false}));
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(false));
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBeNull();
-    expect(trueLayerDataApi.get).not.toBeCalled();
   });
 });

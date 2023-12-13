@@ -23,6 +23,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -34,6 +35,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -45,6 +47,7 @@ describe("useGetAllTruelayerTransactions", () => {
 
     // assertions
     expect(result.current.isLoading).toBe(true);
+    expect(result.current.isRefetching).toBe(false);
     expect(result.current.isSuccess).toBe(false);
     expect(result.current.data).toEqual([]);
   });
@@ -58,6 +61,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -69,6 +73,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -93,6 +98,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: true,
       data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
     });
@@ -104,6 +110,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -128,6 +135,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: true,
       data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
     });
@@ -139,6 +147,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: true,
       data: [TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS]
     });
@@ -165,6 +174,84 @@ describe("useGetAllTruelayerTransactions", () => {
     ]);
   });
 
+  test("returns refetching status if refetching settled trxs", async () => {
+    // setup mocks
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: true,
+      isSuccess: true,
+      data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
+    });
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useGetTruelayerPendingTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: false,
+      isSuccess: true,
+      data: [TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS]
+    });
+
+    // run hook
+    const {result} = renderHook(() =>
+      useGetAllTruelayerTransactions({cardIds: ["dummy_id_list"]})
+    );
+
+    // assertions
+    expect(result.current.data).toEqual([
+      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+      TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS
+    ]);
+    expect(result.current.isRefetching).toBe(true);
+  });
+
+  test("returns refetching status if refetching pending trxs", async () => {
+    // setup mocks
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useGetTruelayerSettledTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: false,
+      isSuccess: true,
+      data: [TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS]
+    });
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useGetTruelayerPendingTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: true,
+      isSuccess: true,
+      data: [TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS]
+    });
+
+    // run hook
+    const {result} = renderHook(() =>
+      useGetAllTruelayerTransactions({cardIds: ["dummy_id_list"]})
+    );
+
+    // assertions
+    expect(result.current.data).toEqual([
+      TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS,
+      TRUELAYER_ENTERTAINMENT_TRANSACTION_MARCH_MINIMUM_FIELDS
+    ]);
+    expect(result.current.isRefetching).toBe(true);
+  });
+
   test("passes date range to hooks", async () => {
     // setup mocks
     // TODO: any should probably not be used as a type here, but since a
@@ -174,6 +261,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -185,6 +273,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -220,6 +309,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerSettledTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });
@@ -231,6 +321,7 @@ describe("useGetAllTruelayerTransactions", () => {
       useGetTruelayerPendingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       isSuccess: false,
       data: undefined
     });

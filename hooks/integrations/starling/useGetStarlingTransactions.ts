@@ -76,7 +76,8 @@ const useGetStarlingTransactions = ({
     // from this hook even if 1 of the calls fails
     data: combinedData,
     isLoading: combinedQueries.some(query => query.isLoading),
-    isSuccess: combinedQueries.every(query => query.isSuccess)
+    isSuccess: combinedQueries.every(query => query.isSuccess),
+    isRefetching: combinedQueries.some(query => query.isRefetching)
   };
 };
 

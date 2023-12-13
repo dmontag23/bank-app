@@ -16,12 +16,14 @@ const useGetAllTruelayerTransactions = (
 ) => {
   const {
     isLoading: isSettledTransactionsLoading,
+    isRefetching: isSettledTransactionsRefetching,
     isSuccess: isSettledTransactionsSuccess,
     data: settledTransactions
   } = useGetTruelayerSettledTransactions(props);
 
   const {
     isLoading: isPendingTransactionsLoading,
+    isRefetching: isPendingTransactionsRefetching,
     isSuccess: isPendingTransactionsSuccess,
     data: pendingTransactions
   } = useGetTruelayerPendingTransactions(props);
@@ -36,6 +38,7 @@ const useGetAllTruelayerTransactions = (
 
   return {
     isLoading: isSettledTransactionsLoading || isPendingTransactionsLoading,
+    isRefetching: isSettledTransactionsRefetching || isPendingTransactionsRefetching,
     isSuccess,
     data: isSuccess ? data : []
   };

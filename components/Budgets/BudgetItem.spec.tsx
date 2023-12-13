@@ -106,6 +106,38 @@ describe("BudgetItem component", () => {
     );
   });
 
+  test("passes refetching logic to TransactionsList component", () => {
+    const mockBudget = {
+      id: "",
+      name: "",
+      items: [],
+      window: {start: new Date(), end: new Date()}
+    };
+    const mockOnRefetchTransactions = jest.fn();
+
+    render(
+      <BudgetItem
+        item={testItem}
+        budget={mockBudget}
+        setSelectedBudget={jest.fn()}
+        categoryMap={{}}
+        onRefetchTransactions={mockOnRefetchTransactions}
+        isRefetchingTransactions={true}
+      />
+    );
+
+    expect(TransactionList).toBeCalledTimes(1);
+    expect(TransactionList).toBeCalledWith(
+      {
+        transactions: testTransactions,
+        categoryMap: {},
+        onRefetchTransactions: mockOnRefetchTransactions,
+        isRefetchingTransactions: true
+      },
+      {}
+    );
+  });
+
   test("equality of two BudgetItems", () => {
     const mockBudget = {
       id: "",

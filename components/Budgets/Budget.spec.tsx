@@ -47,6 +47,8 @@ describe("Budget component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
+      refetch: jest.fn(),
       transactions: []
     });
 
@@ -78,6 +80,8 @@ describe("Budget component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
+      refetch: jest.fn(),
       transactions: [EATING_OUT_CARD_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
     });
 
@@ -104,6 +108,8 @@ describe("Budget component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
+      refetch: jest.fn(),
       transactions: [EATING_OUT_CARD_TRANSACTION, PAY_BILL_CARD_TRANSACTION]
     });
 
@@ -143,9 +149,12 @@ describe("Budget component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
+    const mockRefetch = jest.fn();
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
-      transactions: []
+      isRefetching: false,
+      transactions: [],
+      refetch: mockRefetch
     });
 
     (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
@@ -181,7 +190,9 @@ describe("Budget component", () => {
         },
         budget,
         setSelectedBudget: mockSetSelectedBudget,
-        categoryMap: {}
+        categoryMap: {},
+        onRefetchTransactions: mockRefetch,
+        isRefetchingTransactions: false
       },
       {}
     );
@@ -208,6 +219,8 @@ describe("Budget component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: true,
+      refetch: jest.fn(),
       transactions: [
         PAY_RENT_TRANSACTION,
         EATING_OUT_CARD_TRANSACTION,
@@ -253,7 +266,9 @@ describe("Budget component", () => {
         },
         budget,
         setSelectedBudget: mockSetSelectedBudget,
-        categoryMap
+        categoryMap,
+        isRefetchingTransactions: true,
+        onRefetchTransactions: expect.any(Function)
       },
       {}
     );
@@ -280,6 +295,8 @@ describe("Budget component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
+      refetch: jest.fn(),
       transactions: [
         PAY_RENT_TRANSACTION,
         EATING_OUT_CARD_TRANSACTION,
@@ -324,7 +341,9 @@ describe("Budget component", () => {
         },
         budget,
         setSelectedBudget: mockSetSelectedBudget,
-        categoryMap: {}
+        categoryMap: {},
+        isRefetchingTransactions: false,
+        onRefetchTransactions: expect.any(Function)
       },
       {}
     );
@@ -351,7 +370,9 @@ describe("Budget component", () => {
         },
         budget,
         setSelectedBudget: mockSetSelectedBudget,
-        categoryMap: {}
+        categoryMap: {},
+        isRefetchingTransactions: false,
+        onRefetchTransactions: expect.any(Function)
       },
       {}
     );

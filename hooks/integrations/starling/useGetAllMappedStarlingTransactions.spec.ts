@@ -34,6 +34,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       data: []
     });
 
@@ -86,6 +87,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: []
     });
 
@@ -106,7 +108,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(true));
     expect(result.current.transactions).toEqual([]);
     expect(useGetStarlingAccounts).toBeCalledTimes(1);
-    expect(useGetStarlingAccounts).toBeCalledWith({enabled: true});
+    expect(useGetStarlingAccounts).toBeCalledWith();
     expect(useGetStarlingTransactions).toBeCalledTimes(1);
     expect(useGetStarlingTransactions).toBeCalledWith({
       ids: [],
@@ -141,6 +143,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       data: []
     });
 
@@ -161,7 +164,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(true));
     expect(result.current.transactions).toEqual([]);
     expect(useGetStarlingAccounts).toBeCalledTimes(1);
-    expect(useGetStarlingAccounts).toBeCalledWith({enabled: true});
+    expect(useGetStarlingAccounts).toBeCalledWith();
     expect(useGetStarlingTransactions).toBeCalledTimes(1);
     expect(useGetStarlingTransactions).toBeCalledWith({
       ids: [{accountId: "account-1", categoryId: "category-1"}],
@@ -196,6 +199,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: [STARLING_FEED_ITEM_1]
     });
 
@@ -214,6 +218,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
 
     // assertions
     await waitFor(() => expect(result.current.isLoading).toBe(true));
+    expect(result.current.isRefetching).toBe(false);
     expect(result.current.transactions).toEqual([]);
     expect(useGetStarlingTransactions).toBeCalledTimes(1);
     expect(useGetStarlingTransactions).toBeCalledWith({
@@ -249,6 +254,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: []
     });
 
@@ -302,6 +308,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: [STARLING_FEED_ITEM_1]
     });
 
@@ -320,6 +327,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
 
     // assertions
     expect(result.current.isLoading).toBe(false);
+    expect(result.current.isRefetching).toBe(true);
     expect(result.current.transactions).toEqual([STARLING_FEED_ITEM_1]);
     expect(useGetStarlingTransactions).toBeCalledTimes(1);
     expect(useGetStarlingTransactions).toBeCalledWith({
@@ -334,6 +342,47 @@ describe("useGetAllMappedStarlingTransactions", () => {
         mapStarlingTransactionToInternalTransaction,
       enabled: true
     });
+  });
+
+  test("returns a refetching status if refetching the starling trxs", () => {
+    // setup mocks
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (useGetStarlingAccounts as jest.MockedFunction<any>).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: false,
+      data: [{accountUid: "account-1", defaultCategory: "category-1"}],
+      refetch: jest.fn()
+    });
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useGetStarlingTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      isRefetching: true,
+      data: []
+    });
+
+    // TODO: any should probably not be used as a type here, but since a
+    // query from tanstack query returns a whole bunch of non-optional things,
+    // it's quicker than returning all those things for now
+    (
+      useMapTransactionsToInternalTransactions as jest.MockedFunction<any>
+    ).mockReturnValueOnce({
+      isLoading: false,
+      transactions: [STARLING_FEED_ITEM_1]
+    });
+
+    // run hook
+    const {result} = renderHook(() => useGetAllMappedStarlingTransactions());
+
+    // assertions
+    expect(result.current.isRefetching).toBe(true);
+    expect(result.current.transactions).toEqual([STARLING_FEED_ITEM_1]);
   });
 
   test("uses transactions from mapping", async () => {
@@ -355,6 +404,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: [STARLING_FEED_ITEM_1]
     });
 
@@ -399,7 +449,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
     });
   });
 
-  test("refetch all data", async () => {
+  test("refetches all data", async () => {
     // setup mocks
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
@@ -418,6 +468,7 @@ describe("useGetAllMappedStarlingTransactions", () => {
       useGetStarlingTransactions as jest.MockedFunction<any>
     ).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       data: [STARLING_FEED_ITEM_1]
     });
 
@@ -439,54 +490,5 @@ describe("useGetAllMappedStarlingTransactions", () => {
     // assertions
     expect(mockCardRefetch).toBeCalledTimes(1);
     expect(mockCardRefetch).toBeCalledWith();
-  });
-
-  test("can disable queries", async () => {
-    // TODO: any should probably not be used as a type here, but since a
-    // query from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    (useGetStarlingAccounts as jest.MockedFunction<any>).mockReturnValueOnce({
-      isLoading: true,
-      isRefetching: false,
-      data: undefined,
-      refetch: jest.fn()
-    });
-
-    // TODO: any should probably not be used as a type here, but since a
-    // query from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    (
-      useGetStarlingTransactions as jest.MockedFunction<any>
-    ).mockReturnValueOnce({
-      isLoading: false,
-      data: []
-    });
-
-    // TODO: any should probably not be used as a type here, but since a
-    // query from tanstack query returns a whole bunch of non-optional things,
-    // it's quicker than returning all those things for now
-    (
-      useMapTransactionsToInternalTransactions as jest.MockedFunction<any>
-    ).mockReturnValueOnce({
-      isLoading: true,
-      transactions: []
-    });
-
-    renderHook(() =>
-      useGetAllMappedStarlingTransactions({
-        enabled: false
-      })
-    );
-
-    expect(useGetStarlingAccounts).toBeCalledTimes(1);
-    expect(useGetStarlingAccounts).toBeCalledWith({
-      enabled: false
-    });
-    expect(useGetStarlingTransactions).toBeCalledTimes(1);
-    expect(useGetStarlingTransactions).toBeCalledWith({
-      ids: [],
-      dateRange: undefined,
-      enabled: false
-    });
   });
 });

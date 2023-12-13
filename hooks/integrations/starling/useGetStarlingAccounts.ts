@@ -13,21 +13,14 @@ const getAccounts = async () => {
   return accountsObject.accounts;
 };
 
-type UseGetStarlingAccounts = {
-  enabled?: boolean;
-};
-
-const useGetStarlingAccounts = ({
-  enabled = true
-}: UseGetStarlingAccounts = {}) => {
+const useGetStarlingAccounts = () => {
   const {addError, removeError} = useContext(ErrorContext);
 
   return useQuery<StarlingAccount[], IntegrationErrorResponse>({
     queryKey: ["starlingAccounts"],
     queryFn: getAccounts,
     onError: error => addError({...error, id: "useGetStarlingAccounts"}),
-    onSuccess: () => removeError("useGetStarlingAccounts"),
-    enabled
+    onSuccess: () => removeError("useGetStarlingAccounts")
   });
 };
 

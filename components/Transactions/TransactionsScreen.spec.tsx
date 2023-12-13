@@ -8,7 +8,6 @@ import TransactionsScreen from "./TransactionsScreen";
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import useGetTransactions from "../../hooks/transactions/useGetTransactions";
-import useOnFocus from "../../hooks/utils/useOnFocus";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {Source, Transaction} from "../../types/transaction";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -17,19 +16,18 @@ jest.mock("./TransactionList");
 jest.mock("../ui/LoadingSpinner");
 jest.mock("../../hooks/transactions/useGetCategoryMap");
 jest.mock("../../hooks/transactions/useGetTransactions");
-jest.mock("../../hooks/utils/useOnFocus");
 
 describe("TransactionsScreen component", () => {
   test("renders a loading spinner when loading transactions", () => {
     // setup mocks
-    const mockRefetch = jest.fn();
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: true,
+      isRefetching: false,
       transactions: [],
-      refetch: mockRefetch
+      refetch: jest.fn()
     });
 
     (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
@@ -41,12 +39,8 @@ describe("TransactionsScreen component", () => {
 
     expect(LoadingSpinner).toBeCalledTimes(1);
     expect(LoadingSpinner).toBeCalledWith({}, {});
-    expect(useOnFocus).toBeCalledTimes(1);
-    expect(useOnFocus).toBeCalledWith(mockRefetch);
     expect(useGetTransactions).toBeCalledTimes(1);
-    expect(useGetTransactions).toBeCalledWith({
-      enabled: false
-    });
+    expect(useGetTransactions).toBeCalledWith();
   });
 
   test("renders a loading spinner when loading the category map", () => {
@@ -56,6 +50,7 @@ describe("TransactionsScreen component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       transactions: [
         EATING_OUT_CARD_TRANSACTION,
         {
@@ -105,6 +100,7 @@ describe("TransactionsScreen component", () => {
     // it's quicker than returning all those things for now
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: false,
       transactions: testTransactions,
       refetch: mockRefetch
     });
@@ -117,17 +113,18 @@ describe("TransactionsScreen component", () => {
     render(<TransactionsScreen />);
 
     expect(screen.getByText("Transactions")).toBeVisible();
-    expect(useOnFocus).toBeCalledTimes(1);
-    expect(useOnFocus).toBeCalledWith(mockRefetch);
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
-      {transactions: testTransactions, categoryMap: {}},
+      {
+        transactions: testTransactions,
+        categoryMap: {},
+        onRefetchTransactions: mockRefetch,
+        isRefetchingTransactions: false
+      },
       {}
     );
     expect(useGetTransactions).toBeCalledTimes(1);
-    expect(useGetTransactions).toBeCalledWith({
-      enabled: false
-    });
+    expect(useGetTransactions).toBeCalledWith();
   });
 
   test("passes category map to the transaction list component", () => {
@@ -135,10 +132,12 @@ describe("TransactionsScreen component", () => {
     // TODO: any should probably not be used as a type here, but since a
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
+    const mockRefetch = jest.fn();
     (useGetTransactions as jest.MockedFunction<any>).mockReturnValueOnce({
       isLoading: false,
+      isRefetching: true,
       transactions: [],
-      refetch: jest.fn()
+      refetch: mockRefetch
     });
 
     (useGetCategoryMap as jest.MockedFunction<any>).mockReturnValueOnce({
@@ -150,7 +149,12 @@ describe("TransactionsScreen component", () => {
 
     expect(TransactionList).toBeCalledTimes(1);
     expect(TransactionList).toBeCalledWith(
-      {transactions: [], categoryMap: INITIAL_CATEGORY_MAP},
+      {
+        transactions: [],
+        categoryMap: INITIAL_CATEGORY_MAP,
+        onRefetchTransactions: mockRefetch,
+        isRefetchingTransactions: true
+      },
       {}
     );
   });

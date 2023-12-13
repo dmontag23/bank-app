@@ -4,26 +4,22 @@ import {DateRange} from "../../types/transaction";
 import useGetAllMappedStarlingTransactions from "../integrations/starling/useGetAllMappedStarlingTransactions";
 import useGetAllMappedTruelayerTransactions from "../integrations/truelayer/useGetAllMappedTruelayerTransactions";
 
-type UseGetTransactions = {
-  enabled?: boolean;
-  dateRange?: DateRange;
-};
+type UseGetTransactions = {dateRange?: DateRange};
 
-const useGetTransactions = ({
-  enabled = true,
-  dateRange
-}: UseGetTransactions = {}) => {
+const useGetTransactions = ({dateRange}: UseGetTransactions = {}) => {
   const {
     isLoading: isStarlingTransactionsLoading,
     transactions: starlingTransactions,
-    refetch: refetchStarlingTransactions
-  } = useGetAllMappedStarlingTransactions({enabled, dateRange});
+    refetch: refetchStarlingTransactions,
+    isRefetching: isStarlingTransactionsRefetching
+  } = useGetAllMappedStarlingTransactions({dateRange});
 
   const {
     isLoading: isTruelayerTransactionsLoading,
     transactions: truelayerTransactions,
-    refetch: refetchTruelayerTransactions
-  } = useGetAllMappedTruelayerTransactions({enabled, dateRange});
+    refetch: refetchTruelayerTransactions,
+    isRefetching: isTruelayerTransactionsRefetching
+  } = useGetAllMappedTruelayerTransactions({dateRange});
 
   const combinedTransactions = starlingTransactions
     .concat(truelayerTransactions)
@@ -36,6 +32,8 @@ const useGetTransactions = ({
 
   return {
     isLoading: isStarlingTransactionsLoading || isTruelayerTransactionsLoading,
+    isRefetching:
+      isStarlingTransactionsRefetching || isTruelayerTransactionsRefetching,
     transactions: combinedTransactions,
     refetch
   };

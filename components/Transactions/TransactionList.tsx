@@ -11,12 +11,22 @@ import {
 type TransactionListProps = {
   transactions: TransactionType[];
   categoryMap: CategoryMap;
+  onRefetchTransactions?: () => void;
+  isRefetchingTransactions?: boolean;
 };
 
-const TransactionList = ({transactions, categoryMap}: TransactionListProps) => (
+const TransactionList = ({
+  transactions,
+  categoryMap,
+  onRefetchTransactions,
+  isRefetchingTransactions
+}: TransactionListProps) => (
   // TODO: Improve performance of this list
   <FlatList
+    accessibilityLabel="Transaction list"
     data={transactions}
+    onRefresh={onRefetchTransactions}
+    refreshing={isRefetchingTransactions}
     renderItem={({item}) => (
       <Transaction transaction={item} categoryMap={categoryMap} />
     )}

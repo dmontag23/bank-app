@@ -5,21 +5,17 @@ import useGetStarlingTransactions from "./useGetStarlingTransactions";
 import {DateRange} from "../../../types/transaction";
 import useMapTransactionsToInternalTransactions from "../../transactions/useMapTransactionsToInternalTransactions";
 
-type UseGetAllMappedStarlingTransactionsProps = {
-  dateRange?: DateRange;
-  enabled?: boolean;
-};
+type UseGetAllMappedStarlingTransactionsProps = {dateRange?: DateRange};
 
 const useGetAllMappedStarlingTransactions = ({
-  dateRange,
-  enabled = true
+  dateRange
 }: UseGetAllMappedStarlingTransactionsProps = {}) => {
   const {
     isLoading: isStarlingAccountsLoading,
     isRefetching: isStarlingAccountsRefetching,
     data: starlingAccountsData,
     refetch: refetchAccountsData
-  } = useGetStarlingAccounts({enabled});
+  } = useGetStarlingAccounts();
 
   const ids =
     starlingAccountsData?.map(account => ({
@@ -27,12 +23,15 @@ const useGetAllMappedStarlingTransactions = ({
       categoryId: account.defaultCategory
     })) ?? [];
 
-  const {isLoading: isStarlingTransactionsLoading, data: starlingTransactions} =
-    useGetStarlingTransactions({
-      ids,
-      dateRange,
-      enabled: !isStarlingAccountsLoading && !isStarlingAccountsRefetching
-    });
+  const {
+    isLoading: isStarlingTransactionsLoading,
+    data: starlingTransactions,
+    isRefetching: isStarlingTransactionsRefetching
+  } = useGetStarlingTransactions({
+    ids,
+    dateRange,
+    enabled: !(isStarlingAccountsLoading || isStarlingAccountsRefetching)
+  });
 
   const isMapEnabled = Boolean(starlingTransactions.length);
 
@@ -49,6 +48,8 @@ const useGetAllMappedStarlingTransactions = ({
       isStarlingAccountsLoading ||
       isStarlingTransactionsLoading ||
       (isMapLoading && isMapEnabled),
+    isRefetching:
+      isStarlingAccountsRefetching || isStarlingTransactionsRefetching,
     transactions,
     // only refetchAccountsData is called here because, as soon as the account data is refetched,
     // the transaction queries are disabled. After the account query is finished, the transaction

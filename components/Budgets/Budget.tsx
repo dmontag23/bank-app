@@ -59,7 +59,12 @@ type BudgetProps = {
 const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
   const theme = useAppTheme();
 
-  const {isLoading: isTransactionsLoading, transactions} = useGetTransactions({
+  const {
+    isLoading: isTransactionsLoading,
+    transactions,
+    isRefetching: isTransactionsRefetching,
+    refetch: refetchTransactions
+  } = useGetTransactions({
     dateRange: {
       from: budget.window.start,
       to: budget.window.end
@@ -108,6 +113,8 @@ const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
                   budget={budget}
                   setSelectedBudget={setSelectedBudget}
                   categoryMap={categoryMap ?? {}}
+                  onRefetchTransactions={refetchTransactions}
+                  isRefetchingTransactions={isTransactionsRefetching}
                 />
               )}
             </Tab.Screen>

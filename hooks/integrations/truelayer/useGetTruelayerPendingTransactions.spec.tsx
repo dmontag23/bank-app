@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react";
-import {renderHook, waitFor} from "testing-library/extension";
+import {act, renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import useGetTruelayerPendingTransactions from "./useGetTruelayerPendingTransactions";
@@ -146,6 +146,7 @@ describe("useGetTruelayerPendingTransactions", () => {
       );
 
       await waitFor(() => expect(result.current.isLoading).toBe(false));
+      expect(result.current.isRefetching).toBe(false);
       expect(result.current.isSuccess).toBe(true);
       expect(result.current.data).toEqual([
         TRUELAYER_EATING_OUT_MARCH_CARD_TRANSACTION_MINIMUM_FIELDS,
@@ -186,6 +187,46 @@ describe("useGetTruelayerPendingTransactions", () => {
       );
       expect(result.current.isLoading).toBe(true);
       expect(result.current.isSuccess).toBe(false);
+    });
+
+    test("returns refetching status if 1 call is still refetching", async () => {
+      (
+        trueLayerDataApi.get as jest.MockedFunction<
+          typeof trueLayerDataApi.get<CardTransaction[]>
+        >
+      )
+        .mockResolvedValueOnce([TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ])
+        .mockImplementationOnce(async () => new Promise(() => {}));
+
+      const {result, rerender} = renderHook(
+        props => useGetTruelayerPendingTransactions(props),
+        {
+          options: {
+            initialProps: {cardIds: ["id_1", "id_2"], enabled: true}
+          }
+        }
+      );
+
+      await waitFor(() =>
+        expect(result.current.data).toEqual([
+          TRUELAYER_PAY_BILL_CARD_TRANSACTION_ALL_FIELDS
+        ])
+      );
+
+      act(() => rerender({cardIds: ["id_1", "id_2"], enabled: false}));
+
+      act(() => rerender({cardIds: ["id_1", "id_2"], enabled: true}));
+
+      await waitFor(() =>
+        expect(result.current.data).toEqual([
+          TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS
+        ])
+      );
+      expect(result.current.isRefetching).toBe(true);
     });
 
     test("returns an error if 1 call fails", async () => {

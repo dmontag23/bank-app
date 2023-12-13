@@ -7,23 +7,18 @@ import TransactionList from "./TransactionList";
 
 import useGetCategoryMap from "../../hooks/transactions/useGetCategoryMap";
 import useGetTransactions from "../../hooks/transactions/useGetTransactions";
-import useOnFocus from "../../hooks/utils/useOnFocus";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
 const TransactionsScreen = () => {
-  // useTransactions is initially disabled because useOnFocus will call
-  // refetch as soon as the screen is focused, which will get the data
-  // setting enabled to false here prevents unnecessary api call(s)
   const {
     isLoading: isTransactionsLoading,
     transactions,
-    refetch
-  } = useGetTransactions({enabled: false});
+    refetch: refetchTransactions,
+    isRefetching: isTransactionsRefetching
+  } = useGetTransactions();
 
   const {isLoading: isCategoryMapLoading, data: categoryMap} =
     useGetCategoryMap();
-
-  useOnFocus(refetch);
 
   const insets = useSafeAreaInsets();
   return (
@@ -38,6 +33,8 @@ const TransactionsScreen = () => {
           <TransactionList
             transactions={transactions}
             categoryMap={categoryMap ?? {}}
+            onRefetchTransactions={refetchTransactions}
+            isRefetchingTransactions={isTransactionsRefetching}
           />
         </>
       )}

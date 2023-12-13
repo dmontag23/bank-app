@@ -1,5 +1,5 @@
 import React from "react";
-import {render} from "testing-library/extension";
+import {act, render, screen} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import Transaction from "./Transaction";
@@ -43,5 +43,31 @@ describe("TransactionList component", () => {
         {}
       )
     );
+  });
+
+  test("is able to refetch transactions", async () => {
+    const mockRefetch = jest.fn();
+
+    render(
+      <TransactionList
+        transactions={[]}
+        categoryMap={{}}
+        onRefetchTransactions={mockRefetch}
+        isRefetchingTransactions={true}
+      />
+    );
+
+    // this is the recommended jest way to test the on refresh behavior
+    // see https://github.com/callstack/react-native-testing-library/issues/809
+    const scrollView = screen.getByLabelText("Transaction list");
+    expect(scrollView).toBeDefined();
+
+    const {refreshControl} = scrollView.props;
+    await act(async () => {
+      refreshControl.props.onRefresh();
+    });
+
+    expect(mockRefetch).toBeCalledTimes(1);
+    expect(refreshControl.props.refreshing).toBe(true);
   });
 });
