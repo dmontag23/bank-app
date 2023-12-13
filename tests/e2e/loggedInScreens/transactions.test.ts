@@ -55,4 +55,9 @@ describe("Transactions page", () => {
       element(by.text("1 Jan 2023 at 00:00  -  Savings"))
     ).toBeVisible();
   });
+
+  // TODO: Add e2e test to test refetching of transactions.
+  // This will require the ability to add and remove transactions
+  // from the mock server, possible via an api that the mock server
+  // exposes
 });

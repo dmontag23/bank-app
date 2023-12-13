@@ -548,4 +548,9 @@ describe("Budget page", () => {
     await categoriesButton.tap();
     await expect(shoppingCategory).not.toBeVisible();
   });
+
+  // TODO: Add e2e test to test refetching of transactions.
+  // This will require the ability to add and remove transactions
+  // from the mock server, possible via an api that the mock server
+  // exposes
 });
