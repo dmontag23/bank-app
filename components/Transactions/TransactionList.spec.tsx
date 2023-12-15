@@ -8,8 +8,10 @@ import TransactionList from "./TransactionList";
 import {INITIAL_CATEGORY_MAP} from "../../constants";
 import {EATING_OUT_CARD_TRANSACTION} from "../../tests/mocks/data/transactions";
 import {Source, Transaction as TransactionType} from "../../types/transaction";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 jest.mock("./Transaction");
+jest.mock("../ui/LoadingSpinner");
 
 describe("TransactionList component", () => {
   test("renders a transaction list correctly", () => {
@@ -45,7 +47,7 @@ describe("TransactionList component", () => {
     );
   });
 
-  test("is able to refetch transactions", async () => {
+  test("is able to call onRefetchTransactions", async () => {
     const mockRefetch = jest.fn();
 
     render(
@@ -53,21 +55,44 @@ describe("TransactionList component", () => {
         transactions={[]}
         categoryMap={{}}
         onRefetchTransactions={mockRefetch}
-        isRefetchingTransactions={true}
+        isRefetchingTransactions={false}
       />
     );
 
     // this is the recommended jest way to test the on refresh behavior
     // see https://github.com/callstack/react-native-testing-library/issues/809
-    const scrollView = screen.getByLabelText("Transaction list");
-    expect(scrollView).toBeDefined();
+    const transactionsList = screen.getByLabelText("Transaction list");
+    expect(transactionsList).toBeDefined();
 
-    const {refreshControl} = scrollView.props;
+    const {refreshControl} = transactionsList.props;
+    expect(refreshControl.props.refreshing).toBe(false);
+    expect(refreshControl.props.tintColor).toBe("transparent");
+
     await act(async () => {
       refreshControl.props.onRefresh();
     });
 
     expect(mockRefetch).toBeCalledTimes(1);
-    expect(refreshControl.props.refreshing).toBe(true);
+    expect(mockRefetch).toBeCalledWith();
+    expect(LoadingSpinner).not.toBeCalled();
+  });
+
+  test("shows loading spinner when refetching transactions", () => {
+    render(
+      <TransactionList
+        transactions={[]}
+        categoryMap={{}}
+        onRefetchTransactions={jest.fn()}
+        isRefetchingTransactions={true}
+      />
+    );
+
+    const transactionsList = screen.getByLabelText("Transaction list");
+    expect(transactionsList).toBeDefined();
+
+    const {refreshControl} = transactionsList.props;
+    expect(refreshControl).toBeUndefined();
+    expect(LoadingSpinner).toBeCalledTimes(1);
+    expect(LoadingSpinner).toBeCalledWith({}, {});
   });
 });
