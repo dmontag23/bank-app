@@ -1,5 +1,4 @@
 import React, {ReactNode} from "react";
-import Config from "react-native-config";
 import WebView from "react-native-webview";
 import {
   fireEvent,
@@ -21,6 +20,7 @@ import {StackScreenProps} from "@react-navigation/stack";
 import ErrorModal from "../../../components/errors/ErrorModal";
 import RootScreens from "../../../components/RootScreens";
 import SettingsScreen from "../../../components/Settings/SettingsScreen";
+import Config from "../../../config.json";
 import {LoggedInTabParamList, RootStackParamList} from "../../../types/screens";
 
 describe("Settings Screen", () => {

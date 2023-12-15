@@ -1,10 +1,11 @@
 import React from "react";
-import Config from "react-native-config";
 import WebView from "react-native-webview";
 import {render} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 
 import TruelayerWebAuth from "./TruelayerWebAuth";
+
+import Config from "../../../config.json";
 
 describe("TruelayerWebAuth component", () => {
   test("renders components", () => {

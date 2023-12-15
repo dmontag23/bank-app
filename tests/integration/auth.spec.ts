@@ -1,4 +1,3 @@
-import Config from "react-native-config";
 import nock from "nock";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +7,7 @@ import {
   trueLayerAuthApi,
   trueLayerDataApi
 } from "../../api/axiosConfig";
+import Config from "../../config.json";
 import {
   Currency,
   StarlingAccount,

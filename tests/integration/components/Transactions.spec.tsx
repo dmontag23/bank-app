@@ -1,5 +1,4 @@
 import React from "react";
-import Config from "react-native-config";
 import nock from "nock";
 import {
   act,
@@ -13,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
+import Config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
 import {

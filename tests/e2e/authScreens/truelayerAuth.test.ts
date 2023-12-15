@@ -1,7 +1,7 @@
-import Config from "react-native-config";
 import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
+import Config from "../../../config.json";
 import {logIn} from "../utils/utils";
 
 describe("Truelayer auth screens without previous token", () => {
@@ -20,7 +20,7 @@ describe("Truelayer auth screens without previous token", () => {
   it("should display unknown error from Truelayer auth page", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}`
     });
     await expect(element(by.text("An error has occurred"))).toBeVisible();
     await expect(element(by.text("The error is unknown"))).toBeVisible();
@@ -31,7 +31,7 @@ describe("Truelayer auth screens without previous token", () => {
   it("should display error from Truelayer auth page and allow user to try connecting again", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
     });
     await expect(element(by.text("An error has occurred"))).toBeVisible();
     await expect(
@@ -51,7 +51,7 @@ describe("Truelayer auth screens without previous token", () => {
   it("should allow user to return to home screen on error", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
     });
     await expect(element(by.text("An error has occurred"))).toBeVisible();
     await expect(
@@ -71,7 +71,7 @@ describe("Truelayer auth screens without previous token", () => {
   it("should log in user upon getting correct token", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?code=truelayer-dummy-code&scope=accounts`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?code=truelayer-dummy-code&scope=accounts`
     });
     await expect(element(by.text("Please select a budget"))).toBeVisible();
   });
@@ -85,7 +85,7 @@ describe("Truelayer auth screens with previous token", () => {
   it("should allow the user to return to the app after receiving a truelayer error", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`
     });
     await expect(element(by.text("An error has occurred"))).toBeVisible();
     await expect(
@@ -104,7 +104,7 @@ describe("Truelayer auth screens with previous token", () => {
   it("should allow the user to retry auth after receiving an unknown error", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}`
     });
     await expect(element(by.text("An error has occurred"))).toBeVisible();
     await expect(element(by.text("The error is unknown"))).toBeVisible();
@@ -120,7 +120,7 @@ describe("Truelayer auth screens with previous token", () => {
   it("should log in user upon getting correct token", async () => {
     await device.launchApp({
       newInstance: true,
-      url: `${Config.URI}/${Config.TRUELAYER_CALLBACK_ENDPOINT}?code=another-access-code&scope=accounts`
+      url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?code=another-access-code&scope=accounts`
     });
     await expect(element(by.text("Please select a budget"))).toBeVisible();
   });

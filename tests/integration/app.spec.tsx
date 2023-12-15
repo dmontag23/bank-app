@@ -1,5 +1,4 @@
 import React from "react";
-import Config from "react-native-config";
 import nock from "nock";
 import {
   act,
@@ -12,6 +11,7 @@ import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import App from "../../App";
+import Config from "../../config.json";
 
 describe("App component", () => {
   test("shows the auth screens if not logged in", async () => {

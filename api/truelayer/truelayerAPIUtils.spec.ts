@@ -1,4 +1,3 @@
-import Config from "react-native-config";
 import {AxiosHeaders, AxiosResponse} from "axios";
 import {describe, expect, jest, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,6 +10,7 @@ import {
   storeNewTokens
 } from "./truelayerAPIUtils";
 
+import Config from "../../config.json";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,
@@ -270,7 +270,7 @@ describe("Truelayer API Utils", () => {
       expect(consoleLog).toBeCalledWith(
         "Attempting to store new access and refresh tokens..."
       );
-      console.log("Successfully stored new tokens.");
+      expect(consoleLog).toBeCalledWith("Successfully stored new tokens.");
 
       expect(getTokenFromStorage).toBeCalledTimes(1);
       expect(getTokenFromStorage).toBeCalledWith("truelayer-refresh-token");

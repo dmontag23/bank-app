@@ -1,0 +1,11 @@
+{
+  "STARLING_API_AUTH_TOKEN": "good-starling-auth-token",
+  "STARLING_API_URL": "http://localhost:3000/starling",
+  "TRUELAYER_AUTH_API_URL": "http://localhost:3000/truelayer/auth",
+  "TRUELAYER_CALLBACK_ENDPOINT": "truelayer-callback",
+  "TRUELAYER_CLIENT_ID": "truelayer-client-id",
+  "TRUELAYER_CLIENT_SECRET": "truelayer-client-secret",
+  "TRUELAYER_DATA_API_URL": "http://localhost:3000/truelayer/data",
+  "TRUELAYER_OAUTH_URL": "bankapp://truelayer-callback?code=dummy-truelayer-code&scope=accounts",
+  "URI": "bankapp://"
+}

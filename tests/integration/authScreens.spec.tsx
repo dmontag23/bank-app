@@ -1,6 +1,5 @@
 import React from "react";
 import {Linking} from "react-native";
-import Config from "react-native-config";
 import WebView from "react-native-webview";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
@@ -10,6 +9,7 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import App from "../../App";
 import RootScreens from "../../components/RootScreens";
+import Config from "../../config.json";
 
 // mock the deep linking mechanism in order to be able to test it
 jest.mock("react-native/Libraries/Linking/Linking");
@@ -135,15 +135,13 @@ describe("Root screen views - auth flow", () => {
   test("stores valid Truelayer tokens and navigates to the home budgets page", async () => {
     const mockAccessToken = "valid-truelayer-access-token";
     const mockRefreshToken = "valid-truelayer-refresh-token";
-    nock(Config.TRUELAYER_AUTH_API_URL)
-      .post("/connect/token")
-      .reply(200, {
-        access_token: mockAccessToken,
-        expires_in: 3600,
-        refresh_token: mockRefreshToken,
-        token_type: "Bearer",
-        scope: "info"
-      });
+    nock(Config.TRUELAYER_AUTH_API_URL).post("/connect/token").reply(200, {
+      access_token: mockAccessToken,
+      expires_in: 3600,
+      refresh_token: mockRefreshToken,
+      token_type: "Bearer",
+      scope: "info"
+    });
 
     const deepLinkUrl =
       "bankapp://truelayer-callback?code=truelayer-dummy-code&scope=accounts";
@@ -250,15 +248,13 @@ describe("Root screen views - auth flow", () => {
       ["truelayer-refresh-token", mockRefreshToken]
     ]);
 
-    nock(Config.TRUELAYER_AUTH_API_URL)
-      .post("/connect/token")
-      .reply(200, {
-        access_token: "new-access-token",
-        expires_in: 3600,
-        refresh_token: "new-refresh-token",
-        token_type: "Bearer",
-        scope: "info"
-      });
+    nock(Config.TRUELAYER_AUTH_API_URL).post("/connect/token").reply(200, {
+      access_token: "new-access-token",
+      expires_in: 3600,
+      refresh_token: "new-refresh-token",
+      token_type: "Bearer",
+      scope: "info"
+    });
 
     const deepLinkUrl =
       "bankapp://truelayer-callback?code=dummy-truelayer-code&scope=accounts";

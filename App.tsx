@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import {AppState, AppStateStatus, Platform} from "react-native";
-import Config from "react-native-config";
 import {Portal} from "react-native-paper";
 import {
   LinkingOptions,
@@ -13,6 +12,7 @@ import ErrorModal from "./components/errors/ErrorModal";
 import RootScreens from "./components/RootScreens";
 import CenteredLoadingSpinner from "./components/ui/CenteredLoadingSpinner";
 import Toasts from "./components/ui/Toasts";
+import Config from "./config.json";
 import {INITIAL_CATEGORY_MAP} from "./constants";
 import useStoreCategoryMap from "./hooks/transactions/useStoreCategoryMap";
 import {useAppTheme} from "./hooks/utils/useAppTheme";

@@ -1,5 +1,4 @@
 import React from "react";
-import Config from "react-native-config";
 import {PanGesture} from "react-native-gesture-handler";
 import nock from "nock";
 import {
@@ -18,6 +17,7 @@ import {describe, expect, jest, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../../components/LoggedInScreens";
+import Config from "../../../config.json";
 import {TRUELAYER_MASTERCARD} from "../../../mock-server/truelayer/data/cardData";
 import {TRUELAYER_EATING_OUT_CARD_TRANSACTION_MINIMUM_FIELDS} from "../../../mock-server/truelayer/data/cardTransactionData";
 

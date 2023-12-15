@@ -1,5 +1,4 @@
 import React from "react";
-import Config from "react-native-config";
 import {MD3LightTheme} from "react-native-paper";
 import nock from "nock";
 import {
@@ -14,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {NavigationContainer} from "@react-navigation/native";
 
 import Budget from "../../../components/Budgets/Budget";
+import Config from "../../../config.json";
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
 import {STARLING_ACCOUNT_1} from "../../../mock-server/starling/data/accountData";
 import {

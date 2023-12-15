@@ -1,11 +1,11 @@
 import React from "react";
-import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import {NavigationContainer} from "@react-navigation/native";
 
 import LoggedInScreens from "../../components/LoggedInScreens";
+import Config from "../../config.json";
 
 describe("Logged in screen views", () => {
   test("can switch between screens", async () => {

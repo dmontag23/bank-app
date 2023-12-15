@@ -1,11 +1,11 @@
 import React, {ReactNode} from "react";
-import Config from "react-native-config";
 import {renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, jest, test} from "@jest/globals";
 
 import usePostTruelayerToken from "./usePostTruelayerToken";
 
 import {trueLayerAuthApi} from "../../../api/axiosConfig";
+import Config from "../../../config.json";
 import ErrorContext, {defaultErrorContext} from "../../../store/error-context";
 import {
   ConnectTokenPostRequest,

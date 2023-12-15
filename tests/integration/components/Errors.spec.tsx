@@ -1,5 +1,4 @@
 import React from "react";
-import Config from "react-native-config";
 import nock from "nock";
 import {fireEvent, render, screen, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
@@ -8,6 +7,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import ErrorModal from "../../../components/errors/ErrorModal";
 import TransactionsScreen from "../../../components/Transactions/TransactionsScreen";
 import Toasts from "../../../components/ui/Toasts";
+import Config from "../../../config.json";
 
 describe("Error", () => {
   test("displays and closes toast", async () => {

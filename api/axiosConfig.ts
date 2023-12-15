@@ -1,5 +1,4 @@
 // TODO: Create a unit test for this file?
-import Config from "react-native-config";
 import axios from "axios";
 
 import {
@@ -9,6 +8,7 @@ import {
 import {handleStarlingError} from "./starling/starlingAPIUtils";
 import {handleTruelayerError} from "./truelayer/truelayerAPIUtils";
 
+import Config from "../config.json";
 import {DataAPISuccessResponse} from "../types/trueLayer/dataAPI/serverResponse";
 
 const baseHeaders = {

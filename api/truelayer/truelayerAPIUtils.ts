@@ -1,4 +1,3 @@
-import Config from "react-native-config";
 import {AxiosResponse} from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // see https://stackoverflow.com/questions/45111198/how-to-mock-functions-in-the-same-module-using-jest
 import * as truelayerAPIUtils from "./truelayerAPIUtils";
 
+import Config from "../../config.json";
 import {
   ConnectTokenPostRequest,
   ConnectTokenPostResponse,

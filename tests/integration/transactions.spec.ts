@@ -1,9 +1,9 @@
-import Config from "react-native-config";
 import nock from "nock";
 import {act, renderHook, waitFor} from "testing-library/extension";
 import {describe, expect, test} from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import Config from "../../config.json";
 import useGetAllMappedStarlingTransactions from "../../hooks/integrations/starling/useGetAllMappedStarlingTransactions";
 import useGetAllMappedTruelayerTransactions from "../../hooks/integrations/truelayer/useGetAllMappedTruelayerTransactions";
 import useGetTransactions from "../../hooks/transactions/useGetTransactions";

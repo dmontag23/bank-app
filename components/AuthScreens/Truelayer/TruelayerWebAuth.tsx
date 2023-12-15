@@ -1,7 +1,8 @@
 import React from "react";
 import {SafeAreaView, StyleSheet} from "react-native";
-import Config from "react-native-config";
 import WebView from "react-native-webview";
+
+import Config from "../../../config.json";
 
 const TruelayerWebAuth = () => (
   <SafeAreaView style={styles.container}>
