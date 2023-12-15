@@ -59,6 +59,9 @@ type BudgetProps = {
 const Budget = ({budget, setSelectedBudget}: BudgetProps) => {
   const theme = useAppTheme();
 
+  // TODO: Investigate why mounting or refetching this component
+  // also calls the endpoints to get all transactions (i.e. not just the transactions
+  // filtered by date)
   const {
     isLoading: isTransactionsLoading,
     transactions,
