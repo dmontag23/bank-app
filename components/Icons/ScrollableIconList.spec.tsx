@@ -14,8 +14,6 @@ describe("ScrollableIconList component", () => {
   test("calls no-op onIconPress when icon is clicked", () => {
     render(<ScrollableIconList icons={["credit-card"]} />);
 
-    fireEvent(screen.getByLabelText("Icon list"), "getItemLayout");
-
     const creditCardIcon = screen.getByText("credit-card");
     expect(creditCardIcon).toBeVisible();
 
@@ -39,5 +37,17 @@ describe("ScrollableIconList component", () => {
 
     expect(mockOnIconPress).toBeCalledTimes(1);
     expect(mockOnIconPress).toBeCalledWith("credit-card");
+  });
+
+  test("sets the item layout", () => {
+    render(
+      <ScrollableIconList icons={["credit-card"]} onIconPress={jest.fn()} />
+    );
+
+    const iconList = screen.getByLabelText("Icon list");
+    expect(iconList).toBeDefined();
+
+    const getItemLayoutResult = iconList.props.getItemLayout(undefined, 1);
+    expect(getItemLayoutResult).toEqual({length: 104, offset: 104, index: 1});
   });
 });

@@ -95,4 +95,24 @@ describe("TransactionList component", () => {
     expect(LoadingSpinner).toBeCalledTimes(1);
     expect(LoadingSpinner).toBeCalledWith({}, {});
   });
+
+  test("sets the item layout", () => {
+    render(
+      <TransactionList
+        transactions={[]}
+        categoryMap={{}}
+        onRefetchTransactions={jest.fn()}
+        isRefetchingTransactions={false}
+      />
+    );
+
+    const transactionList = screen.getByLabelText("Transaction list");
+    expect(transactionList).toBeDefined();
+
+    const getItemLayoutResult = transactionList.props.getItemLayout(
+      undefined,
+      1
+    );
+    expect(getItemLayoutResult).toEqual({length: 65, offset: 65, index: 1});
+  });
 });
