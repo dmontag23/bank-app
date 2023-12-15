@@ -549,8 +549,32 @@ describe("Budget page", () => {
     await expect(shoppingCategory).not.toBeVisible();
   });
 
-  // TODO: Add e2e test to test refetching of transactions.
-  // This will require the ability to add and remove transactions
-  // from the mock server, possible via an api that the mock server
-  // exposes
+  it("can refetch transactions in a budget category", async () => {
+    const refetchBudget: Budget = {
+      id: "refetch-budget",
+      name: "Refetch budget",
+      items: [
+        {
+          id: "item-1",
+          name: "Bills",
+          cap: 1000,
+          categories: [Category.BILLS]
+        }
+      ],
+      window: {start: new Date("2023-01-01"), end: new Date("2023-02-01")}
+    };
+
+    await createBudget(refetchBudget);
+
+    // get the first transaction on the list
+    const firstTrx = element(by.text("PAY OFF CREDIT CARD BILL"));
+    await expect(firstTrx).toBeVisible();
+    // pull to refresh
+    await firstTrx.swipe("down");
+
+    // TODO: Add an assertion here that some new transactions are now visible after loading
+    // This will require the ability to add and remove transactions
+    // from the mock server, possible via an api that the mock server
+    // exposes
+  });
 });

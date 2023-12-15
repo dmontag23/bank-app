@@ -56,8 +56,16 @@ describe("Transactions page", () => {
     ).toBeVisible();
   });
 
-  // TODO: Add e2e test to test refetching of transactions.
-  // This will require the ability to add and remove transactions
-  // from the mock server, possible via an api that the mock server
-  // exposes
+  it("can refetch transactions", async () => {
+    // get the first transaction on the list
+    const firstTrx = element(by.text("PAY OFF CREDIT CARD BILL"));
+    await expect(firstTrx).toBeVisible();
+    // pull to refresh
+    await firstTrx.swipe("down");
+
+    // TODO: Add an assertion here that some new transactions are now visible after loading
+    // This will require the ability to add and remove transactions
+    // from the mock server, possible via an api that the mock server
+    // exposes
+  });
 });
