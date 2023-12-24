@@ -51,8 +51,15 @@ describe("Transactions page", () => {
       .scroll(400, "down");
     await element(by.text("Savings")).tap();
     await expect(modalTitle).not.toBeVisible();
+    const date = PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+      dateStyle: "medium"
+    });
+    const time = PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+      timeStyle: "short"
+    });
+
     await expect(
-      element(by.text("1 Jan 2023 at 00:00  -  Savings"))
+      element(by.text(`${date} at ${time}  -  Savings`))
     ).toBeVisible();
   });
 

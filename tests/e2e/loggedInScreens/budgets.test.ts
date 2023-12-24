@@ -2,8 +2,13 @@ import {by, element, expect} from "detox";
 import {beforeEach, describe, it} from "@jest/globals";
 
 import {INITIAL_CATEGORY_MAP} from "../../../constants";
+import {STARLING_FEED_ITEM_2} from "../../../mock-server/starling/data/feedData";
 import {Budget} from "../../../types/budget";
 import {Category} from "../../../types/transaction";
+import {
+  EATING_OUT_CARD_TRANSACTION,
+  PAY_BILL_CARD_TRANSACTION
+} from "../../mocks/data/transactions";
 import {logIn} from "../utils/utils";
 
 /* TODO: find a way to remove this function
@@ -218,12 +223,34 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £150.00"))).toBeVisible();
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.BILLS}`))
+      element(
+        by.text(
+          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            dateStyle: "medium"
+          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            timeStyle: "short"
+          })}  -  ${Category.BILLS}`
+        )
+      )
     ).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(element(by.text("Starling Bank"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2020 at 00:00  -  ${Category.BILLS}`))
+      element(
+        by.text(
+          `${new Date(STARLING_FEED_ITEM_2.transactionTime).toLocaleString(
+            "en-UK",
+            {
+              dateStyle: "medium"
+            }
+          )} at ${new Date(STARLING_FEED_ITEM_2.transactionTime).toLocaleString(
+            "en-UK",
+            {
+              timeStyle: "short"
+            }
+          )}  -  ${Category.BILLS}`
+        )
+      )
     ).toBeVisible();
     await expect(element(by.text("£0.50"))).toBeVisible();
 
@@ -235,7 +262,20 @@ describe("Budget page", () => {
     await expect(element(by.text("left of £500.00"))).toBeVisible();
     await expect(element(by.text("CHIPOTLE AIRPORT BLVD"))).toBeVisible();
     await expect(
-      element(by.text(`24 Feb 2013 at 14:00  -  ${Category.EATING_OUT}`))
+      element(
+        by.text(
+          `${new Date(EATING_OUT_CARD_TRANSACTION.timestamp).toLocaleString(
+            "en-UK",
+            {
+              dateStyle: "medium"
+            }
+          )} at ${new Date(
+            EATING_OUT_CARD_TRANSACTION.timestamp
+          ).toLocaleString("en-UK", {
+            timeStyle: "short"
+          })}  -  ${Category.EATING_OUT}`
+        )
+      )
     ).toBeVisible();
     await expect(element(by.text("£36.71"))).toBeVisible();
   });
@@ -343,7 +383,15 @@ describe("Budget page", () => {
     await expect(transaction).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.BILLS}`))
+      element(
+        by.text(
+          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            dateStyle: "medium"
+          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            timeStyle: "short"
+          })}  -  ${Category.BILLS}`
+        )
+      )
     ).toBeVisible();
 
     // click the transaction
@@ -381,7 +429,15 @@ describe("Budget page", () => {
     await expect(element(by.text("PAY OFF CREDIT CARD BILL"))).toBeVisible();
     await expect(element(by.text("£192.52"))).toBeVisible();
     await expect(
-      element(by.text(`1 Jan 2023 at 00:00  -  ${Category.SAVINGS}`))
+      element(
+        by.text(
+          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            dateStyle: "medium"
+          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
+            timeStyle: "short"
+          })}  -  ${Category.SAVINGS}`
+        )
+      )
     ).toBeVisible();
   });
 
