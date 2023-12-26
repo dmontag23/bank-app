@@ -43,7 +43,7 @@ describe("ErrorItem component", () => {
 
     const accordionChildren = (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
-    ).mock.calls[0][0].children as JSX.Element;
+    ).mock.calls[0][0].children as React.JSX.Element;
 
     render(accordionChildren);
 

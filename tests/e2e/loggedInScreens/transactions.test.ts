@@ -51,12 +51,15 @@ describe("Transactions page", () => {
       .scroll(400, "down");
     await element(by.text("Savings")).tap();
     await expect(modalTitle).not.toBeVisible();
-    const date = PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-      dateStyle: "medium"
-    });
-    const time = PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-      timeStyle: "short"
-    });
+    const date = PAY_BILL_CARD_TRANSACTION.timestamp.toDateString().slice(4);
+    const time = PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleTimeString(
+      "en-GB",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }
+    );
 
     await expect(
       element(by.text(`${date} at ${time}  -  Savings`))

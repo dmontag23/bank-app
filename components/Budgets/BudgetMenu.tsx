@@ -10,7 +10,7 @@ import {Budget} from "../../types/budget";
 type BudgetMenuProps = {
   renderMenuIcon: (
     openMenu: (e?: GestureResponderEvent) => void
-  ) => JSX.Element;
+  ) => React.JSX.Element;
   setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
 };
 

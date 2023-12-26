@@ -64,7 +64,7 @@ export const createQueryClient = () =>
 const HookWrapper = (
   children: ReactNode,
   queryClient?: QueryClient,
-  customWrapper?: (children: ReactNode) => JSX.Element
+  customWrapper?: (children: ReactNode) => React.JSX.Element
 ) => (
   <QueryClientProvider client={queryClient ?? createQueryClient()}>
     {customWrapper ? customWrapper(children) : children}
@@ -73,7 +73,7 @@ const HookWrapper = (
 
 type CustomRenderHookOptionsProps<Result> = {
   queryClient?: QueryClient;
-  customWrapper?: (children: ReactNode) => JSX.Element;
+  customWrapper?: (children: ReactNode) => React.JSX.Element;
   options?: Omit<RenderHookOptions<Result>, "wrapper">;
 };
 

@@ -46,7 +46,7 @@ describe("Transaction component", () => {
 
     expect(screen.getByText(testTransaction.name)).toBeVisible();
     expect(
-      screen.getByText(`1 Jan 2023 at 00:00  -  ${testTransaction.category}`)
+      screen.getByText(`Jan 01 2023 at 00:00  -  ${testTransaction.category}`)
     ).toBeVisible();
     expect(screen.getByText("£12.70")).toBeVisible();
 

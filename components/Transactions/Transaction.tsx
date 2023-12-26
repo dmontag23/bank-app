@@ -18,15 +18,15 @@ import CategoryIcon from "../ui/CategoryIcon";
 // the implementation of toLocaleString can be different in Node and in
 // react, see https://github.com/jestjs/jest/issues/3514
 const createDescriptionString = (transaction: TransactionType) => {
-  const localeDate = transaction.timestamp.toLocaleString("en-UK", {
-    dateStyle: "medium"
+  const dateString = transaction.timestamp.toDateString().slice(4);
+
+  const timeString = transaction.timestamp.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
   });
 
-  const localeTime = transaction.timestamp.toLocaleString("en-UK", {
-    timeStyle: "short"
-  });
-
-  return `${localeDate} at ${localeTime}  -  ${transaction.category}`;
+  return `${dateString} at ${timeString}  -  ${transaction.category}`;
 };
 
 const ListIcon = ({icon, color}: {icon: IconSource; color: string}) => (

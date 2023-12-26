@@ -48,7 +48,7 @@ describe("Truelayer auth screens without previous token", () => {
     // nothing will be asserted on this page
   });
 
-  it("should allow user to return to home screen on error", async () => {
+  it("should allow user to return to the home screen on error", async () => {
     await device.launchApp({
       newInstance: true,
       url: `${Config.URI}${Config.TRUELAYER_CALLBACK_ENDPOINT}?error=access_denied`

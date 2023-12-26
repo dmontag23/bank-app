@@ -228,7 +228,7 @@ describe("Budget screen", () => {
     await waitFor(() =>
       expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible()
     );
-    expect(screen.getByText("1 Jan 2023 at 00:00 - Bills")).toBeVisible();
+    expect(screen.getByText("Jan 01 2023 at 00:00 - Bills")).toBeVisible();
 
     // change the transaction category
     fireEvent.press(screen.getByText("PAY OFF CREDIT CARD BILL"));
@@ -252,7 +252,7 @@ describe("Budget screen", () => {
     fireEvent.press(screen.getAllByRole("tab")[1]);
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(
-      screen.getByText("1 Jan 2023 at 00:00 - Entertainment")
+      screen.getByText("Jan 01 2023 at 00:00 - Entertainment")
     ).toBeVisible();
   });
 
@@ -439,15 +439,15 @@ describe("Budget screen", () => {
     expect(screen.getByText("left of £4300.21")).toBeVisible();
     expect(screen.getByText("CHAI POT YUM")).toBeVisible();
     expect(
-      screen.getByText("23 Mar 2023 at 14:00  -  Eating out")
+      screen.getByText("Mar 23 2023 at 14:00  -  Eating out")
     ).toBeVisible();
     expect(screen.getByText("£3.30")).toBeVisible();
     expect(screen.getByText("ZARA")).toBeVisible();
-    expect(screen.getByText("1 Mar 2023 at 00:00  -  Shopping")).toBeVisible();
+    expect(screen.getByText("Mar 01 2023 at 00:00  -  Shopping")).toBeVisible();
     expect(screen.getByText("£132.00")).toBeVisible();
     expect(screen.getByText("DOUBLE FEATURE")).toBeVisible();
     expect(
-      screen.getByText("15 Mar 2023 at 00:00  -  Entertainment")
+      screen.getByText("Mar 15 2023 at 00:00  -  Entertainment")
     ).toBeVisible();
     expect(screen.getByText("£15.52")).toBeVisible();
 
@@ -460,7 +460,7 @@ describe("Budget screen", () => {
     expect(screen.getByText("£1807.48")).toBeVisible();
     expect(screen.getByText("left of £2000.00")).toBeVisible();
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
-    expect(screen.getByText("1 Jan 2023 at 00:00  -  Bills")).toBeVisible();
+    expect(screen.getByText("Jan 01 2023 at 00:00  -  Bills")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
 
     // check the menu contains one budget

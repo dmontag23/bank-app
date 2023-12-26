@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
+  "extends": "@react-native/typescript-config/tsconfig.json",
   // added the lines below to use absolute imports from the root directory
   // e.g. to import all the custom render, renderHook, etc functions from
   // the react native testing library

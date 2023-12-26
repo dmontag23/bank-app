@@ -168,13 +168,13 @@ describe("Transactions", () => {
     // check that the original transaction category is displayed
     await waitFor(() =>
       expect(
-        screen.getByText("24 Feb 2013 at 14:00 - Eating out")
+        screen.getByText("Feb 24 2013 at 14:00 - Eating out")
       ).toBeVisible()
     );
     expect(await AsyncStorage.getAllKeys()).toEqual(["category-map"]);
 
     // press the transaction to bring up the dialog
-    fireEvent.press(screen.getByText("24 Feb 2013 at 14:00 - Eating out"));
+    fireEvent.press(screen.getByText("Feb 24 2013 at 14:00 - Eating out"));
     await waitFor(() =>
       expect(screen.getByText("Select a category")).toBeVisible()
     );
@@ -190,7 +190,7 @@ describe("Transactions", () => {
     // Check that the dialog is closed and
     // the transaction has been updated to have the "Savings" category
     await waitFor(() => expect(selectCategoryText).not.toBeOnTheScreen());
-    expect(screen.getByText("24 Feb 2013 at 14:00 - Savings")).toBeVisible();
+    expect(screen.getByText("Feb 24 2013 at 14:00 - Savings")).toBeVisible();
     expect(await AsyncStorage.getItem(testTransactionId)).toBe("Savings");
   });
 

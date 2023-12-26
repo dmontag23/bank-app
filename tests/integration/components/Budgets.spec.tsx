@@ -178,12 +178,12 @@ describe("Budgets", () => {
     // Transactions
     expect(screen.getByText("PAY OFF CREDIT CARD BILL")).toBeVisible();
     expect(screen.getByText("£192.52")).toBeVisible();
-    expect(screen.getByText("1 Jan 2023 at 00:00 - Bills")).toBeVisible();
+    expect(screen.getByText("Jan 01 2023 at 00:00 - Bills")).toBeVisible();
     expect(
       screen.getByText(STARLING_FEED_ITEM_2.counterPartyName)
     ).toBeVisible();
     expect(screen.getByText("£0.50")).toBeVisible();
-    expect(screen.getByText("1 Jan 2020 at 00:00 - Bills")).toBeVisible();
+    expect(screen.getByText("Jan 01 2020 at 00:00 - Bills")).toBeVisible();
   });
 
   test("switches between budget items", async () => {

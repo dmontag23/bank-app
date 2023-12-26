@@ -100,7 +100,7 @@ describe("BudgetItemForm component", () => {
     // test BudgetItemFormFields
     const BudgetItemFormFieldsComponent = (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
-    ).mock.calls[1][0].children as JSX.Element;
+    ).mock.calls[1][0].children as React.JSX.Element;
     render(BudgetItemFormFieldsComponent);
 
     expect(BudgetItemFormFields).toBeCalledTimes(1);

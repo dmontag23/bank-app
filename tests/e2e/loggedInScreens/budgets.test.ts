@@ -225,11 +225,18 @@ describe("Budget page", () => {
     await expect(
       element(
         by.text(
-          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            dateStyle: "medium"
-          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            timeStyle: "short"
-          })}  -  ${Category.BILLS}`
+          `${PAY_BILL_CARD_TRANSACTION.timestamp
+            .toDateString()
+            .slice(
+              4
+            )} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            }
+          )}  -  ${Category.BILLS}`
         )
       )
     ).toBeVisible();
@@ -238,17 +245,15 @@ describe("Budget page", () => {
     await expect(
       element(
         by.text(
-          `${new Date(STARLING_FEED_ITEM_2.transactionTime).toLocaleString(
-            "en-UK",
-            {
-              dateStyle: "medium"
-            }
-          )} at ${new Date(STARLING_FEED_ITEM_2.transactionTime).toLocaleString(
-            "en-UK",
-            {
-              timeStyle: "short"
-            }
-          )}  -  ${Category.BILLS}`
+          `${new Date(STARLING_FEED_ITEM_2.transactionTime)
+            .toDateString()
+            .slice(4)} at ${new Date(
+            STARLING_FEED_ITEM_2.transactionTime
+          ).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+          })}  -  ${Category.BILLS}`
         )
       )
     ).toBeVisible();
@@ -264,15 +269,14 @@ describe("Budget page", () => {
     await expect(
       element(
         by.text(
-          `${new Date(EATING_OUT_CARD_TRANSACTION.timestamp).toLocaleString(
-            "en-UK",
-            {
-              dateStyle: "medium"
-            }
-          )} at ${new Date(
+          `${EATING_OUT_CARD_TRANSACTION.timestamp
+            .toDateString()
+            .slice(4)} at ${new Date(
             EATING_OUT_CARD_TRANSACTION.timestamp
-          ).toLocaleString("en-UK", {
-            timeStyle: "short"
+          ).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
           })}  -  ${Category.EATING_OUT}`
         )
       )
@@ -385,11 +389,18 @@ describe("Budget page", () => {
     await expect(
       element(
         by.text(
-          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            dateStyle: "medium"
-          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            timeStyle: "short"
-          })}  -  ${Category.BILLS}`
+          `${PAY_BILL_CARD_TRANSACTION.timestamp
+            .toDateString()
+            .slice(
+              4
+            )} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            }
+          )}  -  ${Category.BILLS}`
         )
       )
     ).toBeVisible();
@@ -431,11 +442,18 @@ describe("Budget page", () => {
     await expect(
       element(
         by.text(
-          `${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            dateStyle: "medium"
-          })} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleString("en-UK", {
-            timeStyle: "short"
-          })}  -  ${Category.SAVINGS}`
+          `${PAY_BILL_CARD_TRANSACTION.timestamp
+            .toDateString()
+            .slice(
+              4
+            )} at ${PAY_BILL_CARD_TRANSACTION.timestamp.toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false
+            }
+          )}  -  ${Category.SAVINGS}`
         )
       )
     ).toBeVisible();

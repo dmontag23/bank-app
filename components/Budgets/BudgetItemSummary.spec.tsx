@@ -186,7 +186,7 @@ describe("BudgetItemSummary component", () => {
     // test the children of the ExpandableAccordion
     const categories = (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
-    ).mock.calls[0][0].children as JSX.Element;
+    ).mock.calls[0][0].children as React.JSX.Element;
     render(categories);
 
     expect(screen.getByText(Category.UNKNOWN)).toBeVisible();
@@ -229,7 +229,7 @@ describe("BudgetItemSummary component", () => {
     // test the children of the ExpandableAccordion
     const categories = (
       ExpandableAccordion as jest.MockedFunction<typeof ExpandableAccordion>
-    ).mock.calls[0][0].children as JSX.Element;
+    ).mock.calls[0][0].children as React.JSX.Element;
     render(categories);
 
     expect(screen.getByText("Bills")).toBeVisible();

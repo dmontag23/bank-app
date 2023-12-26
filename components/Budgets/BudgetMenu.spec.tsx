@@ -28,7 +28,7 @@ describe("BudgetMenu component", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
       data: undefined
     }));
@@ -52,7 +52,7 @@ describe("BudgetMenu component", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
       data: []
     }));
@@ -76,7 +76,7 @@ describe("BudgetMenu component", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
       data: [BUDGET_WITH_NO_ITEMS, BUDGET_WITH_ONE_ITEM]
     }));
@@ -110,7 +110,7 @@ describe("BudgetMenu component", () => {
 
   test("correctly selects a budget", async () => {
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     const setSelectedBudget = jest.fn();
 
     // TODO: any should probably not be used as a type here, but since a
@@ -154,7 +154,7 @@ describe("BudgetMenu component", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     const setSelectedBudget =
       jest.fn<React.Dispatch<React.SetStateAction<Budget | null>>>();
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
@@ -198,7 +198,7 @@ describe("BudgetMenu component", () => {
     // query from tanstack query returns a whole bunch of non-optional things,
     // it's quicker than returning all those things for now
     const renderMenuIcon =
-      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => JSX.Element>();
+      jest.fn<(openMenu: (e?: GestureResponderEvent) => void) => React.JSX.Element>();
     const setSelectedBudget =
       jest.fn<React.Dispatch<React.SetStateAction<Budget | null>>>();
     (useGetAllBudgets as jest.MockedFunction<any>).mockImplementation(() => ({
