@@ -77,9 +77,7 @@ const TruelayerAuthValidation = ({
         onPress={() => navigation.replace("TruelayerWebAuth")}>
         Try again
       </Button>
-      {/* TODO: This button should have mode="elevated" but there is currently an issue with react native paper.
-      See https://github.com/callstack/react-native-paper/issues/4224  */}
-      <Button onPress={() => navigation.replace("AppViews")}>
+      <Button mode="elevated" onPress={() => navigation.replace("AppViews")}>
         Return to home screen
       </Button>
     </SafeAreaView>
