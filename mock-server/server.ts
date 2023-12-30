@@ -7,7 +7,8 @@ import starlingRouter from "./starling/router/starlingRouter";
 import truelayerAuthRouter from "./truelayer/routers/authRouter";
 import truelayerDataRouter from "./truelayer/routers/dataRouter";
 
-const app = express();
+// app needs to be exported for netlify
+export const app = express();
 let server: Server;
 
 app.use("/starling", starlingRouter);
