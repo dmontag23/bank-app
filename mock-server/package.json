@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run clean-mock-server && npm run mock-ts-compile",
+    "build": "npm run clean-mock-server && npm run mock-server-ts-compile",
     "clean-mock-server": "rm -rf dist",
-    "mock-server": "npm run build && npm start",
-    "mock-ts-compile": "npx tsc",
-    "start": "node dist/mock-server/runMockServer.js"
+    "mock-server-ts-compile": "npx tsc",
+    "start": "npm run build && node dist/mock-server/runMockServer.js"
   },
   "dependencies": {
     "@netlify/functions": "^2.4.1",
