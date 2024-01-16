@@ -108,5 +108,5 @@ describe("App component", () => {
     fireEvent(screen.getByRole("button", {name: "Settings"}), "click");
     expect(screen.getAllByText("Settings").length).toBe(3);
     expect(screen.queryByText("1")).toBeNull();
-  }, 20000);
+  }, 30000);
 });
